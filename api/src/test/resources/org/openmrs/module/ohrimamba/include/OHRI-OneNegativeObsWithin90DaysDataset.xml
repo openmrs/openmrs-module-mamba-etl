@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+-->
+<dataset>
+
+    <!--
+    ::Final HIV Test Result Values::
+    Positive - 963
+    Negative - 76
+    Indeterminate - 53
+    -->
+    <obs obs_id="140" person_id="7" status="FINAL" concept_id="942" encounter_id="5" obs_datetime="2020-08-15 00:00:00.0" value_datetime="2020-08-14 00:00:00.0" location_id="1" value_coded="76" comments="" creator="1" date_created="2020-08-15 00:00:00.0" voided="false" uuid="5ce473c8-47b6-47da-9c6f-3673ddfb74f7"/>
+    <obs obs_id="150" person_id="7" status="FINAL" concept_id="942" encounter_id="4" obs_datetime="2022-05-03 10:00:00.0" value_datetime="2019-04-20 00:00:00.0" location_id="1" value_coded="76" comments="" creator="1" date_created="2022-05-03 10:00:00.0" voided="false" uuid="3ce473c8-3fac-440d-9f92-e10facab194x"/>
+
+    <!-- For capturing Final HIV Test Result Date for a given Encounter - Make sure value_datetime is recent within 90 Days for this Test case to pass-->
+    <obs obs_id="170" person_id="7" status="FINAL" concept_id="943" encounter_id="4" obs_datetime="2022-05-03 10:00:00.0" value_datetime="2022-05-03 00:00:00.0" location_id="1" comments="" creator="1" date_created="2022-05-03
+     10:00:00.0" voided="false" uuid="4ce473c8-3fac-440d-9f92-e10facab194y"/>
+
+</dataset>

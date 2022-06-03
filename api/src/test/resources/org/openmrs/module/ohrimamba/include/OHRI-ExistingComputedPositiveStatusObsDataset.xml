@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+-->
+<dataset>
+    <obs obs_id="180" person_id="7" status="FINAL" concept_id="994" encounter_id="4" obs_datetime="2021-06-12 10:00:00.0" value_datetime="2020-06-12 00:00:00.0" location_id="1" value_coded="963" comments="" creator="1" date_created="2021-06-12 10:00:00.0" voided="false" uuid="1ce473c8-3fkc-440d-9f92-e10facab194y"/>
+</dataset>

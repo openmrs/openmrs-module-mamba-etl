@@ -1,0 +1,17 @@
+[
+  {
+    "id": "ohri.covid",
+    "description": "OHRI covid esm",
+    "order": 2,
+    "extensions": [
+      {
+        "id": "ohri.covidLink",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "label": "OHRI COVID-19",
+        "url": "spa/dashboard",
+        "icon": "ohri-covid.png"
+      }
+    ]
+  }
+]

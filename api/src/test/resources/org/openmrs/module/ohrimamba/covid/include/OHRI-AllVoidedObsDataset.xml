@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+-->
+<dataset>
+
+    <!--
+    :: Rapid Antigen COVID Test Result Values ::
+    :: Positive -      9  -    964
+    :: Negative -      10 -    77
+    :: Inconclusive -  11 -    54
+    -->
+    <obs obs_id="130" person_id="7" status="FINAL" concept_id="743" encounter_id="3" obs_datetime="2008-08-15 00:00:00.0" value_datetime="2008-08-14 00:00:00.0" location_id="1" value_coded="964" comments="" creator="1" date_created="2008-08-19 12:32:20.0" voided="true" uuid="a6521c32-47b6-47da-9c6f-3673ddfb74fu"/>
+    <obs obs_id="140" person_id="7" status="FINAL" concept_id="743" encounter_id="5" obs_datetime="2020-08-15 00:00:00.0" value_datetime="2020-08-14 00:00:00.0" location_id="1" value_coded="77" comments="" creator="1" date_created="2020-08-15 00:00:00.0" voided="true" uuid="5ce473c8-47b6-47da-9c6f-3673ddfb74f7"/>
+    <obs obs_id="150" person_id="7" status="FINAL" concept_id="743" encounter_id="4" obs_datetime="2021-07-12 10:00:00.0" value_datetime="2021-07-12 00:00:00.0" location_id="1" value_coded="54" comments="" creator="1" date_created="2021-07-12 10:00:00.0" voided="true" uuid="3ce473c8-3fac-440d-9f92-e10facab194x"/>
+
+    <!--
+    :: Diagnostic PCR COVID Test Result Values ::
+    :: Positive -      12  -   964
+    :: Negative -      13 -    77
+    :: Inconclusive -  14 -    54
+    -->
+    <obs obs_id="230" person_id="7" status="FINAL" concept_id="843" encounter_id="7" obs_datetime="2008-08-15 00:00:00.0" value_datetime="2008-08-14 00:00:00.0" location_id="1" value_coded="964" comments="" creator="1" date_created="2008-08-19 12:32:20.0" voided="true" uuid="16521c32-47b6-47da-9c6f-3673ddfb74fu"/>
+    <obs obs_id="240" person_id="7" status="FINAL" concept_id="843" encounter_id="8" obs_datetime="2020-08-15 00:00:00.0" value_datetime="2020-08-14 00:00:00.0" location_id="1" value_coded="77" comments="" creator="1" date_created="2020-08-15 00:00:00.0" voided="true" uuid="2ce473c8-47b6-47da-9c6f-3673ddfb74f7"/>
+    <obs obs_id="250" person_id="7" status="FINAL" concept_id="843" encounter_id="9" obs_datetime="2021-07-12 10:00:00.0" value_datetime="2021-07-12 00:00:00.0" location_id="1" value_coded="54" comments="" creator="1" date_created="2021-07-12 10:00:00.0" voided="true" uuid="3ce473c8-3fac-440d-9f92-e10facab194x"/>
+
+</dataset>
