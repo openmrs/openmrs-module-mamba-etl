@@ -20,6 +20,6 @@ SELECT `psn`.`person_id`                             AS `client_id`,
        `pa`.`city_village`                           AS `sub_county`,
        `pa`.`address1`                               AS `ward`
 from ((`mamba_dim_person` `psn`
-    left join `mamba_dim_person_name` `pn` on ((`psn`.`external_person_id` = `pn`.`external_person_id`)))
-    left join `mamba_dim_person_address` `pa` on ((`psn`.`external_person_id` = `pa`.`external_person_id`)));
+    left join `mamba_dim_person_name` `pn` on ((`psn`.`person_id` = `pn`.`person_id`)))
+    left join `mamba_dim_person_address` `pa` on ((`psn`.`person_id` = `pa`.`person_id`)));
 -- $END

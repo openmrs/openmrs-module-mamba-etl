@@ -1,11 +1,11 @@
 USE analysis;
 
 -- $BEGIN
-INSERT INTO mamba_dim_person (external_person_id,
-                              birthdate,
-                              gender)
-SELECT psn.person_id AS external_person_id,
-       psn.birthdate AS birthdate,
-       psn.gender    AS gender
-FROM openmrs_dev.person psn;
+SELECT person_id,
+       gender,
+       birthdate,
+       dead,
+       death_date
+INTO mamba_dim_person
+FROM person psn;
 -- $END

@@ -5,12 +5,15 @@ DROP TABLE IF EXISTS mamba_dim_person;
 -- $BEGIN
 CREATE TABLE mamba_dim_person
 (
-    person_id          int           NOT NULL AUTO_INCREMENT,
-    external_person_id int,
-    birthdate          NVARCHAR(255) NULL,
-    gender             NVARCHAR(255) NULL,
-    PRIMARY KEY (person_id)
+    mamba_person_id INT NOT NULL AUTO_INCREMENT,
+    person_id       INT NOT NULL,
+    gender          NVARCHAR(50),
+    birthdate       DATE,
+    dead            TINYINT,
+    death_date      DATETIME,
+    PRIMARY KEY (mamba_person_id)
 );
-create index mamba_dim_person_external_person_id_index
-    on mamba_dim_person (external_person_id);
+
+CREATE INDEX index_person_id
+    ON mamba_dim_person (person_id);
 -- $END

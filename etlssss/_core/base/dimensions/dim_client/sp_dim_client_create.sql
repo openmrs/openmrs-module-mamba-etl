@@ -15,4 +15,7 @@ CREATE TABLE dim_client
     ward          NVARCHAR(255) NULL,
     PRIMARY KEY (id)
 );
+
+CREATE INDEX index_client_id
+    ON dim_client (client_id);
 -- $END
