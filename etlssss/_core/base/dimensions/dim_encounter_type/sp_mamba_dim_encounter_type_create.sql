@@ -5,9 +5,16 @@ DROP TABLE IF EXISTS mamba_dim_encounter_type;
 -- $BEGIN
 CREATE TABLE mamba_dim_encounter_type
 (
-    encounter_type_id          int      NOT NULL AUTO_INCREMENT,
-    external_encounter_type_id int,
-    encounter_type_uuid        CHAR(38) NOT NULL,
-    PRIMARY KEY (encounter_type_id)
+    mamba_encounter_type_id INT          NOT NULL AUTO_INCREMENT,
+    encounter_type_id       INT          NOT NULL,
+    name                    NVARCHAR(50) NULL,
+    uuid                    CHAR(38)     NOT NULL,
+    PRIMARY KEY (mamba_encounter_type_id)
 );
+
+CREATE INDEX index_encounter_type_id
+    ON mamba_dim_encounter_type (encounter_type_id);
+
+CREATE INDEX index_uuid
+    ON mamba_dim_encounter_type (uuid);
 -- $END

@@ -1,9 +1,13 @@
 USE analysis;
 
 -- $BEGIN
-INSERT INTO mamba_dim_encounter (external_encounter_id,
-                                 external_encounter_type_id)
-SELECT e.encounter_id   AS external_encounter_id,
-       e.encounter_type AS external_encounter_type_id
-FROM openmrs_dev.encounter e;
+INSERT INTO mamba_dim_encounter (encounter_id,
+                                 encounter_type,
+                                 encounter_datetime,
+                                 visit_id)
+SELECT encounter_id,
+       encounter_type,
+       encounter_datetime,
+       visit_id
+FROM encounter;
 -- $END
