@@ -1,7 +1,0 @@
-USE analysis;
-
-
--- $BEGIN
-
-
--- $END

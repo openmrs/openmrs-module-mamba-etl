@@ -65,7 +65,6 @@ public class OHRIMambaController {
 		if (errors.hasErrors()) {
 			// return error view
 		}
-		
 		return VIEW;
 	}
 	
@@ -76,11 +75,10 @@ public class OHRIMambaController {
 	 */
 	@ModelAttribute("users")
 	protected List<User> getUsers() throws Exception {
-		List<User> users = userService.getAllUsers();
 		
 		// this object will be made available to the jsp page under the variable name
 		// that is defined in the @ModuleAttribute tag
-		return users;
+		return userService.getAllUsers();
 	}
 	
 }

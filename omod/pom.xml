@@ -10,8 +10,8 @@
 
     <artifactId>ohrimamba-omod</artifactId>
     <packaging>jar</packaging>
-    <name>OHRICore OMOD</name>
-    <description>Omod submodule for OHRICore</description>
+    <name>OHRIMamba OMOD</name>
+    <description>Omod submodule for OHRIMamba</description>
 
     <dependencies>
 

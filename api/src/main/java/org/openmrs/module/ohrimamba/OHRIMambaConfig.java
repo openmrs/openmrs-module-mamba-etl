@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * Contains module's config.
  */
-@Component("ohrimamba.OHRIMambaConfig")
+@Component("ohrimamba.config")
 public class OHRIMambaConfig {
 	
 	public final static String MODULE_PRIVILEGE = "OHRIMamba Privilege";
