@@ -1,9 +1,10 @@
 USE analysis;
 
 -- $BEGIN
+INSERT INTO mamba_dim_concept_datatype (concept_datatype_id,
+                                        name)
 SELECT concept_datatype_id,
        name
-INTO mamba_dim_concept_datatype
-FROM concept_datatype dt
-WHERE dt.retired = 0;
+FROM concept_datatype
+WHERE retired = 0;
 -- $END

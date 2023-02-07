@@ -10,7 +10,7 @@ CREATE TABLE mamba_dim_concept
     datatype         NVARCHAR(255) NULL,
     name             NVARCHAR(255) NULL,
     uuid             CHAR(38)      NOT NULL,
-    PRIMARY KEY (concept_id)
+    PRIMARY KEY (mamba_concept_id)
 );
 
 CREATE INDEX index_concept_id

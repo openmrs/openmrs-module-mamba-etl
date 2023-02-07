@@ -9,13 +9,13 @@
         {
           "concept_uuid": "80bcc9c1-e328-47e8-affe-6d1bffe4adf1",
           "concept_name": "Facility service Point",
-          "given_column_name": "80bcc9c1-e328-47e8-affe-6d1bffe4adf1",
+          "given_column_name": "facilityServicePoint",
           "column_name": "facility_service_point"
         },
         {
           "concept_uuid": "13abe5c9-6de2-4970-b348-36d352ee8eeb",
           "concept_name": "Test Setting",
-          "given_column_name": "13abe5c9-6de2-4970-b348-36d352ee8eeb",
+          "given_column_name": "testSetting",
           "column_name": "test_setting"
         }
       ]
