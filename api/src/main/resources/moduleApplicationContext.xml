@@ -25,8 +25,4 @@
 
     <context:component-scan base-package="org.openmrs.module.ohrimamba"/>
 
-    <!--  **************************  SERVICE INTERCEPTORS  *************************  -->
-    <!-- AOP after Running Advice that intercepts an encounter and updates a concept based on other concepts -->
-<!--    <bean id="encounterInterceptor" class="org.openmrs.module.ohrimamba.aop.EncounterInterceptorAdvice"/>-->
-
 </beans>

@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>org.openmrs.ohri</groupId>
-            <artifactId>ohri-mamba-plugin</artifactId>
+            <artifactId>ohri-mamba-core</artifactId>
         </dependency>
     </dependencies>
 

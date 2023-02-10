@@ -36,14 +36,14 @@
                                 referencedColumnNames="user_id" />
    </changeSet> -->
 
-
-    <changeSet id="ohri-mamba-setup0001" author="Arthur SG" runAlways="true">
+    <changeSet id="ohri-mamba-setup0001" author="Arthur D. Mugume" runAlways="true">
         <comment>
             Installs/deploys all the required Mamba ETL Stored procedures and functions
         </comment>
-        <sqlFile path="build/create_stored_procedures.sql"/>
-        <!--	  <include file="data.sql" relativeToChangelogFile="true"/>-->
-    </changeSet>
 
+        <sqlFile splitStatements="true" stripComments="true" endDelimiter="/"
+                 path="build/create_stored_procedures.sql"/>
+        <!--<include file="data.sql" relativeToChangelogFile="true"/>-->
+    </changeSet>
 
 </databaseChangeLog>

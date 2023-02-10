@@ -42,7 +42,7 @@
 
             <dependency>
                 <groupId>org.openmrs.ohri</groupId>
-                <artifactId>ohri-mamba-plugin</artifactId>
+                <artifactId>ohri-mamba-core</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
