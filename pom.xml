@@ -181,8 +181,11 @@
                                 </workingDirectory>
                                 <arguments>
                                     <argument>compile.sh</argument>
-                                    <argument>analysis-db</argument>
-                                    <argument>${project.build.directory}/mamba-etl/_etl/config</argument>
+                                    <argument>-d analysis -s sp_makefile -t ${project.build.directory}/mamba-etl/_etl/config</argument>
+                                    <argument></argument>
+                                    <argument></argument>
+                                    <argument></argument>
+                                    <argument></argument>
                                 </arguments>
                             </configuration>
                         </execution>
