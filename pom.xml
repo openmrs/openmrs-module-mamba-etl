@@ -153,6 +153,7 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.0.0</version>
                     <executions>
+
                         <execution>
                             <id>set-executable-permission</id>
                             <phase>prepare-package</phase>
@@ -167,6 +168,7 @@
                                 </arguments>
                             </configuration>
                         </execution>
+
                         <execution>
                             <id>run-script</id>
                             <phase>install</phase>
@@ -179,11 +181,12 @@
                                 </workingDirectory>
                                 <arguments>
                                     <argument>compile.sh</argument>
-                                    <argument>arg1</argument>
-                                    <argument>arg2</argument>
+                                    <argument>analysis-db</argument>
+                                    <argument>${project.build.directory}/mamba-etl/_etl/config</argument>
                                 </arguments>
                             </configuration>
                         </execution>
+
                     </executions>
                 </plugin>
 
