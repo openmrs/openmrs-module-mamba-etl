@@ -95,7 +95,7 @@
 
             <plugins>
 
-                <!-- Unpack the dependency jar first -->
+                <!-- 1. Unpack the dependency jar first -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -123,12 +123,14 @@
                     </executions>
                 </plugin>
 
-                <!-- Then copy the directory inside the resources directory of the dependency jar to a target location -->
+                <!-- Step 2 & the last step-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.2.0</version>
                     <executions>
+
+                        <!-- 2. Copy contents of the resources directory of the dependency jar to a target location -->
                         <execution>
                             <id>copy-scripts</id>
                             <phase>prepare-package</phase>
@@ -145,9 +147,29 @@
                                 <outputDirectory>${project.build.directory}/mamba-etl/_etl</outputDirectory>
                             </configuration>
                         </execution>
+
+                        <!-- This should execute last to copy the build script to a location liquibase.xml can access-->
+                        <execution>
+                            <id>copy-final-build-script</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}/mamba-etl/_core/database/mysql/base/build</directory>
+                                        <filtering>true</filtering>
+                                    </resource>
+                                </resources>
+                                <outputDirectory>${project.parent.basedir}/api/src/main/resources/mamba</outputDirectory>
+                            </configuration>
+                        </execution>
+
                     </executions>
                 </plugin>
 
+                <!-- 3. Make the compiler scripts executable & then run the compiler -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
@@ -171,7 +193,7 @@
 
                         <execution>
                             <id>run-script</id>
-                            <phase>install</phase>
+                            <phase>package</phase>
                             <goals>
                                 <goal>exec</goal>
                             </goals>
@@ -180,8 +202,15 @@
                                 <workingDirectory>${project.build.directory}/mamba-etl/_core/database/mysql
                                 </workingDirectory>
                                 <arguments>
+                                    <!-- the Engine compiler script -->
                                     <argument>compile.sh</argument>
-                                    <argument>-d analysis -s sp_makefile -t ${project.build.directory}/mamba-etl/_etl/config</argument>
+                                    <!-- Database the created stored procedures will run on -->
+                                    <argument>-d analysis</argument>
+                                    <!-- File with a list of all files with stored procedures -->
+                                    <argument>-s base/sp_makefile</argument>
+                                    <!-- a JSON configuration path/folder for all config files for db flattening -->
+                                    <argument>-t ${project.build.directory}/mamba-etl/_etl/config</argument>
+                                    <!-- add any other arguments below -->
                                     <argument></argument>
                                     <argument></argument>
                                     <argument></argument>
