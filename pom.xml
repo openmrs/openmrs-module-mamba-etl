@@ -199,7 +199,7 @@
                             </goals>
                             <configuration>
                                 <executable>/bin/sh</executable>
-                                <workingDirectory>${project.build.directory}/mamba-etl/_core/database/mysql
+                                <workingDirectory>${project.build.directory}/mamba-etl/_core/compiler/linux
                                 </workingDirectory>
                                 <arguments>
                                     <!-- the Engine compiler script -->
@@ -207,9 +207,11 @@
                                     <!-- Database the created stored procedures will run on -->
                                     <argument>-d analysis</argument>
                                     <!-- File with a list of all files with stored procedures -->
-                                    <argument>-s base/sp_makefile</argument>
+                                    <argument>-s ../../database/mysql/base/sp_makefile</argument>
                                     <!-- a JSON configuration path/folder for all config files for db flattening -->
                                     <argument>-t ${project.build.directory}/mamba-etl/_etl/config</argument>
+                                    <!-- Database Vendor/Engine targeted in this ETL -->
+                                    <argument>-n mysql</argument>
                                     <!-- add any other arguments below -->
                                     <argument></argument>
                                     <argument></argument>
