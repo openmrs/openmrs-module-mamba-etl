@@ -158,11 +158,14 @@
                             <configuration>
                                 <resources>
                                     <resource>
-                                        <directory>${project.build.directory}/mamba-etl/_core/database/mysql/base/build</directory>
+                                        <directory>
+                                            ${project.build.directory}/mamba-etl/_core/database/mysql/base/build
+                                        </directory>
                                         <filtering>true</filtering>
                                     </resource>
                                 </resources>
-                                <outputDirectory>${project.parent.basedir}/api/src/main/resources/mamba</outputDirectory>
+                                <outputDirectory>${project.parent.basedir}/api/src/main/resources/mamba
+                                </outputDirectory>
                             </configuration>
                         </execution>
 
