@@ -2,37 +2,37 @@
 
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_drop_all_functions_in_schema
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_functions_in_schema;
 
+/
 CREATE PROCEDURE sp_xf_system_drop_all_stored_functions_in_schema(
     IN database_name NVARCHAR(255)
 )
 BEGIN
     DELETE FROM `mysql`.`proc` WHERE `type` = 'FUNCTION' AND `db` = database_name; -- works in mysql before v.8
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_drop_all_stored_procedures_in_schema
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_procedures_in_schema;
 
+/
 CREATE PROCEDURE sp_xf_system_drop_all_stored_procedures_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -40,21 +40,21 @@ BEGIN
 
     DELETE FROM `mysql`.`proc` WHERE `type` = 'PROCEDURE' AND `db` = database_name; -- works in mysql before v.8
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_drop_all_objects_in_schema
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_objects_in_schema;
 
+/
 CREATE PROCEDURE sp_xf_system_drop_all_objects_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -65,21 +65,21 @@ BEGIN
     CALL sp_xf_system_drop_all_tables_in_schema(database_name);
     # CALL sp_xf_system_drop_all_views_in_schema (database_name);
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_drop_all_tables_in_schema
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_tables_in_schema;
 
+/
 CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -110,21 +110,21 @@ BEGIN
 
     END IF;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_execute_etl
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_xf_system_execute_etl;
 
+/
 CREATE PROCEDURE sp_xf_system_execute_etl()
 BEGIN
 
@@ -142,21 +142,21 @@ BEGIN
     -- Result
     select (@end_time - @start_time) / 1000;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_flat_encounter_table_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
 
+/
 CREATE PROCEDURE sp_flat_encounter_table_create(
     IN flat_encounter_table_name NVARCHAR(255)
 )
@@ -183,21 +183,21 @@ BEGIN
     DEALLOCATE PREPARE deletetb;
     DEALLOCATE PREPARE createtb;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_flat_encounter_table_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert;
 
+/
 CREATE PROCEDURE sp_flat_encounter_table_insert(
     IN flat_encounter_table_name NVARCHAR(255)
 )
@@ -232,22 +232,22 @@ BEGIN
     EXECUTE inserttbl;
     DEALLOCATE PREPARE inserttbl;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_flat_encounter_table_insert_all
 --
 
 -- Flatten all Encounters given in Config folder
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
 
+/
 CREATE PROCEDURE sp_flat_encounter_table_insert_all()
 BEGIN
 
@@ -274,21 +274,21 @@ BEGIN
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_multiselect_values_update
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
 
+/
 CREATE PROCEDURE `sp_multiselect_values_update`(
         IN table_to_update NVARCHAR(100),
         IN column_names NVARCHAR(20000),
@@ -329,21 +329,21 @@ BEGIN
 
     END REPEAT;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_extract_report_metadata
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
 
+/
 CREATE PROCEDURE sp_extract_report_metadata(
     IN report_data MEDIUMTEXT,
     IN metadata_table NVARCHAR(255)
@@ -391,21 +391,21 @@ BEGIN
             SET @report_count = @report_count + 1;
         END WHILE;
 
-END //
+END
+/
 
-DELIMITER ;
 
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_datatype_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_datatype_create()
 BEGIN
 -- $BEGIN
@@ -422,20 +422,20 @@ create index mamba_dim_concept_datatype_external_datatype_id_index
 
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_datatype_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_datatype_insert()
 BEGIN
 -- $BEGIN
@@ -453,20 +453,20 @@ WHERE
     dt.retired = 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_datatype
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_datatype()
 BEGIN
 -- $BEGIN
@@ -475,20 +475,20 @@ CALL sp_mamba_dim_concept_datatype_create();
 CALL sp_mamba_dim_concept_datatype_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_create()
 BEGIN
 -- $BEGIN
@@ -511,20 +511,20 @@ create index mamba_dim_concept_external_datatype_id_index
 
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_insert()
 BEGIN
 -- $BEGIN
@@ -544,20 +544,20 @@ WHERE
     c.retired = 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_update
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_update;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_update()
 BEGIN
 -- $BEGIN
@@ -569,20 +569,20 @@ SET c.datatype = dt.datatype_name
 WHERE c.concept_id > 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept()
 BEGIN
 -- $BEGIN
@@ -592,20 +592,20 @@ CALL sp_mamba_dim_concept_insert();
 CALL sp_mamba_dim_concept_update();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_answer_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_answer_create()
 BEGIN
 -- $BEGIN
@@ -619,20 +619,20 @@ CREATE TABLE mamba_dim_concept_answer (
 );
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_answer_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_answer_insert()
 BEGIN
 -- $BEGIN
@@ -650,20 +650,20 @@ FROM
     openmrs_dev.concept_answer ca;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_answer
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_answer()
 BEGIN
 -- $BEGIN
@@ -672,20 +672,20 @@ CALL sp_mamba_dim_concept_answer_create();
 CALL sp_mamba_dim_concept_answer_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_name_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_name_create()
 BEGIN
 -- $BEGIN
@@ -698,20 +698,20 @@ CREATE TABLE mamba_dim_concept_name (
 );
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_name_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_name_insert()
 BEGIN
 -- $BEGIN
@@ -730,20 +730,20 @@ WHERE
     AND cn.locale_preferred = 1;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_name
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_name()
 BEGIN
 -- $BEGIN
@@ -752,20 +752,20 @@ CALL sp_mamba_dim_concept_name_create();
 CALL sp_mamba_dim_concept_name_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_type_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_type_create()
 BEGIN
 -- $BEGIN
@@ -778,20 +778,20 @@ CREATE TABLE mamba_dim_encounter_type (
 );
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_type_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_type_insert()
 BEGIN
 -- $BEGIN
@@ -809,20 +809,20 @@ WHERE
     et.retired = 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_type
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_type()
 BEGIN
 -- $BEGIN
@@ -831,20 +831,20 @@ CALL sp_mamba_dim_encounter_type_create();
 CALL sp_mamba_dim_encounter_type_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_create()
 BEGIN
 -- $BEGIN
@@ -858,20 +858,20 @@ CREATE TABLE mamba_dim_encounter (
 );
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_insert()
 BEGIN
 -- $BEGIN
@@ -887,20 +887,20 @@ FROM
     openmrs_dev.encounter e;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter_update
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_update;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter_update()
 BEGIN
 -- $BEGIN
@@ -912,20 +912,20 @@ SET e.encounter_type_uuid = et.encounter_type_uuid
 WHERE e.encounter_id > 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_encounter
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter;
 
+/
 CREATE PROCEDURE sp_mamba_dim_encounter()
 BEGIN
 -- $BEGIN
@@ -935,20 +935,20 @@ CALL sp_mamba_dim_encounter_insert();
 CALL sp_mamba_dim_encounter_update();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_metadata_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_create()
 BEGIN
 -- $BEGIN
@@ -974,20 +974,20 @@ CREATE TABLE mamba_dim_concept_metadata
 --         FOREIGN KEY (`encounter_type_id`) REFERENCES `mamba_dim_encounter_type` (`encounter_type_id`);
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_metadata_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_insert()
 BEGIN
   -- $BEGIN
@@ -1046,20 +1046,20 @@ BEGIN
   CALL sp_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
 
   -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_metadata_update
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_update;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_update()
 BEGIN
 -- $BEGIN
@@ -1081,20 +1081,20 @@ SET md.concept_answer_obs = 1
 WHERE md.concept_metadata_id > 0;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_concept_metadata
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata;
 
+/
 CREATE PROCEDURE sp_mamba_dim_concept_metadata()
 BEGIN
 -- $BEGIN
@@ -1104,20 +1104,20 @@ CALL sp_mamba_dim_concept_metadata_insert();
 CALL sp_mamba_dim_concept_metadata_update();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_create()
 BEGIN
 -- $BEGIN
@@ -1133,20 +1133,20 @@ create index mamba_dim_person_external_person_id_index
     on mamba_dim_person (external_person_id);
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_insert()
 BEGIN
 -- $BEGIN
@@ -1164,20 +1164,20 @@ FROM
     openmrs_dev.person psn;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person()
 BEGIN
 -- $BEGIN
@@ -1186,20 +1186,20 @@ CALL sp_mamba_dim_person_create();
 CALL sp_mamba_dim_person_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_name_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_name_create()
 BEGIN
 -- $BEGIN
@@ -1214,20 +1214,20 @@ CREATE TABLE mamba_dim_person_name (
 create index mamba_dim_person_name_external_person_id_index
     on mamba_dim_person_name (external_person_id);
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_name_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_name_insert()
 BEGIN
 -- $BEGIN
@@ -1245,20 +1245,20 @@ FROM
     openmrs_dev.person_name pn;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_name
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_name()
 BEGIN
 -- $BEGIN
@@ -1267,20 +1267,20 @@ CALL sp_mamba_dim_person_name_create();
 CALL sp_mamba_dim_person_name_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_address_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address_create;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_address_create()
 BEGIN
 -- $BEGIN
@@ -1299,20 +1299,20 @@ create index mamba_dim_person_address_external_person_id_index
     on mamba_dim_person_address (external_person_id);
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_address_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address_insert;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_address_insert()
 BEGIN
 -- $BEGIN
@@ -1336,20 +1336,20 @@ FROM
     openmrs_dev.person_address pa;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_dim_person_address
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address;
 
+/
 CREATE PROCEDURE sp_mamba_dim_person_address()
 BEGIN
 -- $BEGIN
@@ -1358,20 +1358,20 @@ CALL sp_mamba_dim_person_address_create();
 CALL sp_mamba_dim_person_address_insert();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_dim_client_create
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_dim_client_create;
 
+/
 CREATE PROCEDURE sp_dim_client_create()
 BEGIN
 -- $BEGIN
@@ -1387,20 +1387,20 @@ CREATE TABLE dim_client (
     PRIMARY KEY (id)
 );
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_dim_client_insert
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_dim_client_insert;
 
+/
 CREATE PROCEDURE sp_dim_client_insert()
 BEGIN
 -- $BEGIN
@@ -1432,20 +1432,20 @@ left join `mamba_dim_person_address` `pa` on ((`psn`.`external_person_id` = `pa`
 
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_dim_client_update
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_dim_client_update;
 
+/
 CREATE PROCEDURE sp_dim_client_update()
 BEGIN
 -- $BEGIN
@@ -1453,20 +1453,20 @@ BEGIN
 
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_dim_client
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_dim_client;
 
+/
 CREATE PROCEDURE sp_dim_client()
 BEGIN
 -- $BEGIN
@@ -1476,20 +1476,20 @@ CALL sp_dim_client_insert();
 CALL sp_dim_client_update();
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_z_encounter_obs
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs;
 
+/
 CREATE PROCEDURE sp_mamba_z_encounter_obs()
 BEGIN
 -- $BEGIN
@@ -1562,20 +1562,20 @@ WHERE z.obs_value_coded IS NOT NULL;
 -- WHERE TRUE;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_mamba_z_tables
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_z_tables;
 
+/
 CREATE PROCEDURE sp_mamba_z_tables()
 BEGIN
 -- $BEGIN
@@ -1583,20 +1583,20 @@ BEGIN
 CALL sp_mamba_z_encounter_obs;
 
 -- $END
-END //
+END
+/
 
-DELIMITER ;
 
-        
+
 
 -- ---------------------------------------------------------------------------------------------
 -- sp_data_processing
 --
 
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_data_processing;
 
+/
 CREATE PROCEDURE sp_data_processing()
 BEGIN
 -- $BEGIN
@@ -1628,7 +1628,6 @@ CALL sp_dim_client;
 CALL sp_mamba_z_tables;
 
 -- $END
-END //
-
-DELIMITER ;
+END
+/
 

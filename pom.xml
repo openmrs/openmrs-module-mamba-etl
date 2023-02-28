@@ -148,7 +148,7 @@
                             </configuration>
                         </execution>
 
-                        <!-- This should execute last to copy the build script to a location liquibase.xml can access-->
+                        <!-- This should execute last - to copy the build script to a location liquibase.xml can access-->
                         <execution>
                             <id>copy-final-build-script</id>
                             <phase>install</phase>
@@ -208,7 +208,7 @@
                                     <!-- the Engine compiler script -->
                                     <argument>compile.sh</argument>
                                     <!-- Database the created stored procedures will run on -->
-                                    <argument>-d analysis</argument>
+                                    <argument>-d openmrs_working</argument>
                                     <!-- File with a list of all files with stored procedures -->
                                     <argument>-s ../../database/mysql/base/sp_makefile</argument>
                                     <!-- a JSON configuration path/folder for all config files for db flattening -->
@@ -257,13 +257,6 @@
             </plugins>
 
         </pluginManagement>
-
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-
     </build>
 
     <repositories>

@@ -42,7 +42,7 @@
         </comment>
 
         <sqlFile splitStatements="true" stripComments="true" endDelimiter="/"
-                 path="mamba/create_stored_procedures.sql"/>
+                 path="mamba/liquibase_create_stored_procedures.sql"/>
         <!--<include file="data.sql" relativeToChangelogFile="true"/>-->
     </changeSet>
 

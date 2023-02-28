@@ -8,9 +8,7 @@
     <version>${project.parent.version}</version>
     <package>org.openmrs.module.ohrimamba</package>
     <author>Arthur D. Mugume [OHRI]</author>
-    <description>
-        ${project.parent.description}
-    </description>
+    <description>${project.parent.description}</description>
 
     <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
 
