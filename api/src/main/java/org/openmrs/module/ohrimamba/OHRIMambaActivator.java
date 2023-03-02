@@ -11,7 +11,11 @@ package org.openmrs.module.ohrimamba;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.ohrimamba.task.FlattenTableTask;
+import org.openmrs.scheduler.SchedulerService;
+import org.openmrs.scheduler.TaskDefinition;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -26,6 +30,14 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	public void started() {
 		
 		log.info("Started OHRI-Mamba");
+		System.out.println("Adding mamba flattening Task...");
+		
+		String taskName = "Mamba - database Flattening Task";
+		Long repeatInterval = 300L; //second
+		String taskClassName = FlattenTableTask.class.getName();
+		String description = "Mamba - Flatten the OpenMRS data-models (Database) Task";
+		
+		addTask(taskName, taskClassName, repeatInterval, description);
 	}
 	
 	/**
@@ -33,5 +45,18 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	 */
 	public void shutdown() {
 		log.info("Shutdown OHRI-Mamba");
+	}
+	
+	void addTask(String name, String className, Long repeatInterval, String description) {
+		
+		SchedulerService scheduler = Context.getSchedulerService();
+		TaskDefinition taskDefinition = scheduler.getTaskByName(name);
+		if (taskDefinition == null) {
+			
+			taskDefinition = new TaskDefinition(null, name, description, className);
+			taskDefinition.setStartOnStartup(Boolean.TRUE);
+			taskDefinition.setRepeatInterval(repeatInterval);
+			scheduler.saveTaskDefinition(taskDefinition);
+		}
 	}
 }

@@ -87,8 +87,11 @@ BEGIN
 
     DECLARE tables_count INT;
 
-    SELECT COUNT(1) INTO tables_count FROM information_schema.tables
-    WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = database_name;
+    SELECT COUNT(1)
+    INTO tables_count
+    FROM information_schema.tables
+    WHERE TABLE_TYPE = 'BASE TABLE'
+      AND TABLE_SCHEMA = database_name;
 
     IF tables_count > 0 THEN
 
@@ -98,15 +101,19 @@ BEGIN
                      FROM information_schema.tables
                      WHERE TABLE_TYPE = 'BASE TABLE'
                        AND TABLE_SCHEMA = database_name
-                        AND TABLE_NAME REGEXP '^(mamba_|dim_|fact_|flat_)');
+                       AND TABLE_NAME REGEXP '^(mamba_|dim_|fact_|flat_)');
 
-        SET @drop_tables = CONCAT('DROP TABLE IF EXISTS ', @tbls);
+        IF (@tbls IS NOT NULL) THEN
 
-        SET foreign_key_checks = 0; -- Remove check, so we don't have to drop tables in the correct order, or care if they exist or not.
-        PREPARE drop_tbls FROM @drop_tables;
-        EXECUTE drop_tbls;
-        DEALLOCATE PREPARE drop_tbls;
-        SET foreign_key_checks = 1;
+            SET @drop_tables = CONCAT('DROP TABLE IF EXISTS ', @tbls);
+
+            SET foreign_key_checks = 0; -- Remove check, so we don't have to drop tables in the correct order, or care if they exist or not.
+            PREPARE drop_tbls FROM @drop_tables;
+            EXECUTE drop_tbls;
+            DEALLOCATE PREPARE drop_tbls;
+            SET foreign_key_checks = 1;
+
+        END IF;
 
     END IF;
 
@@ -182,6 +189,48 @@ BEGIN
 
     DEALLOCATE PREPARE deletetb;
     DEALLOCATE PREPARE createtb;
+
+END
+/
+
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_flat_encounter_table_create_all
+--
+
+-- Flatten all Encounters given in Config folder
+
+DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create_all;
+
+/
+CREATE PROCEDURE sp_flat_encounter_table_create_all()
+BEGIN
+
+    DECLARE tbl_name NVARCHAR(50);
+
+    DECLARE done INT DEFAULT FALSE;
+
+    DECLARE cursor_flat_tables CURSOR FOR
+        SELECT DISTINCT(flat_table_name) FROM mamba_dim_concept_metadata;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cursor_flat_tables;
+    computations_loop:
+    LOOP
+        FETCH cursor_flat_tables INTO tbl_name;
+
+        IF done THEN
+            LEAVE computations_loop;
+        END IF;
+
+        CALL sp_flat_encounter_table_create(tbl_name);
+
+    END LOOP computations_loop;
+    CLOSE cursor_flat_tables;
 
 END
 /
@@ -1626,6 +1675,8 @@ CALL sp_mamba_dim_person_address;
 CALL sp_dim_client;
 
 CALL sp_mamba_z_tables;
+
+CALL sp_flat_encounter_table_create_all;
 
 -- $END
 END
