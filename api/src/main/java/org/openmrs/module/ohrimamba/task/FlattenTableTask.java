@@ -31,6 +31,7 @@ public class FlattenTableTask extends AbstractTask {
 			}
 			finally {
 				stopExecuting();
+				System.out.println("FlattenTableTask completed & stopped...");
 			}
 		} else {
 			System.err.println("Error, Task already running, can't execute again");

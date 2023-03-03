@@ -16,14 +16,13 @@ public class HibernateFlattenDatabaseDao implements FlattenDatabaseDao {
 	@Override
 	public void executeFlatteningScript() {
 		
-		Query query = sessionFactory.getCurrentSession().createSQLQuery("CALL sp_data_processing()");
-		query.executeUpdate();
+		sessionFactory.getCurrentSession().createSQLQuery("CALL sp_data_processing()").executeUpdate();
 		
 		/*
 		sessionFactory.getCurrentSession().doWork(connection -> {
 		ProcedureCall call = sessionFactory
 		        .getCurrentSession()
-		        .createStoredProcedureCall("sp_flat_encounter_table_insert_all");
+		        .createStoredProcedureCall("sp_data_processing");
 		ProcedureOutputs outputs = call.getOutputs();
 		});
 		 */

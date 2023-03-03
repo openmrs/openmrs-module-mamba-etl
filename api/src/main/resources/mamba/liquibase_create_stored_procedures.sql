@@ -497,7 +497,7 @@ SELECT
     dt.concept_datatype_id AS external_datatype_id,
     dt.name AS datatype_name
 FROM
-    openmrs_dev.concept_datatype dt
+    concept_datatype dt
 WHERE
     dt.retired = 0;
 
@@ -588,7 +588,7 @@ SELECT
     c.concept_id AS external_concept_id,
     c.datatype_id AS external_datatype_id
 FROM
-    openmrs_dev.concept c
+    concept c
 WHERE
     c.retired = 0;
 
@@ -696,7 +696,7 @@ SELECT
     ca.answer_concept AS answer_concept,
     ca.answer_drug AS answer_drug
 FROM
-    openmrs_dev.concept_answer ca;
+    concept_answer ca;
 
 -- $END
 END
@@ -773,7 +773,7 @@ SELECT
     cn.concept_id AS external_concept_id,
     cn.name AS concept_name
 FROM
-    openmrs_dev.concept_name cn
+    concept_name cn
 WHERE
     cn.locale = 'en'
     AND cn.locale_preferred = 1;
@@ -853,7 +853,7 @@ SELECT
     et.encounter_type_id AS external_encounter_type_id,
     et.uuid AS encounter_type_uuid
 FROM
-    openmrs_dev.encounter_type et
+    encounter_type et
 WHERE
     et.retired = 0;
 
@@ -933,7 +933,7 @@ SELECT
     e.encounter_id AS external_encounter_id,
     e.encounter_type AS external_encounter_type_id
 FROM
-    openmrs_dev.encounter e;
+    encounter e;
 
 -- $END
 END
@@ -1210,7 +1210,7 @@ SELECT
     psn.birthdate AS birthdate,
     psn.gender AS gender
 FROM
-    openmrs_dev.person psn;
+    person psn;
 
 -- $END
 END
@@ -1291,7 +1291,7 @@ SELECT
     pn.person_id AS external_person_id,
     pn.given_name AS given_name
 FROM
-    openmrs_dev.person_name pn;
+    person_name pn;
 
 -- $END
 END
@@ -1382,7 +1382,7 @@ SELECT
     pa.address1 AS address1,
     pa.address2 AS address2
 FROM
-    openmrs_dev.person_address pa;
+    person_address pa;
 
 -- $END
 END
@@ -1564,7 +1564,7 @@ SELECT o.encounter_id         AS encounter_id,
        NULL                   AS obs_question_uuid,
        NULL                   AS obs_answer_uuid,
        NULL                   AS obs_value_coded_uuid
-FROM openmrs_dev.obs o
+FROM obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.external_encounter_id
          INNER JOIN mamba_dim_encounter_type et
