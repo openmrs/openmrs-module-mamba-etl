@@ -159,7 +159,7 @@
                                 <resources>
                                     <resource>
                                         <directory>
-                                            ${project.build.directory}/mamba-etl/_core/database/mysql/base/build
+                                            ${project.build.directory}/mamba-etl/_core/database/mysql/build
                                         </directory>
                                         <filtering>true</filtering>
                                     </resource>
@@ -210,8 +210,9 @@
                                     <!-- Database the created stored procedures will run on -->
                                     <argument>-d openmrs_working</argument>
                                     <!-- File with a list of all files with stored procedures -->
-                                    <argument>-s ../../database/mysql/base/sp_makefile</argument>
+                                    <argument>-s ../../database/mysql/sp_makefile</argument>
                                     <!-- a JSON configuration path/folder for all config files for db flattening -->
+                                    <!-- Folder containing configs folder, derived folders and any other ETL related folders -->
                                     <argument>-t ${project.build.directory}/mamba-etl/_etl/config</argument>
                                     <!-- Database Vendor/Engine targeted in this ETL -->
                                     <argument>-n mysql</argument>

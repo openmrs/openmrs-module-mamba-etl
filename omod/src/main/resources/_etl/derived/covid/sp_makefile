@@ -1,0 +1,11 @@
+dimensions/dim_client_covid/sp_dim_client_covid_create.sql
+dimensions/dim_client_covid/sp_dim_client_covid_insert.sql
+dimensions/dim_client_covid/sp_dim_client_covid_update.sql
+dimensions/dim_client_covid/sp_dim_client_covid.sql
+
+facts/fact_covid_case_assessment/sp_fact_encounter_covid_create.sql
+facts/fact_covid_case_assessment/sp_fact_encounter_covid_insert.sql
+facts/fact_covid_case_assessment/sp_fact_encounter_covid_update.sql
+facts/fact_covid_case_assessment/sp_fact_encounter_covid.sql
+
+# sp_derived_covid_data_processing.sql
