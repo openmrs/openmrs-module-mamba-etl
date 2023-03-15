@@ -1,6 +1,1 @@
-
-dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_create.sql
-dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype_insert.sql
-dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype.sql
-
 sp_data_processing.sql
