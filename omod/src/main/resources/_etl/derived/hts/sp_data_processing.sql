@@ -1,9 +1,4 @@
-USE analysis;
-
-
 -- $BEGIN
-
--- SELECT 'Starting execution of Derived Objects';
 
 -- Derived facts
 CALL sp_dim_client_hiv_hts;

@@ -1,7 +1,3 @@
-USE analysis;
-
-DROP TABLE IF EXISTS dim_client_hiv_hts;
-
 -- $BEGIN
 
 create table if not exists dim_client_hiv_hts(

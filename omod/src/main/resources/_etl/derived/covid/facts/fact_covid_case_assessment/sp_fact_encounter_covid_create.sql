@@ -1,7 +1,3 @@
-USE analysis;
-
-DROP TABLE IF EXISTS fact_encounter_covid;
-
 -- $BEGIN
 create table if not exists fact_encounter_covid (
     encounter_id                      int  null,

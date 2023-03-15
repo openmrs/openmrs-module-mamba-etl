@@ -1,8 +1,4 @@
-USE analysis;
-
-
 -- $BEGIN
-
 
 
 -- $END

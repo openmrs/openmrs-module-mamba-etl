@@ -1,6 +1,3 @@
-# -----INSERT into table
-USE analysis;
-
 -- $BEGIN
 
 INSERT INTO dim_client_covid (
@@ -23,6 +20,5 @@ SELECT
 FROM dim_client c
 INNER JOIN flat_encounter_covid cd
     ON c.client_id = cd.client_id;
-
 
 -- $END

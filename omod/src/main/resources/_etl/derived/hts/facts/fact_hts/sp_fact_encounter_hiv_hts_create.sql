@@ -1,9 +1,3 @@
-# ------Create table
-
-USE analysis;
-
-DROP TABLE IF EXISTS fact_encounter_hiv_hts;
-
 -- $BEGIN
 
 create table fact_encounter_hiv_hts(

@@ -1,6 +1,3 @@
-# ---------INSERT into table
-USE analysis;
-
 -- $BEGIN
 
 INSERT INTO fact_encounter_hiv_hts (
@@ -118,7 +115,7 @@ select hts.encounter_id,`hts`.`client_id`   AS `client_id`,
     recency_test_type,
     recency_vl_result,
     recency_rtri_result
-from `analysis`.`flat_encounter_hts` `hts`;
+from `flat_encounter_hts` `hts`;
 
 
 -- $END

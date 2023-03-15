@@ -1,9 +1,3 @@
-# ------Create table
-
-USE analysis;
-
-DROP TABLE IF EXISTS dim_client_covid;
-
 -- $BEGIN
 
 create table  dim_client_covid(

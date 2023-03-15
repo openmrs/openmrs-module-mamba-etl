@@ -1,6 +1,3 @@
-# ---------INSERT into table
-USE analysis;
-
 -- $BEGIN
 
 INSERT INTO dim_client_hiv_hts (
@@ -23,6 +20,5 @@ SELECT
 FROM dim_client c
 INNER JOIN flat_encounter_hts hts
     ON c.client_id = hts.client_id;
-
 
 -- $END

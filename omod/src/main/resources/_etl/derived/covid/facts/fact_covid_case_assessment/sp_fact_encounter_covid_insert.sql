@@ -1,6 +1,3 @@
-# ---------INSERT into table
-USE analysis;
-
 -- $BEGIN
 
 INSERT INTO fact_encounter_covid (
