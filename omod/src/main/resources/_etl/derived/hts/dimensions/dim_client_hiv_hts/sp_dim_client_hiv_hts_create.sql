@@ -1,16 +1,15 @@
 -- $BEGIN
-
-create table if not exists dim_client_hiv_hts(
-    id   int auto_increment,
-    client_id     int null,
-    date_of_birth date null,
-    ageattest     int null,
-    sex           nvarchar(50)  null,
-    county        nvarchar(255)  null,
-    sub_county    nvarchar(255)  null,
-    ward          nvarchar(255)  null,
+CREATE TABLE IF NOT EXISTS dim_client_hiv_hts
+(
+    id            INT AUTO_INCREMENT,
+    client_id     INT           NULL,
+    date_of_birth DATE          NULL,
+    ageattest     INT           NULL,
+    sex           NVARCHAR(50)  NULL,
+    county        NVARCHAR(255) NULL,
+    sub_county    NVARCHAR(255) NULL,
+    ward          NVARCHAR(255) NULL,
     PRIMARY KEY (id)
 );
-
 -- $END
 

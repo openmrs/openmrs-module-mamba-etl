@@ -1639,17 +1639,16 @@ END
         
 
 -- ---------------------------------------------------------------------------------------------
--- sp_data_processing
+-- sp_data_processing_flatten
 --
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing;
+DROP PROCEDURE IF EXISTS sp_data_processing_flatten;
 
 /
-CREATE PROCEDURE sp_data_processing()
+CREATE PROCEDURE sp_data_processing_flatten()
 BEGIN
 -- $BEGIN
-
 CALL sp_xf_system_drop_all_tables_in_schema('openmrs_working');
 
 CALL sp_mamba_dim_concept_datatype;
@@ -1679,7 +1678,824 @@ CALL sp_mamba_z_tables;
 CALL sp_flat_encounter_table_create_all;
 
 CALL sp_flat_encounter_table_insert_all;
+-- $END
+END
+/
 
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_data_processing_derived_covid
+--
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
+
+/
+CREATE PROCEDURE sp_data_processing_derived_covid()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_covid;
+CALL sp_fact_encounter_covid;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_data_processing_derived_hts
+--
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+
+/
+CREATE PROCEDURE sp_data_processing_derived_hts()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_hiv_hts;
+CALL sp_fact_encounter_hiv_hts;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_data_processing_etl
+--
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_etl;
+
+/
+CREATE PROCEDURE sp_data_processing_etl()
+BEGIN
+-- $BEGIN
+-- add base folder SP here --
+CALL sp_data_processing_derived_hts();
+CALL sp_data_processing_derived_covid();
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_covid_create
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_covid_create;
+
+/
+CREATE PROCEDURE sp_dim_client_covid_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE dim_client_covid
+(
+    id            INT auto_increment,
+    client_id     INT           NULL,
+    date_of_birth DATE          NULL,
+    ageattest     INT           NULL,
+    sex           NVARCHAR(50)  NULL,
+    county        NVARCHAR(255) NULL,
+    sub_county    NVARCHAR(255) NULL,
+    ward          NVARCHAR(255) NULL,
+    PRIMARY KEY (id)
+);
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_covid_insert
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_covid_insert;
+
+/
+CREATE PROCEDURE sp_dim_client_covid_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO dim_client_covid (client_id,
+                              date_of_birth,
+                              ageattest,
+                              sex,
+                              county,
+                              sub_county,
+                              ward)
+SELECT c.client_id,
+       date_of_birth,
+       DATEDIFF(CAST(cd.order_date AS DATE), CAST(date_of_birth as DATE)) / 365 as ageattest,
+       sex,
+       county,
+       sub_county,
+       ward
+FROM dim_client c
+         INNER JOIN flat_encounter_covid cd
+                    ON c.client_id = cd.client_id;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_covid_update
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_covid_update;
+
+/
+CREATE PROCEDURE sp_dim_client_covid_update()
+BEGIN
+-- $BEGIN
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_covid
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_covid;
+
+/
+CREATE PROCEDURE sp_dim_client_covid()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_covid_create();
+CALL sp_dim_client_covid_insert();
+CALL sp_dim_client_covid_update();
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_covid_create
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_create;
+
+/
+CREATE PROCEDURE sp_fact_encounter_covid_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS fact_encounter_covid
+(
+    encounter_id                      INT           NULL,
+    client_id                         INT           NULL,
+    covid_test                        NVARCHAR(255) NULL,
+    order_date                        DATE          NULL,
+    result_date                       DATE          NULL,
+    date_assessment                   DATE          NULL,
+    assessment_presentation           NVARCHAR(255) NULL,
+    assessment_contact_case           INT           NULL,
+    assessment_entry_country          INT           NULL,
+    assessment_travel_out_country     INT           NULL,
+    assessment_follow_up              INT           NULL,
+    assessment_voluntary              INT           NULL,
+    assessment_quarantine             INT           NULL,
+    assessment_symptomatic            INT           NULL,
+    assessment_surveillance           INT           NULL,
+    assessment_health_worker          INT           NULL,
+    assessment_frontline_worker       INT           NULL,
+    assessment_rdt_confirmatory       INT           NULL,
+    assessment_post_mortem            INT           NULL,
+    assessment_other                  INT           NULL,
+    date_onset_symptoms               DATE          NULL,
+    symptom_cough                     INT           NULL,
+    symptom_headache                  INT           NULL,
+    symptom_red_eyes                  INT           NULL,
+    symptom_sneezing                  INT           NULL,
+    symptom_diarrhoea                 INT           NULL,
+    symptom_sore_throat               INT           NULL,
+    symptom_tiredness                 INT           NULL,
+    symptom_chest_pain                INT           NULL,
+    symptom_joint_pain                INT           NULL,
+    symptom_loss_smell                INT           NULL,
+    symptom_loss_taste                INT           NULL,
+    symptom_runny_nose                INT           NULL,
+    symptom_fever_chills              INT           NULL,
+    symptom_muscular_pain             INT           NULL,
+    symptom_general_weakness          INT           NULL,
+    symptom_shortness_breath          INT           NULL,
+    symptom_nausea_vomiting           INT           NULL,
+    symptom_abdominal_pain            INT           NULL,
+    symptom_irritability_confusion    INT           NULL,
+    symptom_disturbance_consciousness INT           NULL,
+    symptom_other                     INT           NULL,
+    comorbidity_present               INT           NULL,
+    comorbidity_tb                    INT           NULL,
+    comorbidity_liver                 INT           NULL,
+    comorbidity_renal                 INT           NULL,
+    comorbidity_diabetes              INT           NULL,
+    comorbidity_hiv_aids              INT           NULL,
+    comorbidity_malignancy            INT           NULL,
+    comorbidity_chronic_lung          INT           NULL,
+    comorbidity_hypertension          INT           NULL,
+    comorbidity_former_smoker         INT           NULL,
+    comorbidity_cardiovascular        INT           NULL,
+    comorbidity_current_smoker        INT           NULL,
+    comorbidity_immunodeficiency      INT           NULL,
+    comorbidity_chronic_neurological  INT           NULL,
+    comorbidity_other                 INT           NULL,
+    diagnostic_pcr_test               NVARCHAR(255) NULL,
+    diagnostic_pcr_result             NVARCHAR(255) NULL,
+    rapid_antigen_test                NVARCHAR(255) NULL,
+    rapid_antigen_result              NVARCHAR(255) NULL,
+    long_covid_description            NVARCHAR(255) NULL,
+    patient_outcome                   NVARCHAR(255) NULL,
+    date_recovered                    DATE          NULL,
+    date_died                         DATE          NULL
+);
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_covid_insert
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_insert;
+
+/
+CREATE PROCEDURE sp_fact_encounter_covid_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO fact_encounter_covid (encounter_id,
+                                  client_id,
+                                  covid_test,
+                                  order_date,
+                                  result_date,
+                                  date_assessment,
+                                  assessment_presentation,
+                                  assessment_contact_case,
+                                  assessment_entry_country,
+                                  assessment_travel_out_country,
+                                  assessment_follow_up,
+                                  assessment_voluntary,
+                                  assessment_quarantine,
+                                  assessment_symptomatic,
+                                  assessment_surveillance,
+                                  assessment_health_worker,
+                                  assessment_frontline_worker,
+                                  assessment_rdt_confirmatory,
+                                  assessment_post_mortem,
+                                  assessment_other,
+                                  date_onset_symptoms,
+                                  symptom_cough,
+                                  symptom_headache,
+                                  symptom_red_eyes,
+                                  symptom_sneezing,
+                                  symptom_diarrhoea,
+                                  symptom_sore_throat,
+                                  symptom_tiredness,
+                                  symptom_chest_pain,
+                                  symptom_joint_pain,
+                                  symptom_loss_smell,
+                                  symptom_loss_taste,
+                                  symptom_runny_nose,
+                                  symptom_fever_chills,
+                                  symptom_muscular_pain,
+                                  symptom_general_weakness,
+                                  symptom_shortness_breath,
+                                  symptom_nausea_vomiting,
+                                  symptom_abdominal_pain,
+                                  symptom_irritability_confusion,
+                                  symptom_disturbance_consciousness,
+                                  symptom_other,
+                                  comorbidity_present,
+                                  comorbidity_tb,
+                                  comorbidity_liver,
+                                  comorbidity_renal,
+                                  comorbidity_diabetes,
+                                  comorbidity_hiv_aids,
+                                  comorbidity_malignancy,
+                                  comorbidity_chronic_lung,
+                                  comorbidity_hypertension,
+                                  comorbidity_former_smoker,
+                                  comorbidity_cardiovascular,
+                                  comorbidity_current_smoker,
+                                  comorbidity_immunodeficiency,
+                                  comorbidity_chronic_neurological,
+                                  comorbidity_other,
+                                  diagnostic_pcr_test,
+                                  diagnostic_pcr_result,
+                                  rapid_antigen_test,
+                                  rapid_antigen_result,
+                                  long_covid_description,
+                                  patient_outcome,
+                                  date_recovered,
+                                  date_died)
+SELECT encounter_id,
+       client_id,
+       covid_test,
+       cast(order_date AS DATE)          order_date,
+       cast(result_date AS DATE)         result_date,
+       cast(date_assessment AS DATE)     date_assessment,
+       assessment_presentation,
+       assessment_contact_case,
+       assessment_entry_country,
+       assessment_travel_out_country,
+       assessment_follow_up,
+       assessment_voluntary,
+       assessment_quarantine,
+       assessment_symptomatic,
+       assessment_surveillance,
+       assessment_health_worker,
+       assessment_frontline_worker,
+       assessment_rdt_confirmatory,
+       assessment_post_mortem,
+       assessment_other,
+       cast(date_onset_symptoms AS DATE) date_onset_symptoms,
+       symptom_cough,
+       symptom_headache,
+       symptom_red_eyes,
+       symptom_sneezing,
+       symptom_diarrhoea,
+       symptom_sore_throat,
+       symptom_tiredness,
+       symptom_chest_pain,
+       symptom_joint_pain,
+       symptom_loss_smell,
+       symptom_loss_taste,
+       symptom_runny_nose,
+       symptom_fever_chills,
+       symptom_muscular_pain,
+       symptom_general_weakness,
+       symptom_shortness_breath,
+       symptom_nausea_vomiting,
+       symptom_abdominal_pain,
+       symptom_irritability_confusion,
+       symptom_disturbance_consciousness,
+       symptom_other,
+       CASE
+           WHEN comorbidity_present IN ('Yes', 'True') THEN 1
+           WHEN comorbidity_present IN ('False', 'No') THEN 0
+           END AS                        comorbidity_present,
+       comorbidity_tb,
+       comorbidity_liver,
+       comorbidity_renal,
+       comorbidity_diabetes,
+       comorbidity_hiv_aids,
+       comorbidity_malignancy,
+       comorbidity_chronic_lung,
+       comorbidity_hypertension,
+       comorbidity_former_smoker,
+       comorbidity_cardiovascular,
+       comorbidity_current_smoker,
+       comorbidity_immunodeficiency,
+       comorbidity_chronic_neurological,
+       comorbidity_other,
+       diagnostic_pcr_test,
+       diagnostic_pcr_result,
+       rapid_antigen_test,
+       rapid_antigen_result,
+       long_covid_description,
+       patient_outcome,
+       cast(date_recovered AS DATE)      date_recovered,
+       cast(date_died AS DATE)           date_died
+FROM flat_encounter_covid;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_covid_update
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_update;
+
+/
+CREATE PROCEDURE sp_fact_encounter_covid_update()
+BEGIN
+-- $BEGIN
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_covid
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_covid;
+
+/
+CREATE PROCEDURE sp_fact_encounter_covid()
+BEGIN
+-- $BEGIN
+CALL sp_fact_encounter_covid_create();
+CALL sp_fact_encounter_covid_insert();
+CALL sp_fact_encounter_covid_update();
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_data_processing_derived_covid
+--
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
+
+/
+CREATE PROCEDURE sp_data_processing_derived_covid()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_covid;
+CALL sp_fact_encounter_covid;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_hiv_hts_create
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_create;
+
+/
+CREATE PROCEDURE sp_dim_client_hiv_hts_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS dim_client_hiv_hts
+(
+    id            INT AUTO_INCREMENT,
+    client_id     INT           NULL,
+    date_of_birth DATE          NULL,
+    ageattest     INT           NULL,
+    sex           NVARCHAR(50)  NULL,
+    county        NVARCHAR(255) NULL,
+    sub_county    NVARCHAR(255) NULL,
+    ward          NVARCHAR(255) NULL,
+    PRIMARY KEY (id)
+);
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_hiv_hts_insert
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_insert;
+
+/
+CREATE PROCEDURE sp_dim_client_hiv_hts_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO dim_client_hiv_hts (client_id,
+                                date_of_birth,
+                                ageattest,
+                                sex,
+                                county,
+                                sub_county,
+                                ward)
+SELECT c.client_id,
+       date_of_birth,
+       DATEDIFF(date_test_conducted, date_of_birth) / 365 as ageattest,
+       sex,
+       county,
+       sub_county,
+       ward
+FROM dim_client c
+         INNER JOIN flat_encounter_hts hts
+                    ON c.client_id = hts.client_id;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_hiv_hts_update
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_update;
+
+/
+CREATE PROCEDURE sp_dim_client_hiv_hts_update()
+BEGIN
+-- $BEGIN
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_dim_client_hiv_hts
+--
+
+
+DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts;
+
+/
+CREATE PROCEDURE sp_dim_client_hiv_hts()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_hiv_hts_create();
+CALL sp_dim_client_hiv_hts_insert();
+CALL sp_dim_client_hiv_hts_update();
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_hiv_hts_create
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_create;
+
+/
+CREATE PROCEDURE sp_fact_encounter_hiv_hts_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE fact_encounter_hiv_hts
+(
+    id                        INT AUTO_INCREMENT,
+    encounter_id              INT           NULL,
+    client_id                 INT           NULL,
+    date_tested               DATE          NULL,
+    consent                   NVARCHAR(7)   NULL,
+    community_service_point   NVARCHAR(255) NULL,
+    pop_type                  NVARCHAR(50)  NULL,
+    keypop_category           NVARCHAR(50)  NULL,
+    priority_pop              NVARCHAR(16)  NULL,
+    test_setting              NVARCHAR(255) NULL,
+    facility_service_point    NVARCHAR(255) NULL,
+    hts_approach              NVARCHAR(255) NULL,
+    pretest_counselling       NVARCHAR(255) NULL,
+    type_pretest_counselling  NVARCHAR(255) NULL,
+    reason_for_test           NVARCHAR(255) NULL,
+    ever_tested_hiv           VARCHAR(7)    NULL,
+    duration_since_last_test  NVARCHAR(255) NULL,
+    couple_result             NVARCHAR(50)  NULL,
+    result_received_couple    NVARCHAR(255) NULL,
+    test_conducted            NVARCHAR(255) NULL,
+    initial_kit_name          NVARCHAR(255) NULL,
+    initial_test_result       NVARCHAR(50)  NULL,
+    confirmatory_kit_name     NVARCHAR(255) NULL,
+    last_test_result          NVARCHAR(50)  NULL,
+    final_test_result         NVARCHAR(50)  NULL,
+    given_result              VARCHAR(7)    NULL,
+    date_given_result         DATE          NULL,
+    tiebreaker_kit_name       NVARCHAR(255) NULL,
+    tiebreaker_test_result    NVARCHAR(50)  NULL,
+    sti_last_6mo              NVARCHAR(7)   NULL,
+    sexually_active           NVARCHAR(255) NULL,
+    syphilis_test_result      NVARCHAR(50)  NULL,
+    unprotected_sex_last_12mo NVARCHAR(255) NULL,
+    recency_consent           NVARCHAR(7)   NULL,
+    recency_test_done         NVARCHAR(7)   NULL,
+    recency_test_type         NVARCHAR(255) NULL,
+    recency_vl_result         NVARCHAR(50)  NULL,
+    recency_rtri_result       NVARCHAR(50)  NULL,
+    PRIMARY KEY (id)
+);
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_hiv_hts_insert
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_insert;
+
+/
+CREATE PROCEDURE sp_fact_encounter_hiv_hts_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO fact_encounter_hiv_hts (encounter_id,
+                                    client_id,
+                                    date_tested,
+                                    consent,
+                                    community_service_point,
+                                    pop_type,
+                                    keypop_category,
+                                    priority_pop,
+                                    test_setting,
+                                    facility_service_point,
+                                    hts_approach,
+                                    pretest_counselling,
+                                    type_pretest_counselling,
+                                    reason_for_test,
+                                    ever_tested_hiv,
+                                    duration_since_last_test,
+                                    couple_result,
+                                    result_received_couple,
+                                    test_conducted,
+                                    initial_kit_name,
+                                    initial_test_result,
+                                    confirmatory_kit_name,
+                                    last_test_result,
+                                    final_test_result,
+                                    given_result,
+                                    date_given_result,
+                                    tiebreaker_kit_name,
+                                    tiebreaker_test_result,
+                                    sti_last_6mo,
+                                    sexually_active,
+                                    syphilis_test_result,
+                                    unprotected_sex_last_12mo,
+                                    recency_consent,
+                                    recency_test_done,
+                                    recency_test_type,
+                                    recency_vl_result,
+                                    recency_rtri_result)
+SELECT hts.encounter_id,
+       `hts`.`client_id`                    AS `client_id`,
+       CAST(date_test_conducted as DATE)    AS date_tested,
+       CASE consent_provided
+           WHEN 'True' THEN 'Yes'
+           WHEN 'False' THEN 'No'
+           ELSE NULL END                    AS consent,
+       CASE community_service_point
+           WHEN 'mobile voluntary counseling and testing program' THEN 'Mobile VCT'
+           WHEN 'Home based HIV testing program' THEN 'Homebased'
+           WHEN 'Outreach Program' THEN 'Outreach'
+           WHEN 'Voluntary counseling and testing center' THEN 'VCT'
+
+           ELSE community_service_point END as community_service_point,
+       pop_type,
+       CASE
+           WHEN (`hts`.`key_pop_msm` = 1) THEN 'MSM'
+           WHEN (`hts`.`key_pop_fsw` = 1) THEN 'FSW'
+           WHEN (`hts`.`key_pop_transgender` = 1) THEN 'TRANS'
+           WHEN (`hts`.`key_pop_pwid` = 1) THEN 'PWID'
+           WHEN (`hts`.`key_pop_prisoners` = 1) THEN 'Prisoner'
+           ELSE NULL END                    AS `keypop_category`,
+       CASE
+           WHEN (key_pop_AGYW = 1) THEN 'AGYW'
+           WHEN (key_pop_fisher_folk = 1) THEN 'Fisher_folk'
+           WHEN (key_pop_migrant_worker = 1) THEN 'Migrant_worker'
+           WHEN (key_pop_refugees = 1) THEN 'Refugees'
+           WHEN (key_pop_truck_driver = 1) THEN 'Truck_driver'
+           WHEN (key_pop_uniformed_forces = 1) THEN 'Uniformed_forces'
+           ELSE NULL END                    AS `priority_pop`,
+       test_setting,
+       CASE facility_service_point
+           WHEN 'Post Natal Program' THEN 'PNC'
+           WHEN 'Family Planning Clinic' THEN 'FP Clinic'
+           WHEN 'Antenatal program' THEN 'ANC'
+           WHEN 'Sexually transmitted infection program/clinic' THEN 'STI Clinic'
+           WHEN 'Tuberculosis treatment program' THEN 'TB Clinic'
+           WHEN 'Labor and delivery unit' THEN 'L&D'
+           WHEN 'Other' THEN 'Other Clinics'
+           ELSE facility_service_point END  as facility_service_point,
+       CASE hts_approach
+           WHEN 'Client Initiated Testing and Counselling' THEN 'CITC'
+           WHEN 'Provider-initiated HIV testing and counseling' THEN 'PITC'
+           ELSE hts_approach END            AS hts_approach,
+       pretest_counselling,
+       type_pretest_counselling,
+       reason_for_test,
+       CASE ever_tested_hiv
+           WHEN 'True' THEN 'Yes'
+           WHEN 'False' THEN 'No'
+           ELSE NULL END                    AS ever_tested_hiv,
+       duration_since_last_test,
+       couple_result,
+       result_received_couple,
+       test_conducted,
+       initial_kit_name,
+       initial_test_result,
+       confirmatory_kit_name,
+       last_test_result,
+       final_test_result,
+       CASE
+           WHEN given_result IN ('True', 'Yes') THEN 'Yes'
+           WHEN given_result IN ('No', 'False') THEN 'No'
+           WHEN given_result = 'Unknown' THEN 'Unknown'
+           ELSE NULL END                    as given_result,
+       CAST(date_given_result as DATE)      AS date_given_result,
+       tiebreaker_kit_name,
+       tiebreaker_test_result,
+       sti_last_6mo,
+       sexually_active,
+       syphilis_test_result,
+       unprotected_sex_last_12mo,
+       recency_consent,
+       recency_test_done,
+       recency_test_type,
+       recency_vl_result,
+       recency_rtri_result
+FROM `flat_encounter_hts` `hts`;
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_hiv_hts_update
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_update;
+
+/
+CREATE PROCEDURE sp_fact_encounter_hiv_hts_update()
+BEGIN
+-- $BEGIN
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_fact_encounter_hiv_hts
+--
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts;
+
+/
+CREATE PROCEDURE sp_fact_encounter_hiv_hts()
+BEGIN
+-- $BEGIN
+CALL sp_fact_encounter_hiv_hts_create();
+CALL sp_fact_encounter_hiv_hts_insert();
+CALL sp_fact_encounter_hiv_hts_update();
+-- $END
+END
+/
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
+-- sp_data_processing_derived_hts
+--
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+
+/
+CREATE PROCEDURE sp_data_processing_derived_hts()
+BEGIN
+-- $BEGIN
+CALL sp_dim_client_hiv_hts;
+CALL sp_fact_encounter_hiv_hts;
 -- $END
 END
 /

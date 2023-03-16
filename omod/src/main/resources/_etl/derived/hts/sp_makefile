@@ -1,16 +1,20 @@
-#For dimension tables
+#############################################################################
+####################### HTS/HIV Clients Dimension SPs #######################
+#############################################################################
 dimensions/dim_client_hiv_hts/sp_dim_client_hiv_hts_create.sql
 dimensions/dim_client_hiv_hts/sp_dim_client_hiv_hts_insert.sql
 dimensions/dim_client_hiv_hts/sp_dim_client_hiv_hts_update.sql
 dimensions/dim_client_hiv_hts/sp_dim_client_hiv_hts.sql
 
-# For fact table
+#############################################################################
+##################### HTS/HIV Fact Encounter Table SPs  #####################
+#############################################################################
 facts/fact_hts/sp_fact_encounter_hiv_hts_create.sql
 facts/fact_hts/sp_fact_encounter_hiv_hts_insert.sql
 facts/fact_hts/sp_fact_encounter_hiv_hts_update.sql
 facts/fact_hts/sp_fact_encounter_hiv_hts.sql
 
-facts/fact_hts/sp_fact_hts.sql
-facts/fact_hts/sp_fact_hts_cleaning.sql
-
-# sp_derived_hts_data_processing.sql
+#############################################################################
+###### A single stored procedure that invokes (CALLs) the above SPs #########
+#############################################################################
+sp_data_processing_derived_hts.sql
