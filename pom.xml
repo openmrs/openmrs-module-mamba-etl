@@ -210,6 +210,7 @@
                                     <!-- Database the created stored procedures will run on -->
                                     <argument>-d openmrs_working</argument>
                                     <!-- File with a list of all files with stored procedures -->
+                                    <!-- Remove this argument after automating core to auto-read this -->
                                     <argument>-s ../../database/mysql/sp_makefile</argument>
                                     <!-- a JSON configuration path/folder for all config files for db flattening -->
                                     <!-- Folder containing configs folder, derived folders and any other ETL related folders -->
