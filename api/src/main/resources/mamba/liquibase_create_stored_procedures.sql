@@ -11,7 +11,7 @@
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_functions_in_schema;
 
-/
+~
 CREATE PROCEDURE sp_xf_system_drop_all_stored_functions_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -19,7 +19,7 @@ BEGIN
     DELETE FROM `mysql`.`proc` WHERE `type` = 'FUNCTION' AND `db` = database_name; -- works in mysql before v.8
 
 END
-/
+~
 
 
 
@@ -32,7 +32,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_procedures_in_schema;
 
-/
+~
 CREATE PROCEDURE sp_xf_system_drop_all_stored_procedures_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -41,7 +41,7 @@ BEGIN
     DELETE FROM `mysql`.`proc` WHERE `type` = 'PROCEDURE' AND `db` = database_name; -- works in mysql before v.8
 
 END
-/
+~
 
 
 
@@ -54,7 +54,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_objects_in_schema;
 
-/
+~
 CREATE PROCEDURE sp_xf_system_drop_all_objects_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -66,7 +66,7 @@ BEGIN
     # CALL sp_xf_system_drop_all_views_in_schema (database_name);
 
 END
-/
+~
 
 
 
@@ -79,7 +79,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_tables_in_schema;
 
-/
+~
 CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema(
     IN database_name NVARCHAR(255)
 )
@@ -118,7 +118,7 @@ BEGIN
     END IF;
 
 END
-/
+~
 
 
 
@@ -131,7 +131,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_xf_system_execute_etl;
 
-/
+~
 CREATE PROCEDURE sp_xf_system_execute_etl()
 BEGIN
 
@@ -150,7 +150,7 @@ BEGIN
     select (@end_time - @start_time) / 1000;
 
 END
-/
+~
 
 
 
@@ -163,7 +163,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
 
-/
+~
 CREATE PROCEDURE sp_flat_encounter_table_create(
     IN flat_encounter_table_name NVARCHAR(255)
 )
@@ -191,7 +191,7 @@ BEGIN
     DEALLOCATE PREPARE createtb;
 
 END
-/
+~
 
 
 
@@ -205,7 +205,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create_all;
 
-/
+~
 CREATE PROCEDURE sp_flat_encounter_table_create_all()
 BEGIN
 
@@ -233,7 +233,7 @@ BEGIN
     CLOSE cursor_flat_tables;
 
 END
-/
+~
 
 
 
@@ -246,7 +246,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert;
 
-/
+~
 CREATE PROCEDURE sp_flat_encounter_table_insert(
     IN flat_encounter_table_name NVARCHAR(255)
 )
@@ -282,7 +282,7 @@ BEGIN
     DEALLOCATE PREPARE inserttbl;
 
 END
-/
+~
 
 
 
@@ -296,7 +296,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
 
-/
+~
 CREATE PROCEDURE sp_flat_encounter_table_insert_all()
 BEGIN
 
@@ -324,7 +324,7 @@ BEGIN
     CLOSE cursor_flat_tables;
 
 END
-/
+~
 
 
 
@@ -337,7 +337,7 @@ END
 
 DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
 
-/
+~
 CREATE PROCEDURE `sp_multiselect_values_update`(
         IN table_to_update NVARCHAR(100),
         IN column_names NVARCHAR(20000),
@@ -379,7 +379,7 @@ BEGIN
     END REPEAT;
 
 END
-/
+~
 
 
 
@@ -392,7 +392,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
 
-/
+~
 CREATE PROCEDURE sp_extract_report_metadata(
     IN report_data MEDIUMTEXT,
     IN metadata_table NVARCHAR(255)
@@ -441,7 +441,7 @@ BEGIN
         END WHILE;
 
 END
-/
+~
 
 
 
@@ -454,7 +454,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_datatype_create()
 BEGIN
 -- $BEGIN
@@ -472,7 +472,7 @@ create index mamba_dim_concept_datatype_external_datatype_id_index
 
 -- $END
 END
-/
+~
 
 
         
@@ -484,7 +484,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_datatype_insert()
 BEGIN
 -- $BEGIN
@@ -503,7 +503,7 @@ WHERE
 
 -- $END
 END
-/
+~
 
 
         
@@ -515,7 +515,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_datatype;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_datatype()
 BEGIN
 -- $BEGIN
@@ -525,7 +525,7 @@ CALL sp_mamba_dim_concept_datatype_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -537,7 +537,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_create()
 BEGIN
 -- $BEGIN
@@ -561,7 +561,7 @@ create index mamba_dim_concept_external_datatype_id_index
 
 -- $END
 END
-/
+~
 
 
         
@@ -573,7 +573,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_insert()
 BEGIN
 -- $BEGIN
@@ -594,7 +594,7 @@ WHERE
 
 -- $END
 END
-/
+~
 
 
         
@@ -606,7 +606,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_update;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_update()
 BEGIN
 -- $BEGIN
@@ -619,7 +619,7 @@ WHERE c.concept_id > 0;
 
 -- $END
 END
-/
+~
 
 
         
@@ -631,7 +631,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept()
 BEGIN
 -- $BEGIN
@@ -642,7 +642,7 @@ CALL sp_mamba_dim_concept_update();
 
 -- $END
 END
-/
+~
 
 
         
@@ -654,7 +654,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_answer_create()
 BEGIN
 -- $BEGIN
@@ -669,7 +669,7 @@ CREATE TABLE mamba_dim_concept_answer (
 
 -- $END
 END
-/
+~
 
 
         
@@ -681,7 +681,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_answer_insert()
 BEGIN
 -- $BEGIN
@@ -700,7 +700,7 @@ FROM
 
 -- $END
 END
-/
+~
 
 
         
@@ -712,7 +712,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_answer;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_answer()
 BEGIN
 -- $BEGIN
@@ -722,7 +722,7 @@ CALL sp_mamba_dim_concept_answer_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -734,7 +734,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_name_create()
 BEGIN
 -- $BEGIN
@@ -748,7 +748,7 @@ CREATE TABLE mamba_dim_concept_name (
 
 -- $END
 END
-/
+~
 
 
         
@@ -760,7 +760,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_name_insert()
 BEGIN
 -- $BEGIN
@@ -780,7 +780,7 @@ WHERE
 
 -- $END
 END
-/
+~
 
 
         
@@ -792,7 +792,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_name;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_name()
 BEGIN
 -- $BEGIN
@@ -802,7 +802,7 @@ CALL sp_mamba_dim_concept_name_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -814,7 +814,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_type_create()
 BEGIN
 -- $BEGIN
@@ -828,7 +828,7 @@ CREATE TABLE mamba_dim_encounter_type (
 
 -- $END
 END
-/
+~
 
 
         
@@ -840,7 +840,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_type_insert()
 BEGIN
 -- $BEGIN
@@ -859,7 +859,7 @@ WHERE
 
 -- $END
 END
-/
+~
 
 
         
@@ -871,7 +871,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_type;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_type()
 BEGIN
 -- $BEGIN
@@ -881,7 +881,7 @@ CALL sp_mamba_dim_encounter_type_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -893,7 +893,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_create()
 BEGIN
 -- $BEGIN
@@ -908,7 +908,7 @@ CREATE TABLE mamba_dim_encounter (
 
 -- $END
 END
-/
+~
 
 
         
@@ -920,7 +920,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_insert()
 BEGIN
 -- $BEGIN
@@ -937,7 +937,7 @@ FROM
 
 -- $END
 END
-/
+~
 
 
         
@@ -949,7 +949,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_update;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter_update()
 BEGIN
 -- $BEGIN
@@ -962,7 +962,7 @@ WHERE e.encounter_id > 0;
 
 -- $END
 END
-/
+~
 
 
         
@@ -974,7 +974,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_encounter()
 BEGIN
 -- $BEGIN
@@ -985,7 +985,7 @@ CALL sp_mamba_dim_encounter_update();
 
 -- $END
 END
-/
+~
 
 
         
@@ -997,7 +997,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_create()
 BEGIN
 -- $BEGIN
@@ -1024,7 +1024,7 @@ CREATE TABLE mamba_dim_concept_metadata
 
 -- $END
 END
-/
+~
 
 
         
@@ -1036,7 +1036,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_insert()
 BEGIN
   -- $BEGIN
@@ -1096,7 +1096,7 @@ BEGIN
 
   -- $END
 END
-/
+~
 
 
         
@@ -1108,7 +1108,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata_update;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_metadata_update()
 BEGIN
 -- $BEGIN
@@ -1131,7 +1131,7 @@ WHERE md.concept_metadata_id > 0;
 
 -- $END
 END
-/
+~
 
 
         
@@ -1143,7 +1143,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_concept_metadata;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_concept_metadata()
 BEGIN
 -- $BEGIN
@@ -1154,7 +1154,7 @@ CALL sp_mamba_dim_concept_metadata_update();
 
 -- $END
 END
-/
+~
 
 
         
@@ -1166,7 +1166,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_create()
 BEGIN
 -- $BEGIN
@@ -1183,7 +1183,7 @@ create index mamba_dim_person_external_person_id_index
 
 -- $END
 END
-/
+~
 
 
         
@@ -1195,7 +1195,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_insert()
 BEGIN
 -- $BEGIN
@@ -1214,7 +1214,7 @@ FROM
 
 -- $END
 END
-/
+~
 
 
         
@@ -1226,7 +1226,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person()
 BEGIN
 -- $BEGIN
@@ -1236,7 +1236,7 @@ CALL sp_mamba_dim_person_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -1248,7 +1248,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_name_create()
 BEGIN
 -- $BEGIN
@@ -1264,7 +1264,7 @@ create index mamba_dim_person_name_external_person_id_index
     on mamba_dim_person_name (external_person_id);
 -- $END
 END
-/
+~
 
 
         
@@ -1276,7 +1276,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_name_insert()
 BEGIN
 -- $BEGIN
@@ -1295,7 +1295,7 @@ FROM
 
 -- $END
 END
-/
+~
 
 
         
@@ -1307,7 +1307,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_name;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_name()
 BEGIN
 -- $BEGIN
@@ -1317,7 +1317,7 @@ CALL sp_mamba_dim_person_name_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -1329,7 +1329,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address_create;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_address_create()
 BEGIN
 -- $BEGIN
@@ -1349,7 +1349,7 @@ create index mamba_dim_person_address_external_person_id_index
 
 -- $END
 END
-/
+~
 
 
         
@@ -1361,7 +1361,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address_insert;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_address_insert()
 BEGIN
 -- $BEGIN
@@ -1386,7 +1386,7 @@ FROM
 
 -- $END
 END
-/
+~
 
 
         
@@ -1398,7 +1398,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_person_address;
 
-/
+~
 CREATE PROCEDURE sp_mamba_dim_person_address()
 BEGIN
 -- $BEGIN
@@ -1408,7 +1408,7 @@ CALL sp_mamba_dim_person_address_insert();
 
 -- $END
 END
-/
+~
 
 
         
@@ -1420,7 +1420,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_create;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_create()
 BEGIN
 -- $BEGIN
@@ -1437,7 +1437,7 @@ CREATE TABLE dim_client (
 );
 -- $END
 END
-/
+~
 
 
         
@@ -1449,7 +1449,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_insert;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_insert()
 BEGIN
 -- $BEGIN
@@ -1482,7 +1482,7 @@ left join `mamba_dim_person_address` `pa` on ((`psn`.`external_person_id` = `pa`
 
 -- $END
 END
-/
+~
 
 
         
@@ -1494,7 +1494,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_update;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_update()
 BEGIN
 -- $BEGIN
@@ -1503,7 +1503,7 @@ BEGIN
 
 -- $END
 END
-/
+~
 
 
         
@@ -1515,7 +1515,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client;
 
-/
+~
 CREATE PROCEDURE sp_dim_client()
 BEGIN
 -- $BEGIN
@@ -1526,7 +1526,7 @@ CALL sp_dim_client_update();
 
 -- $END
 END
-/
+~
 
 
         
@@ -1538,7 +1538,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs;
 
-/
+~
 CREATE PROCEDURE sp_mamba_z_encounter_obs()
 BEGIN
 -- $BEGIN
@@ -1612,7 +1612,7 @@ WHERE z.obs_value_coded IS NOT NULL;
 
 -- $END
 END
-/
+~
 
 
         
@@ -1624,7 +1624,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_mamba_z_tables;
 
-/
+~
 CREATE PROCEDURE sp_mamba_z_tables()
 BEGIN
 -- $BEGIN
@@ -1633,7 +1633,7 @@ CALL sp_mamba_z_encounter_obs;
 
 -- $END
 END
-/
+~
 
 
         
@@ -1645,7 +1645,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_flatten;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_flatten()
 BEGIN
 -- $BEGIN
@@ -1680,7 +1680,7 @@ CALL sp_flat_encounter_table_create_all;
 CALL sp_flat_encounter_table_insert_all;
 -- $END
 END
-/
+~
 
 
         
@@ -1692,7 +1692,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_derived_covid()
 BEGIN
 -- $BEGIN
@@ -1700,7 +1700,7 @@ CALL sp_dim_client_covid;
 CALL sp_fact_encounter_covid;
 -- $END
 END
-/
+~
 
 
         
@@ -1712,7 +1712,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_derived_hts()
 BEGIN
 -- $BEGIN
@@ -1720,7 +1720,7 @@ CALL sp_dim_client_hiv_hts;
 CALL sp_fact_encounter_hiv_hts;
 -- $END
 END
-/
+~
 
 
         
@@ -1732,7 +1732,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_etl;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_etl()
 BEGIN
 -- $BEGIN
@@ -1741,7 +1741,7 @@ CALL sp_data_processing_derived_hts();
 CALL sp_data_processing_derived_covid();
 -- $END
 END
-/
+~
 
 
         
@@ -1753,7 +1753,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_covid_create;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_covid_create()
 BEGIN
 -- $BEGIN
@@ -1771,7 +1771,7 @@ CREATE TABLE dim_client_covid
 );
 -- $END
 END
-/
+~
 
 
         
@@ -1783,7 +1783,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_covid_insert;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_covid_insert()
 BEGIN
 -- $BEGIN
@@ -1806,7 +1806,7 @@ FROM dim_client c
                     ON c.client_id = cd.client_id;
 -- $END
 END
-/
+~
 
 
         
@@ -1818,13 +1818,13 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_covid_update;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
 END
-/
+~
 
 
         
@@ -1836,7 +1836,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_covid;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_covid()
 BEGIN
 -- $BEGIN
@@ -1845,7 +1845,7 @@ CALL sp_dim_client_covid_insert();
 CALL sp_dim_client_covid_update();
 -- $END
 END
-/
+~
 
 
         
@@ -1857,7 +1857,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_create;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_covid_create()
 BEGIN
 -- $BEGIN
@@ -1931,7 +1931,7 @@ CREATE TABLE IF NOT EXISTS fact_encounter_covid
 );
 -- $END
 END
-/
+~
 
 
         
@@ -1943,7 +1943,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_insert;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_covid_insert()
 BEGIN
 -- $BEGIN
@@ -2083,7 +2083,7 @@ SELECT encounter_id,
 FROM flat_encounter_covid;
 -- $END
 END
-/
+~
 
 
         
@@ -2095,13 +2095,13 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_update;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
 END
-/
+~
 
 
         
@@ -2113,7 +2113,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_covid;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_covid()
 BEGIN
 -- $BEGIN
@@ -2122,7 +2122,7 @@ CALL sp_fact_encounter_covid_insert();
 CALL sp_fact_encounter_covid_update();
 -- $END
 END
-/
+~
 
 
         
@@ -2134,7 +2134,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_derived_covid()
 BEGIN
 -- $BEGIN
@@ -2142,7 +2142,7 @@ CALL sp_dim_client_covid;
 CALL sp_fact_encounter_covid;
 -- $END
 END
-/
+~
 
 
         
@@ -2154,7 +2154,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_create;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_hiv_hts_create()
 BEGIN
 -- $BEGIN
@@ -2172,7 +2172,7 @@ CREATE TABLE IF NOT EXISTS dim_client_hiv_hts
 );
 -- $END
 END
-/
+~
 
 
         
@@ -2184,7 +2184,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_insert;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_hiv_hts_insert()
 BEGIN
 -- $BEGIN
@@ -2207,7 +2207,7 @@ FROM dim_client c
                     ON c.client_id = hts.client_id;
 -- $END
 END
-/
+~
 
 
         
@@ -2219,13 +2219,13 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_update;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
 END
-/
+~
 
 
         
@@ -2237,7 +2237,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts;
 
-/
+~
 CREATE PROCEDURE sp_dim_client_hiv_hts()
 BEGIN
 -- $BEGIN
@@ -2246,7 +2246,7 @@ CALL sp_dim_client_hiv_hts_insert();
 CALL sp_dim_client_hiv_hts_update();
 -- $END
 END
-/
+~
 
 
         
@@ -2258,7 +2258,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_create;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_hiv_hts_create()
 BEGIN
 -- $BEGIN
@@ -2306,7 +2306,7 @@ CREATE TABLE fact_encounter_hiv_hts
 );
 -- $END
 END
-/
+~
 
 
         
@@ -2318,7 +2318,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_insert;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_hiv_hts_insert()
 BEGIN
 -- $BEGIN
@@ -2439,7 +2439,7 @@ SELECT hts.encounter_id,
 FROM `flat_encounter_hts` `hts`;
 -- $END
 END
-/
+~
 
 
         
@@ -2451,13 +2451,13 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_update;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
 END
-/
+~
 
 
         
@@ -2469,7 +2469,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts;
 
-/
+~
 CREATE PROCEDURE sp_fact_encounter_hiv_hts()
 BEGIN
 -- $BEGIN
@@ -2478,7 +2478,7 @@ CALL sp_fact_encounter_hiv_hts_insert();
 CALL sp_fact_encounter_hiv_hts_update();
 -- $END
 END
-/
+~
 
 
         
@@ -2490,7 +2490,7 @@ END
 
 DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
 
-/
+~
 CREATE PROCEDURE sp_data_processing_derived_hts()
 BEGIN
 -- $BEGIN
@@ -2498,6 +2498,6 @@ CALL sp_dim_client_hiv_hts;
 CALL sp_fact_encounter_hiv_hts;
 -- $END
 END
-/
+~
 
 
