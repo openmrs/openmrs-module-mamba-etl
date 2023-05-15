@@ -5,6 +5,33 @@
         
 
 -- ---------------------------------------------------------------------------------------------
+-- fn_get_obs_value_column
+--
+
+
+DROP FUNCTION IF EXISTS fn_get_obs_value_column;
+
+CREATE FUNCTION fn_get_obs_value_column(conceptDatatype CHAR(20) CHARACTER SET UTF8MB4) RETURNS CHAR(20) CHARACTER SET UTF8MB4
+    DETERMINISTIC
+BEGIN
+    DECLARE obsValueColumn VARCHAR(20) CHARACTER SET UTF8MB4;
+
+    IF (conceptDatatype = 'Text' OR conceptDatatype = 'Coded' OR conceptDatatype = 'N/A' OR conceptDatatype = 'Boolean') THEN
+        SET obsValueColumn = 'obs_value_text';
+    ELSEIF conceptDatatype = 'Date' OR conceptDatatype = 'Datetime' THEN
+        SET obsValueColumn = 'obs_value_datetime';
+    ELSEIF conceptDatatype = 'Numeric' THEN
+        SET obsValueColumn = 'obs_value_numeric';
+    END IF;
+
+    RETURN (obsValueColumn);
+END~
+
+
+
+        
+
+-- ---------------------------------------------------------------------------------------------
 -- sp_xf_system_drop_all_functions_in_schema
 --
 
@@ -13,13 +40,12 @@ DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_functions_in_schema;
 
 ~
 CREATE PROCEDURE sp_xf_system_drop_all_stored_functions_in_schema(
-    IN database_name NVARCHAR(255)
+    IN database_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
     DELETE FROM `mysql`.`proc` WHERE `type` = 'FUNCTION' AND `db` = database_name; -- works in mysql before v.8
 
-END
-~
+END~
 
 
 
@@ -34,14 +60,13 @@ DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_stored_procedures_in_schema;
 
 ~
 CREATE PROCEDURE sp_xf_system_drop_all_stored_procedures_in_schema(
-    IN database_name NVARCHAR(255)
+    IN database_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
     DELETE FROM `mysql`.`proc` WHERE `type` = 'PROCEDURE' AND `db` = database_name; -- works in mysql before v.8
 
-END
-~
+END~
 
 
 
@@ -56,7 +81,7 @@ DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_objects_in_schema;
 
 ~
 CREATE PROCEDURE sp_xf_system_drop_all_objects_in_schema(
-    IN database_name NVARCHAR(255)
+    IN database_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -65,8 +90,7 @@ BEGIN
     CALL sp_xf_system_drop_all_tables_in_schema(database_name);
     # CALL sp_xf_system_drop_all_views_in_schema (database_name);
 
-END
-~
+END~
 
 
 
@@ -81,7 +105,7 @@ DROP PROCEDURE IF EXISTS sp_xf_system_drop_all_tables_in_schema;
 
 ~
 CREATE PROCEDURE sp_xf_system_drop_all_tables_in_schema(
-    IN database_name NVARCHAR(255)
+    IN database_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -117,8 +141,7 @@ BEGIN
 
     END IF;
 
-END
-~
+END~
 
 
 
@@ -149,8 +172,7 @@ BEGIN
     -- Result
     select (@end_time - @start_time) / 1000;
 
-END
-~
+END~
 
 
 
@@ -165,7 +187,7 @@ DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
 
 ~
 CREATE PROCEDURE sp_flat_encounter_table_create(
-    IN flat_encounter_table_name NVARCHAR(255)
+    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -190,8 +212,7 @@ BEGIN
     DEALLOCATE PREPARE deletetb;
     DEALLOCATE PREPARE createtb;
 
-END
-~
+END~
 
 
 
@@ -209,7 +230,7 @@ DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create_all;
 CREATE PROCEDURE sp_flat_encounter_table_create_all()
 BEGIN
 
-    DECLARE tbl_name NVARCHAR(50);
+    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
 
     DECLARE done INT DEFAULT FALSE;
 
@@ -232,8 +253,7 @@ BEGIN
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
 
-END
-~
+END~
 
 
 
@@ -248,7 +268,7 @@ DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert;
 
 ~
 CREATE PROCEDURE sp_flat_encounter_table_insert(
-    IN flat_encounter_table_name NVARCHAR(255)
+    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -281,8 +301,7 @@ BEGIN
     EXECUTE inserttbl;
     DEALLOCATE PREPARE inserttbl;
 
-END
-~
+END~
 
 
 
@@ -300,7 +319,7 @@ DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
 CREATE PROCEDURE sp_flat_encounter_table_insert_all()
 BEGIN
 
-    DECLARE tbl_name NVARCHAR(50);
+    DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
 
     DECLARE done INT DEFAULT FALSE;
 
@@ -323,8 +342,7 @@ BEGIN
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
 
-END
-~
+END~
 
 
 
@@ -339,10 +357,10 @@ DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
 
 ~
 CREATE PROCEDURE `sp_multiselect_values_update`(
-        IN table_to_update NVARCHAR(100),
-        IN column_names NVARCHAR(20000),
-        IN value_yes NVARCHAR(100),
-        IN value_no NVARCHAR(100)
+        IN table_to_update CHAR(100) CHARACTER SET UTF8MB4,
+        IN column_names TEXT CHARACTER SET UTF8MB4,
+        IN value_yes CHAR(100) CHARACTER SET UTF8MB4,
+        IN value_no CHAR(100) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -378,8 +396,7 @@ BEGIN
 
     END REPEAT;
 
-END
-~
+END~
 
 
 
@@ -394,8 +411,8 @@ DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
 
 ~
 CREATE PROCEDURE sp_extract_report_metadata(
-    IN report_data MEDIUMTEXT,
-    IN metadata_table NVARCHAR(255)
+    IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
+    IN metadata_table CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
 
@@ -440,8 +457,7 @@ BEGIN
             SET @report_count = @report_count + 1;
         END WHILE;
 
-END
-~
+END~
 
 
 
@@ -462,7 +478,7 @@ BEGIN
 CREATE TABLE mamba_dim_concept_datatype (
     concept_datatype_id int NOT NULL AUTO_INCREMENT,
     external_datatype_id int,
-    datatype_name NVARCHAR(255) NULL,
+    datatype_name CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (concept_datatype_id)
 );
 
@@ -471,8 +487,7 @@ create index mamba_dim_concept_datatype_external_datatype_id_index
 
 
 -- $END
-END
-~
+END~
 
 
         
@@ -502,8 +517,7 @@ WHERE
     dt.retired = 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -524,8 +538,7 @@ CALL sp_mamba_dim_concept_datatype_create();
 CALL sp_mamba_dim_concept_datatype_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -544,10 +557,10 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept (
     concept_id int NOT NULL AUTO_INCREMENT,
-    uuid CHAR(38) NOT NULL,
+    uuid CHAR(38) CHARACTER SET UTF8MB4 NOT NULL,
     external_concept_id int,
     external_datatype_id int, -- make it a FK
-    datatype NVARCHAR(255) NULL,
+    datatype CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (concept_id)
 );
 
@@ -560,8 +573,7 @@ create index mamba_dim_concept_external_datatype_id_index
 
 
 -- $END
-END
-~
+END~
 
 
         
@@ -593,8 +605,7 @@ WHERE
     c.retired = 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -618,8 +629,7 @@ SET c.datatype = dt.datatype_name
 WHERE c.concept_id > 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -641,8 +651,7 @@ CALL sp_mamba_dim_concept_insert();
 CALL sp_mamba_dim_concept_update();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -668,8 +677,7 @@ CREATE TABLE mamba_dim_concept_answer (
 );
 
 -- $END
-END
-~
+END~
 
 
         
@@ -699,8 +707,7 @@ FROM
     concept_answer ca;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -721,8 +728,7 @@ CALL sp_mamba_dim_concept_answer_create();
 CALL sp_mamba_dim_concept_answer_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -742,13 +748,12 @@ BEGIN
 CREATE TABLE mamba_dim_concept_name (
     concept_name_id int NOT NULL AUTO_INCREMENT,
     external_concept_id int,
-    concept_name NVARCHAR(255) NULL,
+    concept_name CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (concept_name_id)
 );
 
 -- $END
-END
-~
+END~
 
 
         
@@ -779,8 +784,7 @@ WHERE
     AND cn.locale_preferred = 1;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -801,8 +805,7 @@ CALL sp_mamba_dim_concept_name_create();
 CALL sp_mamba_dim_concept_name_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -822,13 +825,12 @@ BEGIN
 CREATE TABLE mamba_dim_encounter_type (
     encounter_type_id int NOT NULL AUTO_INCREMENT,
     external_encounter_type_id int,
-    encounter_type_uuid CHAR(38) NOT NULL,
+    encounter_type_uuid CHAR(38) CHARACTER SET UTF8MB4 NOT NULL,
     PRIMARY KEY (encounter_type_id)
 );
 
 -- $END
-END
-~
+END~
 
 
         
@@ -858,8 +860,7 @@ WHERE
     et.retired = 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -880,8 +881,7 @@ CALL sp_mamba_dim_encounter_type_create();
 CALL sp_mamba_dim_encounter_type_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -902,13 +902,12 @@ CREATE TABLE mamba_dim_encounter (
     encounter_id int NOT NULL AUTO_INCREMENT,
     external_encounter_id int,
     external_encounter_type_id int,
-    encounter_type_uuid CHAR(38) NULL,
+    encounter_type_uuid CHAR(38) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (encounter_id)
 );
 
 -- $END
-END
-~
+END~
 
 
         
@@ -936,8 +935,7 @@ FROM
     encounter e;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -961,8 +959,7 @@ SET e.encounter_type_uuid = et.encounter_type_uuid
 WHERE e.encounter_id > 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -984,8 +981,7 @@ CALL sp_mamba_dim_encounter_insert();
 CALL sp_mamba_dim_encounter_update();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1006,13 +1002,13 @@ CREATE TABLE mamba_dim_concept_metadata
 (
     concept_metadata_id INT           NOT NULL AUTO_INCREMENT,
     column_number       INT,
-    column_label        NVARCHAR(50)  NOT NULL,
-    concept_uuid        CHAR(38)      NOT NULL,
-    concept_datatype    NVARCHAR(255) NULL,
+    column_label        CHAR(50) CHARACTER SET UTF8MB4  NOT NULL,
+    concept_uuid        CHAR(38) CHARACTER SET UTF8MB4      NOT NULL,
+    concept_datatype    CHAR(255) CHARACTER SET UTF8MB4 NULL,
     concept_answer_obs  TINYINT(1)    NOT NULL DEFAULT 0,
-    report_name         NVARCHAR(255) NOT NULL,
-    flat_table_name     NVARCHAR(255) NULL,
-    encounter_type_uuid CHAR(38)      NOT NULL,
+    report_name         CHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
+    flat_table_name     CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    encounter_type_uuid CHAR(38) CHARACTER SET UTF8MB4      NOT NULL,
 
     PRIMARY KEY (concept_metadata_id)
 );
@@ -1023,8 +1019,7 @@ CREATE TABLE mamba_dim_concept_metadata
 --         FOREIGN KEY (`encounter_type_id`) REFERENCES `mamba_dim_encounter_type` (`encounter_type_id`);
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1043,60 +1038,28 @@ BEGIN
 
   SET @report_data = '{"flat_report_metadata":[
   {
-  "report_name": "CT ART Therapy",
-  "flat_table_name": "flat_encounter_arttherapy",
-  "encounter_type_uuid": "74bf4fe6-8fdb-4228-be39-680a93a9cf6d",
+  "report_name": "ART_Register",
+  "flat_table_name": "flat_encounter_art_card",
+  "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
   "table_columns": {
-    "art_plan": "7557d77c-172b-4673-9335-67a38657dd01",
-    "artstart_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "regimen": "dfbe256e-30ba-4033-837a-2e8477f2e7cd",
-    "regimen_line": "164515AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "regimenline_switched_date": "164516AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "regimen_substituted_date": "164431AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "art_stop_reason": "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "art_stop_date": "160739AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "art_restart_date": "160738AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "notes": "165095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
+    "current_regimen": "dd2b0b4d-30ab-102d-86b0-7a5022ba4115",
+    "who_stage": "dcdff274-30ab-102d-86b0-7a5022ba4115",
+    "no_of_days": "7593ede6-6574-4326-a8a6-3d742e843659",
+    "no_of_pills": "b0e53f0a-eaca-49e6-b663-d0df61601b70",
+    "tb_status": "dce02aa1-30ab-102d-86b0-7a5022ba4115",
+    "dsdm": "73312fee-c321-11e8-a355-529269fb1459",
+    "pregnant": "dcda5179-30ab-102d-86b0-7a5022ba4115",
+    "emtct": "dcd7e8e5-30ab-102d-86b0-7a5022ba4115",
+    "cotrim": "c3d744f6-00ef-4774-b9a7-d33c58f5b014"
   }
 },
-  {
-  "report_name": "CT Patient Enrolment",
-  "flat_table_name": "flat_encounter_patientenrolment",
-  "encounter_type_uuid": "7e54cd64-f9c3-11eb-8e6a-57478ce139b0",
-  "table_columns": {
-    "patient_type": "83e40f2c-c316-43e6-a12e-20a338100281",
-    "pop_type": "166432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "reenrolment_date": "20efadf9-86d3-4498-b3ab-7da4dad9c429",
-    "reenrolment_reason": "14ae2dc9-5964-425a-87e8-9ca525cf055e",
-    "date_enrolled": "160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "transferring_facility": "160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "artstart_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "current_regimen": "1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "transferin_documentation": "7962d0ed-0fb5-4580-8e46-6fd318091154",
-    "date_confirmed_hiv_positive": "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "test_type": "ca4953af-9ad4-4514-b54a-6832acd7cae9",
-    "previous_haart_pep": "8bfdc328-1970-446c-9d7b-97d62703801b",
-    "date_pep_last_used": "fbe937b6-a4ad-4ce5-9c43-002222fbabfb",
-    "previous_haart_prep": "5d397775-0155-4033-95dc-edcec98e8190",
-    "date_prep_last_used": "5af829e9-2427-4ed7-bb55-de4381610364",
-    "previous_haart_hepatitis": "906ed69c-949b-47b5-b469-2205f0da473a",
-    "date_hepatitis_last_used": "6a6cbda5-b155-4144-9ff9-ec3d1d1cd509",
-    "nnrtis": "9064043b-5b18-4228-97ff-f0e20aaf9448",
-    "nrtis": "54e7ff9b-4d93-41ba-ad0b-cb5f565785f2",
-    "PIs": "77eed025-0f5c-4173-bf45-36e05a175aaf",
-    "other_hivdrugs": "5424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "treatmentsupporter_name": "160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "phone_number": "159635AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "treatmentsupporter_relationship": "160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "notes": "165095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-  }
-}]}';
+  ]}';
 
   CALL sp_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
 
   -- $END
-END
-~
+END~
 
 
         
@@ -1130,8 +1093,7 @@ SET md.concept_answer_obs = 1
 WHERE md.concept_metadata_id > 0;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1153,8 +1115,7 @@ CALL sp_mamba_dim_concept_metadata_insert();
 CALL sp_mamba_dim_concept_metadata_update();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1174,16 +1135,15 @@ BEGIN
 CREATE TABLE mamba_dim_person (
     person_id int NOT NULL AUTO_INCREMENT,
     external_person_id int,
-    birthdate NVARCHAR(255) NULL,
-    gender NVARCHAR(255) NULL,
+    birthdate CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    gender CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (person_id)
 );
 create index mamba_dim_person_external_person_id_index
     on mamba_dim_person (external_person_id);
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1213,8 +1173,7 @@ FROM
     person psn;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1235,8 +1194,7 @@ CALL sp_mamba_dim_person_create();
 CALL sp_mamba_dim_person_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1257,14 +1215,13 @@ CREATE TABLE mamba_dim_person_name (
     person_name_id int NOT NULL AUTO_INCREMENT,
     external_person_name_id int,
     external_person_id int,
-    given_name NVARCHAR(255) NULL,
+    given_name CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (person_name_id)
 );
 create index mamba_dim_person_name_external_person_id_index
     on mamba_dim_person_name (external_person_id);
 -- $END
-END
-~
+END~
 
 
         
@@ -1294,8 +1251,7 @@ FROM
     person_name pn;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1316,8 +1272,7 @@ CALL sp_mamba_dim_person_name_create();
 CALL sp_mamba_dim_person_name_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1338,18 +1293,17 @@ CREATE TABLE mamba_dim_person_address (
     person_address_id int NOT NULL AUTO_INCREMENT,
     external_person_address_id int,
     external_person_id int,
-    city_village NVARCHAR(255) NULL,
-    county_district NVARCHAR(255) NULL,
-    address1 NVARCHAR(255) NULL,
-    address2 NVARCHAR(255) NULL,
+    city_village CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    county_district CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    address1 CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    address2 CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (person_address_id)
 );
 create index mamba_dim_person_address_external_person_id_index
     on mamba_dim_person_address (external_person_id);
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1385,8 +1339,7 @@ FROM
     person_address pa;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1407,8 +1360,7 @@ CALL sp_mamba_dim_person_address_create();
 CALL sp_mamba_dim_person_address_insert();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1429,15 +1381,14 @@ CREATE TABLE dim_client (
     client_id INT,
     date_of_birth DATE NULL,
     age INT,
-    sex NVARCHAR(255) NULL,
-    county NVARCHAR(255) NULL,
-    sub_county NVARCHAR(255) NULL,
-    ward NVARCHAR(255) NULL,
+    sex CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    county CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    sub_county CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    ward CHAR(255) CHARACTER SET UTF8MB4 NULL,
     PRIMARY KEY (id)
 );
 -- $END
-END
-~
+END~
 
 
         
@@ -1481,8 +1432,7 @@ left join `mamba_dim_person_address` `pa` on ((`psn`.`external_person_id` = `pa`
 
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1502,8 +1452,7 @@ BEGIN
 
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1525,8 +1474,7 @@ CALL sp_dim_client_insert();
 CALL sp_dim_client_update();
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1545,10 +1493,10 @@ BEGIN
 
 CREATE TABLE mamba_z_encounter_obs
 (
-    obs_question_uuid    CHAR(38),
-    obs_answer_uuid      CHAR(38),
-    obs_value_coded_uuid CHAR(38),
-    encounter_type_uuid  CHAR(38)
+    obs_question_uuid    CHAR(38) CHARACTER SET UTF8MB4,
+    obs_answer_uuid      CHAR(38) CHARACTER SET UTF8MB4,
+    obs_value_coded_uuid CHAR(38) CHARACTER SET UTF8MB4,
+    encounter_type_uuid  CHAR(38) CHARACTER SET UTF8MB4
 )
 SELECT o.encounter_id         AS encounter_id,
        o.person_id            AS person_id,
@@ -1611,8 +1559,7 @@ WHERE z.obs_value_coded IS NOT NULL;
 -- WHERE TRUE;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1632,8 +1579,7 @@ BEGIN
 CALL sp_mamba_z_encounter_obs;
 
 -- $END
-END
-~
+END~
 
 
         
@@ -1679,8 +1625,7 @@ CALL sp_flat_encounter_table_create_all;
 
 CALL sp_flat_encounter_table_insert_all;
 -- $END
-END
-~
+END~
 
 
         
@@ -1699,8 +1644,7 @@ BEGIN
 CALL sp_dim_client_covid;
 CALL sp_fact_encounter_covid;
 -- $END
-END
-~
+END~
 
 
         
@@ -1719,8 +1663,7 @@ BEGIN
 CALL sp_dim_client_hiv_hts;
 CALL sp_fact_encounter_hiv_hts;
 -- $END
-END
-~
+END~
 
 
         
@@ -1740,8 +1683,7 @@ BEGIN
 CALL sp_data_processing_derived_hts();
 CALL sp_data_processing_derived_covid();
 -- $END
-END
-~
+END~
 
 
         
@@ -1770,8 +1712,7 @@ CREATE TABLE dim_client_covid
     PRIMARY KEY (id)
 );
 -- $END
-END
-~
+END~
 
 
         
@@ -1805,8 +1746,7 @@ FROM dim_client c
          INNER JOIN flat_encounter_covid cd
                     ON c.client_id = cd.client_id;
 -- $END
-END
-~
+END~
 
 
         
@@ -1823,8 +1763,7 @@ CREATE PROCEDURE sp_dim_client_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
-END
-~
+END~
 
 
         
@@ -1844,8 +1783,7 @@ CALL sp_dim_client_covid_create();
 CALL sp_dim_client_covid_insert();
 CALL sp_dim_client_covid_update();
 -- $END
-END
-~
+END~
 
 
         
@@ -1930,8 +1868,7 @@ CREATE TABLE IF NOT EXISTS fact_encounter_covid
     date_died                         DATE          NULL
 );
 -- $END
-END
-~
+END~
 
 
         
@@ -2082,8 +2019,7 @@ SELECT encounter_id,
        cast(date_died AS DATE)           date_died
 FROM flat_encounter_covid;
 -- $END
-END
-~
+END~
 
 
         
@@ -2100,8 +2036,7 @@ CREATE PROCEDURE sp_fact_encounter_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
-END
-~
+END~
 
 
         
@@ -2121,8 +2056,7 @@ CALL sp_fact_encounter_covid_create();
 CALL sp_fact_encounter_covid_insert();
 CALL sp_fact_encounter_covid_update();
 -- $END
-END
-~
+END~
 
 
         
@@ -2141,8 +2075,7 @@ BEGIN
 CALL sp_dim_client_covid;
 CALL sp_fact_encounter_covid;
 -- $END
-END
-~
+END~
 
 
         
@@ -2171,8 +2104,7 @@ CREATE TABLE IF NOT EXISTS dim_client_hiv_hts
     PRIMARY KEY (id)
 );
 -- $END
-END
-~
+END~
 
 
         
@@ -2206,8 +2138,7 @@ FROM dim_client c
          INNER JOIN flat_encounter_hts hts
                     ON c.client_id = hts.client_id;
 -- $END
-END
-~
+END~
 
 
         
@@ -2224,8 +2155,7 @@ CREATE PROCEDURE sp_dim_client_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
-END
-~
+END~
 
 
         
@@ -2245,8 +2175,7 @@ CALL sp_dim_client_hiv_hts_create();
 CALL sp_dim_client_hiv_hts_insert();
 CALL sp_dim_client_hiv_hts_update();
 -- $END
-END
-~
+END~
 
 
         
@@ -2305,8 +2234,7 @@ CREATE TABLE fact_encounter_hiv_hts
     PRIMARY KEY (id)
 );
 -- $END
-END
-~
+END~
 
 
         
@@ -2438,8 +2366,7 @@ SELECT hts.encounter_id,
        recency_rtri_result
 FROM `flat_encounter_hts` `hts`;
 -- $END
-END
-~
+END~
 
 
         
@@ -2456,8 +2383,7 @@ CREATE PROCEDURE sp_fact_encounter_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
-END
-~
+END~
 
 
         
@@ -2477,8 +2403,7 @@ CALL sp_fact_encounter_hiv_hts_create();
 CALL sp_fact_encounter_hiv_hts_insert();
 CALL sp_fact_encounter_hiv_hts_update();
 -- $END
-END
-~
+END~
 
 
         
@@ -2497,7 +2422,6 @@ BEGIN
 CALL sp_dim_client_hiv_hts;
 CALL sp_fact_encounter_hiv_hts;
 -- $END
-END
-~
+END~
 
 
