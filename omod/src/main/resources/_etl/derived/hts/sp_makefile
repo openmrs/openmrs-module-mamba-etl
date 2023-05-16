@@ -15,6 +15,15 @@ facts/fact_hts/sp_fact_encounter_hiv_hts_update.sql
 facts/fact_hts/sp_fact_encounter_hiv_hts.sql
 
 #############################################################################
+##################### HTS/HIV Fact TX_CURR Table SPs  #####################
+#############################################################################
+facts/fact_txcurr/sp_fact_txcurr_create.sql
+facts/fact_txcurr/sp_fact_txcurr_insert.sql
+facts/fact_txcurr/sp_fact_txcurr_update.sql
+facts/fact_txcurr/sp_fact_txcurr.sql
+facts/fact_txcurr/sp_fact_txcurr_query.sql
+
+#############################################################################
 ###### A single stored procedure that invokes (CALLs) the above SPs #########
 #############################################################################
 sp_data_processing_derived_hts.sql

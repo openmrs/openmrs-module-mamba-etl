@@ -16,7 +16,7 @@ public class HibernateFlattenDatabaseDao implements FlattenDatabaseDao {
 	@Override
 	public void executeFlatteningScript() {
 		
-		sessionFactory.getCurrentSession().createSQLQuery("CALL sp_data_processing_flatten()").executeUpdate();
+		sessionFactory.getCurrentSession().createSQLQuery("CALL sp_data_processing_etl()").executeUpdate();
 		
 		/*
 		sessionFactory.getCurrentSession().doWork(connection -> {

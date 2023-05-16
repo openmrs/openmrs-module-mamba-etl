@@ -1,6 +1,6 @@
 {
   "report_name": "ART_Register",
-  "flat_table_name": "flat_encounter_art_card",
+  "flat_table_name": "mamba_flat_encounter_art_card",
   "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
   "table_columns": {
     "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
