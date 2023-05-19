@@ -217,6 +217,8 @@
                                     <argument>-t ${project.build.directory}/mamba-etl/_etl/config</argument>
                                     <!-- Database Vendor/Engine targeted in this ETL -->
                                     <argument>-n mysql</argument>
+                                    <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
+                                    <argument>-b 0</argument>
                                     <!-- add any other arguments below -->
                                     <argument></argument>
                                     <argument></argument>
