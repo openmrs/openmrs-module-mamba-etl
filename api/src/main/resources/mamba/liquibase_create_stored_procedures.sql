@@ -3,14 +3,14 @@
     
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  fn_calculate_agegroup  ----------------------------
+-- ----------------------  fn_mamba_calculate_agegroup  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP FUNCTION IF EXISTS fn_calculate_agegroup;
+DROP FUNCTION IF EXISTS fn_mamba_calculate_agegroup;
 
 ~
-CREATE FUNCTION fn_calculate_agegroup(age INT) RETURNS VARCHAR(15)
+CREATE FUNCTION fn_mamba_calculate_agegroup(age INT) RETURNS VARCHAR(15)
     DETERMINISTIC
 BEGIN
     DECLARE agegroup VARCHAR(15);
@@ -53,14 +53,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  fn_get_obs_value_column  ----------------------------
+-- ----------------------  fn_mamba_get_obs_value_column  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP FUNCTION IF EXISTS fn_get_obs_value_column;
+DROP FUNCTION IF EXISTS fn_mamba_get_obs_value_column;
 
 ~
-CREATE FUNCTION fn_get_obs_value_column(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
+CREATE FUNCTION fn_mamba_get_obs_value_column(conceptDatatype VARCHAR(20)) RETURNS VARCHAR(20)
     DETERMINISTIC
 BEGIN
     DECLARE obsValueColumn VARCHAR(20);
@@ -193,14 +193,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_xf_system_execute_etl  ----------------------------
+-- ----------------------  sp_mamba_etl_execute  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_xf_system_execute_etl;
+DROP PROCEDURE IF EXISTS sp_mamba_etl_execute;
 
 ~
-CREATE PROCEDURE sp_xf_system_execute_etl()
+CREATE PROCEDURE sp_mamba_etl_execute()
 BEGIN
     DECLARE error_message VARCHAR(255) DEFAULT 'OK';
     DECLARE error_code CHAR(5) DEFAULT '00000';
@@ -244,7 +244,7 @@ BEGIN
     SET start_date_time = NOW();
     SET @start_time = (UNIX_TIMESTAMP(NOW()) * 1000000 + MICROSECOND(NOW(6)));
 
-    CALL sp_data_processing_etl();
+    CALL sp_mamba_data_processing_etl();
 
     -- Fix end time in microseconds
     SET end_date_time = NOW();
@@ -270,15 +270,15 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_flat_encounter_table_create  ----------------------------
+-- ----------------------  sp_mamba_flat_encounter_table_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_create;
 
 ~
-CREATE PROCEDURE sp_flat_encounter_table_create(
-    IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
+CREATE PROCEDURE sp_mamba_flat_encounter_table_create(
+    IN flat_encounter_table_name VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
 
@@ -295,10 +295,10 @@ BEGIN
 
     IF @column_labels IS NULL THEN
         SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT);');
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL);');
     ELSE
         SET @create_table = CONCAT(
-                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT, client_id INT, ', @column_labels,
+                'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT NOT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, ', @column_labels,
                 ' TEXT);');
     END IF;
 
@@ -318,15 +318,15 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_flat_encounter_table_create_all  ----------------------------
+-- ----------------------  sp_mamba_flat_encounter_table_create_all  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_create_all;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_create_all;
 
 ~
-CREATE PROCEDURE sp_flat_encounter_table_create_all()
+CREATE PROCEDURE sp_mamba_flat_encounter_table_create_all()
 BEGIN
 
     DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
@@ -347,7 +347,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_flat_encounter_table_create(tbl_name);
+        CALL sp_mamba_flat_encounter_table_create(tbl_name);
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
@@ -358,14 +358,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_flat_encounter_table_insert  ----------------------------
+-- ----------------------  sp_mamba_flat_encounter_table_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert;
 
 ~
-CREATE PROCEDURE sp_flat_encounter_table_insert(
+CREATE PROCEDURE sp_mamba_flat_encounter_table_insert(
     IN flat_encounter_table_name CHAR(255) CHARACTER SET UTF8MB4
 )
 BEGIN
@@ -380,20 +380,20 @@ BEGIN
 
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
-                               fn_get_obs_value_column(concept_datatype), ' END) ', column_label)
-                        ORDER BY concept_metadata_id ASC)
+                               fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
+                        ORDER BY id ASC)
     INTO @column_labels
     FROM mamba_dim_concept_metadata
     WHERE flat_table_name = @tbl_name;
 
     SET @insert_stmt = CONCAT(
-            'INSERT INTO `', @tbl_name, '` SELECT eo.encounter_id, eo.person_id, ', @column_labels, '
+            'INSERT INTO `', @tbl_name, '` SELECT eo.encounter_id, eo.person_id, eo.encounter_datetime, ', @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
                 ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
-            GROUP BY eo.encounter_id, eo.person_id;');
+            GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime;');
 
     PREPARE inserttbl FROM @insert_stmt;
     EXECUTE inserttbl;
@@ -405,15 +405,15 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_flat_encounter_table_insert_all  ----------------------------
+-- ----------------------  sp_mamba_flat_encounter_table_insert_all  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
 
-DROP PROCEDURE IF EXISTS sp_flat_encounter_table_insert_all;
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_table_insert_all;
 
 ~
-CREATE PROCEDURE sp_flat_encounter_table_insert_all()
+CREATE PROCEDURE sp_mamba_flat_encounter_table_insert_all()
 BEGIN
 
     DECLARE tbl_name CHAR(50) CHARACTER SET UTF8MB4;
@@ -434,7 +434,7 @@ BEGIN
             LEAVE computations_loop;
         END IF;
 
-        CALL sp_flat_encounter_table_insert(tbl_name);
+        CALL sp_mamba_flat_encounter_table_insert(tbl_name);
 
     END LOOP computations_loop;
     CLOSE cursor_flat_tables;
@@ -445,14 +445,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_multiselect_values_update  ----------------------------
+-- ----------------------  sp_mamba_multiselect_values_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS `sp_multiselect_values_update`;
+DROP PROCEDURE IF EXISTS `sp_mamba_multiselect_values_update`;
 
 ~
-CREATE PROCEDURE `sp_multiselect_values_update`(
+CREATE PROCEDURE `sp_mamba_multiselect_values_update`(
     IN table_to_update CHAR(100) CHARACTER SET UTF8MB4,
     IN column_names TEXT CHARACTER SET UTF8MB4,
     IN value_yes CHAR(100) CHARACTER SET UTF8MB4,
@@ -498,16 +498,16 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_extract_report_metadata  ----------------------------
+-- ----------------------  sp_mamba_extract_report_metadata  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_extract_report_metadata;
+DROP PROCEDURE IF EXISTS sp_mamba_extract_report_metadata;
 
 ~
-CREATE PROCEDURE sp_extract_report_metadata(
+CREATE PROCEDURE sp_mamba_extract_report_metadata(
     IN report_data MEDIUMTEXT CHARACTER SET UTF8MB4,
-    IN metadata_table CHAR(255) CHARACTER SET UTF8MB4
+    IN metadata_table VARCHAR(255) CHARSET UTF8MB4
 )
 BEGIN
 
@@ -524,6 +524,7 @@ BEGIN
             SELECT JSON_EXTRACT(@report, '$.report_name') INTO @report_name;
             SELECT JSON_EXTRACT(@report, '$.flat_table_name') INTO @flat_table_name;
             SELECT JSON_EXTRACT(@report, '$.encounter_type_uuid') INTO @encounter_type;
+            SELECT JSON_EXTRACT(@report, '$.concepts_locale') INTO @concepts_locale;
             SELECT JSON_EXTRACT(@report, '$.table_columns') INTO @column_array;
 
             SELECT JSON_KEYS(@column_array) INTO @column_keys_array;
@@ -539,12 +540,14 @@ BEGIN
                                                            flat_table_name,
                                                            encounter_type_uuid,
                                                            column_label,
-                                                           concept_uuid)
+                                                           concept_uuid,
+                                                           concepts_locale)
                     VALUES (JSON_UNQUOTE(@report_name),
                             JSON_UNQUOTE(@flat_table_name),
                             JSON_UNQUOTE(@encounter_type),
                             JSON_UNQUOTE(@field_name),
-                            JSON_UNQUOTE(@concept_uuid));
+                            JSON_UNQUOTE(@concept_uuid),
+                            JSON_UNQUOTE(@concepts_locale));
 
                     SET @col_count = @col_count + 1;
                 END WHILE;
@@ -558,20 +561,20 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_load_agegroup  ----------------------------
+-- ----------------------  sp_mamba_load_agegroup  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_load_agegroup;
+DROP PROCEDURE IF EXISTS sp_mamba_load_agegroup;
 
 ~
-CREATE PROCEDURE sp_load_agegroup()
+CREATE PROCEDURE sp_mamba_load_agegroup()
 BEGIN
     DECLARE age INT DEFAULT 0;
     WHILE age <= 120
         DO
-            INSERT INTO dim_agegroup(age, datim_agegroup, normal_agegroup)
-            VALUES (age, fn_calculate_agegroup(age), IF(age < 15, '<15', '15+'));
+            INSERT INTO mamba_dim_agegroup(age, datim_agegroup, normal_agegroup)
+            VALUES (age, fn_mamba_calculate_agegroup(age), IF(age < 15, '<15', '15+'));
             SET age = age + 1;
         END WHILE;
 END~
@@ -593,15 +596,16 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept_datatype
 (
-    concept_datatype_id  int                             NOT NULL AUTO_INCREMENT,
-    external_datatype_id int,
-    datatype_name        CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (concept_datatype_id)
-);
+    id                  INT          NOT NULL AUTO_INCREMENT,
+    concept_datatype_id INT          NOT NULL,
+    datatype_name       VARCHAR(255) NOT NULL,
 
-create index mamba_dim_concept_datatype_external_datatype_id_index
-    on mamba_dim_concept_datatype (external_datatype_id);
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
+CREATE INDEX mamba_dim_concept_datatype_concept_datatype_id_index
+    ON mamba_dim_concept_datatype (concept_datatype_id);
 
 -- $END
 END~
@@ -620,12 +624,12 @@ CREATE PROCEDURE sp_mamba_dim_concept_datatype_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_concept_datatype (external_datatype_id,
+INSERT INTO mamba_dim_concept_datatype (concept_datatype_id,
                                         datatype_name)
-SELECT dt.concept_datatype_id AS external_datatype_id,
+SELECT dt.concept_datatype_id AS concept_datatype_id,
        dt.name                AS datatype_name
-FROM concept_datatype dt
-WHERE dt.retired = 0;
+FROM concept_datatype dt;
+-- WHERE dt.retired = 0;
 
 -- $END
 END~
@@ -666,19 +670,24 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept
 (
-    concept_id           INT                             NOT NULL AUTO_INCREMENT,
-    uuid                 CHAR(38) CHARACTER SET UTF8MB4  NOT NULL,
-    external_concept_id  INT,
-    external_datatype_id INT, -- make it a FK
-    datatype             CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (concept_id)
-);
+    id          INT          NOT NULL AUTO_INCREMENT,
+    concept_id  INT          NOT NULL,
+    uuid        CHAR(38)     NOT NULL,
+    datatype_id INT NOT NULL, -- make it a FK
+    datatype    VARCHAR(100) NULL,
 
-CREATE INDEX mamba_dim_concept_external_concept_id_index
-    ON mamba_dim_concept (external_concept_id);
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
-CREATE INDEX mamba_dim_concept_external_datatype_id_index
-    ON mamba_dim_concept (external_datatype_id);
+CREATE INDEX mamba_dim_concept_concept_id_index
+    ON mamba_dim_concept (concept_id);
+
+CREATE INDEX mamba_dim_concept_uuid_index
+    ON mamba_dim_concept (uuid);
+
+CREATE INDEX mamba_dim_concept_datatype_id_index
+    ON mamba_dim_concept (datatype_id);
 
 -- $END
 END~
@@ -698,13 +707,13 @@ BEGIN
 -- $BEGIN
 
 INSERT INTO mamba_dim_concept (uuid,
-                               external_concept_id,
-                               external_datatype_id)
+                               concept_id,
+                               datatype_id)
 SELECT c.uuid        AS uuid,
-       c.concept_id  AS external_concept_id,
-       c.datatype_id AS external_datatype_id
-FROM concept c
-WHERE c.retired = 0;
+       c.concept_id  AS concept_id,
+       c.datatype_id AS datatype_id
+FROM concept c;
+-- WHERE c.retired = 0;
 
 -- $END
 END~
@@ -725,9 +734,9 @@ BEGIN
 
 UPDATE mamba_dim_concept c
     INNER JOIN mamba_dim_concept_datatype dt
-    ON c.external_datatype_id = dt.external_datatype_id
+    ON c.datatype_id = dt.concept_datatype_id
 SET c.datatype = dt.datatype_name
-WHERE c.concept_id > 0;
+WHERE c.id > 0;
 
 -- $END
 END~
@@ -769,12 +778,21 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept_answer
 (
-    concept_answer_id INT NOT NULL AUTO_INCREMENT,
-    concept_id        INT,
+    id                INT NOT NULL AUTO_INCREMENT,
+    concept_answer_id INT NOT NULL,
+    concept_id        INT NOT NULL,
     answer_concept    INT,
     answer_drug       INT,
-    PRIMARY KEY (concept_answer_id)
-);
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_concept_answer_concept_answer_id_index
+    ON mamba_dim_concept_answer (concept_answer_id);
+
+CREATE INDEX mamba_dim_concept_answer_concept_id_index
+    ON mamba_dim_concept_answer (concept_id);
 
 -- $END
 END~
@@ -793,12 +811,14 @@ CREATE PROCEDURE sp_mamba_dim_concept_answer_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_concept_answer (concept_id,
+INSERT INTO mamba_dim_concept_answer (concept_answer_id,
+                                      concept_id,
                                       answer_concept,
                                       answer_drug)
-SELECT ca.concept_id     AS concept_id,
-       ca.answer_concept AS answer_concept,
-       ca.answer_drug    AS answer_drug
+SELECT ca.concept_answer_id AS concept_answer_id,
+       ca.concept_id        AS concept_id,
+       ca.answer_concept    AS answer_concept,
+       ca.answer_drug       AS answer_drug
 FROM concept_answer ca;
 
 -- $END
@@ -840,11 +860,32 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept_name
 (
-    concept_name_id     INT                             NOT NULL AUTO_INCREMENT,
-    external_concept_id INT,
-    concept_name        CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (concept_name_id)
-);
+    id                INT          NOT NULL AUTO_INCREMENT,
+    concept_name_id   INT          NOT NULL,
+    concept_id        INT,
+    name              VARCHAR(255) NOT NULL,
+    locale            VARCHAR(50)  not null,
+    locale_preferred  TINYINT,
+    concept_name_type VARCHAR(255),
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_concept_name_concept_name_id_index
+    ON mamba_dim_concept_name (concept_name_id);
+
+CREATE INDEX mamba_dim_concept_name_concept_id_index
+    ON mamba_dim_concept_name (concept_id);
+
+CREATE INDEX mamba_dim_concept_name_concept_name_type_index
+    ON mamba_dim_concept_name (concept_name_type);
+
+CREATE INDEX mamba_dim_concept_name_locale_index
+    ON mamba_dim_concept_name (locale);
+
+CREATE INDEX mamba_dim_concept_name_locale_preferred_index
+    ON mamba_dim_concept_name (locale_preferred);
 
 -- $END
 END~
@@ -863,13 +904,21 @@ CREATE PROCEDURE sp_mamba_dim_concept_name_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_concept_name (external_concept_id,
-                                    concept_name)
-SELECT cn.concept_id AS external_concept_id,
-       cn.name       AS concept_name
-FROM concept_name cn
-WHERE cn.locale = 'en'
-  AND cn.locale_preferred = 1;
+INSERT INTO mamba_dim_concept_name (concept_name_id,
+                                    concept_id,
+                                    name,
+                                    locale,
+                                    locale_preferred,
+                                    concept_name_type)
+SELECT cn.concept_name_id,
+       cn.concept_id,
+       cn.name,
+       cn.locale,
+       cn.locale_preferred,
+       cn.concept_name_type
+FROM concept_name cn;
+-- WHERE cn.locale = 'en'
+--  AND cn.locale_preferred = 1;
 
 -- $END
 END~
@@ -910,11 +959,19 @@ BEGIN
 
 CREATE TABLE mamba_dim_encounter_type
 (
-    encounter_type_id          INT                            NOT NULL AUTO_INCREMENT,
-    external_encounter_type_id INT,
-    encounter_type_uuid        CHAR(38) CHARACTER SET UTF8MB4 NOT NULL,
-    PRIMARY KEY (encounter_type_id)
-);
+    id                INT      NOT NULL AUTO_INCREMENT,
+    encounter_type_id INT      NOT NULL,
+    uuid              CHAR(38) NOT NULL,
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_encounter_type_encounter_type_id_index
+    ON mamba_dim_encounter_type (encounter_type_id);
+
+CREATE INDEX mamba_dim_encounter_type_uuid_index
+    ON mamba_dim_encounter_type (uuid);
 
 -- $END
 END~
@@ -933,12 +990,12 @@ CREATE PROCEDURE sp_mamba_dim_encounter_type_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_encounter_type (external_encounter_type_id,
-                                      encounter_type_uuid)
-SELECT et.encounter_type_id AS external_encounter_type_id,
-       et.uuid              AS encounter_type_uuid
-FROM encounter_type et
-WHERE et.retired = 0;
+INSERT INTO mamba_dim_encounter_type (encounter_type_id,
+                                      uuid)
+SELECT et.encounter_type_id,
+       et.uuid
+FROM encounter_type et;
+-- WHERE et.retired = 0;
 
 -- $END
 END~
@@ -979,12 +1036,35 @@ BEGIN
 
 CREATE TABLE mamba_dim_encounter
 (
-    encounter_id               INT                            NOT NULL AUTO_INCREMENT,
-    external_encounter_id      INT,
-    external_encounter_type_id INT,
-    encounter_type_uuid        CHAR(38) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (encounter_id)
-);
+    id                  INT        NOT NULL AUTO_INCREMENT,
+    encounter_id        INT        NOT NULL,
+    uuid                CHAR(38)   NOT NULL,
+    encounter_type      INT        NOT NULL,
+    encounter_type_uuid CHAR(38)   NULL,
+    patient_id          INT        NOT NULL,
+    encounter_datetime  DATETIME   NOT NULL,
+    date_created        DATETIME   NOT NULL,
+    voided              TINYINT NOT NULL,
+    visit_id            INT        NULL,
+
+    CONSTRAINT encounter_encounter_id_index
+        UNIQUE (encounter_id),
+
+    CONSTRAINT encounter_uuid_index
+        UNIQUE (uuid),
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_encounter_encounter_id_index
+    ON mamba_dim_encounter (encounter_id);
+
+CREATE INDEX mamba_dim_encounter_encounter_type_index
+    ON mamba_dim_encounter (encounter_type);
+
+CREATE INDEX mamba_dim_encounter_uuid_index
+    ON mamba_dim_encounter (uuid);
 
 -- $END
 END~
@@ -1003,11 +1083,30 @@ CREATE PROCEDURE sp_mamba_dim_encounter_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_encounter (external_encounter_id,
-                                 external_encounter_type_id)
-SELECT e.encounter_id   AS external_encounter_id,
-       e.encounter_type AS external_encounter_type_id
-FROM encounter e;
+INSERT INTO mamba_dim_encounter (encounter_id,
+                                 uuid,
+                                 encounter_type,
+                                 encounter_type_uuid,
+                                 patient_id,
+                                 encounter_datetime,
+                                 date_created,
+                                 voided,
+                                 visit_id)
+SELECT e.encounter_id,
+       e.uuid,
+       e.encounter_type,
+       et.uuid,
+       e.patient_id,
+       e.encounter_datetime,
+       e.date_created,
+       e.voided,
+       e.visit_id
+FROM encounter e
+         INNER JOIN mamba_dim_encounter_type et
+                    ON e.encounter_type = et.encounter_type_id
+WHERE et.uuid
+          IN (SELECT DISTINCT(md.encounter_type_uuid)
+              FROM mamba_dim_concept_metadata md);
 
 -- $END
 END~
@@ -1025,12 +1124,6 @@ DROP PROCEDURE IF EXISTS sp_mamba_dim_encounter_update;
 CREATE PROCEDURE sp_mamba_dim_encounter_update()
 BEGIN
 -- $BEGIN
-
-UPDATE mamba_dim_encounter e
-    INNER JOIN mamba_dim_encounter_type et
-    ON e.external_encounter_type_id = et.external_encounter_type_id
-SET e.encounter_type_uuid = et.encounter_type_uuid
-WHERE e.encounter_id > 0;
 
 -- $END
 END~
@@ -1072,21 +1165,34 @@ BEGIN
 
 CREATE TABLE mamba_dim_concept_metadata
 (
-    concept_metadata_id INT                             NOT NULL AUTO_INCREMENT,
+    id                  INT          NOT NULL AUTO_INCREMENT,
+    concept_id          INT          NULL,
+    concept_uuid        CHAR(38)     NOT NULL,
+    concept_name        VARCHAR(255) NULL,
+    concepts_locale     VARCHAR(20)  NOT NULL,
     column_number       INT,
-    column_label        CHAR(50) CHARACTER SET UTF8MB4  NOT NULL,
-    concept_uuid        CHAR(38) CHARACTER SET UTF8MB4  NOT NULL,
-    concept_datatype    CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    concept_answer_obs  TINYINT(1)                      NOT NULL DEFAULT 0,
-    report_name         CHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    flat_table_name     CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    encounter_type_uuid CHAR(38) CHARACTER SET UTF8MB4  NOT NULL,
+    column_label        VARCHAR(50)  NOT NULL,
+    concept_datatype    VARCHAR(255) NULL,
+    concept_answer_obs  TINYINT      NOT NULL DEFAULT 0,
+    report_name         VARCHAR(255) NOT NULL,
+    flat_table_name     VARCHAR(255) NULL,
+    encounter_type_uuid CHAR(38)     NOT NULL,
 
-    PRIMARY KEY (concept_metadata_id)
-);
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
 
-create index mamba_dim_concept_metadata_concept_uuid_index
-    on mamba_dim_concept_metadata (concept_uuid);
+CREATE INDEX mamba_dim_concept_metadata_concept_id_index
+    ON mamba_dim_concept_metadata (concept_id);
+
+CREATE INDEX mamba_dim_concept_metadata_concept_uuid_index
+    ON mamba_dim_concept_metadata (concept_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_encounter_type_uuid_index
+    ON mamba_dim_concept_metadata (encounter_type_uuid);
+
+CREATE INDEX mamba_dim_concept_metadata_concepts_locale_index
+    ON mamba_dim_concept_metadata (concepts_locale);
 
 -- ALTER TABLE `mamba_dim_concept_metadata`
 --     ADD COLUMN `encounter_type_id` INT NULL AFTER `output_table_name`,
@@ -1114,7 +1220,8 @@ BEGIN
   {
   "report_name": "ART_Register",
   "flat_table_name": "mamba_flat_encounter_art_card",
-  "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
+  "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f" ,
+  "concepts_locale": "en",
   "table_columns": {
     "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
     "current_regimen": "dd2b0b4d-30ab-102d-86b0-7a5022ba4115",
@@ -1129,7 +1236,7 @@ BEGIN
   }
 }]}';
 
-  CALL sp_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
+  CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
 
   -- $END
 END~
@@ -1148,21 +1255,26 @@ CREATE PROCEDURE sp_mamba_dim_concept_metadata_update()
 BEGIN
 -- $BEGIN
 
--- Update the Concept datatypes
+-- Update the Concept datatypes, concept_name and concept_id based on given locale
 UPDATE mamba_dim_concept_metadata md
     INNER JOIN mamba_dim_concept c
     ON md.concept_uuid = c.uuid
-SET md.concept_datatype = c.datatype
-WHERE md.concept_metadata_id > 0;
+    INNER JOIN mamba_dim_concept_name cn
+    ON c.concept_id = cn.concept_id
+SET md.concept_datatype = c.datatype,
+    md.concept_id       = c.concept_id,
+    md.concept_name     = cn.name
+WHERE md.id > 0
+  AND cn.locale = md.concepts_locale
+  AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
+-- Use locale preferred or Fully specified name
 
 -- Update to True if this field is an obs answer to an obs Question
 UPDATE mamba_dim_concept_metadata md
-    INNER JOIN mamba_dim_concept c
-    ON md.concept_uuid = c.uuid
     INNER JOIN mamba_dim_concept_answer ca
-    ON ca.answer_concept = c.external_concept_id
+    ON md.concept_id = ca.answer_concept
 SET md.concept_answer_obs = 1
-WHERE md.concept_metadata_id > 0;
+WHERE md.id > 0;
 
 -- $END
 END~
@@ -1204,14 +1316,23 @@ BEGIN
 
 CREATE TABLE mamba_dim_person
 (
-    person_id          INT                             NOT NULL AUTO_INCREMENT,
-    external_person_id INT,
-    birthdate          CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    gender             CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (person_id)
-);
-create index mamba_dim_person_external_person_id_index
-    on mamba_dim_person (external_person_id);
+    id                  INT          NOT NULL AUTO_INCREMENT,
+    person_id           INT          NOT NULL,
+    birthdate           VARCHAR(255) NULL,
+    birthdate_estimated TINYINT   NOT NULL,
+    dead                TINYINT   NOT NULL,
+    death_date          DATETIME     NULL,
+    deathdate_estimated TINYINT   NOT NULL,
+    gender              VARCHAR(255) NULL,
+    date_created        DATETIME     NOT NULL,
+    voided              TINYINT   NOT NULL,
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_person_person_id_index
+    ON mamba_dim_person (person_id);
 
 -- $END
 END~
@@ -1230,12 +1351,24 @@ CREATE PROCEDURE sp_mamba_dim_person_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_person (external_person_id,
+INSERT INTO mamba_dim_person (person_id,
                               birthdate,
-                              gender)
-SELECT psn.person_id AS external_person_id,
-       psn.birthdate AS birthdate,
-       psn.gender    AS gender
+                              birthdate_estimated,
+                              dead,
+                              death_date,
+                              deathdate_estimated,
+                              gender,
+                              date_created,
+                              voided)
+SELECT psn.person_id,
+       psn.birthdate,
+       psn.birthdate_estimated,
+       psn.dead,
+       psn.death_date,
+       psn.deathdate_estimated,
+       psn.gender,
+       psn.date_created,
+       psn.voided
 FROM person psn;
 
 -- $END
@@ -1277,14 +1410,28 @@ BEGIN
 
 CREATE TABLE mamba_dim_person_name
 (
-    person_name_id          INT                             NOT NULL AUTO_INCREMENT,
-    external_person_name_id INT,
-    external_person_id      INT,
-    given_name              CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (person_name_id)
-);
-CREATE INDEX mamba_dim_person_name_external_person_id_index
-    ON mamba_dim_person_name (external_person_id);
+    id                 INT         NOT NULL AUTO_INCREMENT,
+    person_name_id     INT         NOT NULL,
+    person_id          INT         NOT NULL,
+    preferred          TINYINT  NOT NULL,
+    prefix             VARCHAR(50) NULL,
+    given_name         VARCHAR(50) NULL,
+    middle_name        VARCHAR(50) NULL,
+    family_name_prefix VARCHAR(50) NULL,
+    family_name        VARCHAR(50) NULL,
+    family_name2       VARCHAR(50) NULL,
+    family_name_suffix VARCHAR(50) NULL,
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_person_name_person_name_id_index
+    ON mamba_dim_person_name (person_name_id);
+
+CREATE INDEX mamba_dim_person_name_person_id_index
+    ON mamba_dim_person_name (person_id);
+
 -- $END
 END~
 
@@ -1302,12 +1449,26 @@ CREATE PROCEDURE sp_mamba_dim_person_name_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_person_name (external_person_name_id,
-                                   external_person_id,
-                                   given_name)
-SELECT pn.person_name_id AS external_person_name_id,
-       pn.person_id      AS external_person_id,
-       pn.given_name     AS given_name
+INSERT INTO mamba_dim_person_name (person_name_id,
+                                   person_id,
+                                   preferred,
+                                   prefix,
+                                   given_name,
+                                   middle_name,
+                                   family_name_prefix,
+                                   family_name,
+                                   family_name2,
+                                   family_name_suffix)
+SELECT pn.person_name_id,
+       pn.person_id,
+       pn.preferred,
+       pn.prefix,
+       pn.given_name,
+       pn.middle_name,
+       pn.family_name_prefix,
+       pn.family_name,
+       pn.family_name2,
+       pn.family_name_suffix
 FROM person_name pn;
 
 -- $END
@@ -1349,17 +1510,26 @@ BEGIN
 
 CREATE TABLE mamba_dim_person_address
 (
-    person_address_id          INT                             NOT NULL AUTO_INCREMENT,
-    external_person_address_id INT,
-    external_person_id         INT,
-    city_village               CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    county_district            CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    address1                   CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    address2                   CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    PRIMARY KEY (person_address_id)
-);
-create index mamba_dim_person_address_external_person_id_index
-    on mamba_dim_person_address (external_person_id);
+    id                INT          NOT NULL AUTO_INCREMENT,
+    person_address_id INT          NOT NULL,
+    person_id         INT          NULL,
+    preferred         TINYINT   NOT NULL,
+    address1          VARCHAR(255) NULL,
+    address2          VARCHAR(255) NULL,
+    city_village      VARCHAR(255) NULL,
+    county_district   VARCHAR(255) NULL,
+    state_province    VARCHAR(255) NULL,
+    postal_code       VARCHAR(50)  NULL,
+    country           VARCHAR(50)  NULL,
+    latitude          VARCHAR(50)  NULL,
+    longitude         VARCHAR(50)  NULL,
+
+    PRIMARY KEY (id)
+)
+    CHARSET = UTF8MB4;
+
+CREATE INDEX mamba_dim_person_address_person_address_id_index
+    ON mamba_dim_person_address (person_address_id);
 
 -- $END
 END~
@@ -1378,18 +1548,30 @@ CREATE PROCEDURE sp_mamba_dim_person_address_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO mamba_dim_person_address (external_person_address_id,
-                                      external_person_id,
+INSERT INTO mamba_dim_person_address (person_address_id,
+                                      person_id,
+                                      preferred,
+                                      address1,
+                                      address2,
                                       city_village,
                                       county_district,
-                                      address1,
-                                      address2)
-SELECT pa.person_address_id AS external_person_address_id,
-       pa.person_id         AS external_person_id,
-       pa.city_village      AS city_village,
-       pa.county_district   AS county_district,
-       pa.address1          AS address1,
-       pa.address2          AS address2
+                                      state_province,
+                                      postal_code,
+                                      country,
+                                      latitude,
+                                      longitude)
+SELECT pa.person_address_id,
+       pa.person_id,
+       pa.preferred,
+       pa.address1,
+       pa.address2,
+       pa.city_village,
+       pa.county_district,
+       pa.state_province,
+       pa.postal_code,
+       pa.country,
+       pa.latitude,
+       pa.longitude
 FROM person_address pa;
 
 -- $END
@@ -1418,82 +1600,61 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_create  ----------------------------
+-- ----------------------  sp_mamba_dim_agegroup_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_create;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_agegroup_create;
 
 ~
-CREATE PROCEDURE sp_dim_client_create()
+CREATE PROCEDURE sp_mamba_dim_agegroup_create()
 BEGIN
 -- $BEGIN
-CREATE TABLE dim_client
+
+CREATE TABLE mamba_dim_agegroup
 (
-    id            INT                             NOT NULL AUTO_INCREMENT,
-    client_id     INT,
-    date_of_birth DATE                            NULL,
-    age           INT,
-    sex           CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    county        CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    sub_county    CHAR(255) CHARACTER SET UTF8MB4 NULL,
-    ward          CHAR(255) CHARACTER SET UTF8MB4 NULL,
+    id              INT         NOT NULL AUTO_INCREMENT,
+    age             INT         NULL,
+    datim_agegroup  VARCHAR(50) NULL,
+    normal_agegroup VARCHAR(50) NULL,
+
     PRIMARY KEY (id)
-);
+)
+    CHARSET = UTF8MB4;
+
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_insert  ----------------------------
+-- ----------------------  sp_mamba_dim_agegroup_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_agegroup_insert;
 
 ~
-CREATE PROCEDURE sp_dim_client_insert()
+CREATE PROCEDURE sp_mamba_dim_agegroup_insert()
 BEGIN
 -- $BEGIN
 
-INSERT INTO dim_client (client_id,
-                        date_of_birth,
-                        age,
-                        sex,
-                        county,
-                        sub_county,
-                        ward)
-SELECT `psn`.`person_id`                             AS `client_id`,
-       `psn`.`birthdate`                             AS `date_of_birth`,
-       timestampdiff(YEAR, `psn`.`birthdate`, now()) AS `age`,
-       (CASE `psn`.`gender`
-            WHEN 'M' THEN 'Male'
-            WHEN 'F' THEN 'Female'
-            ELSE '_'
-           END)                                      AS `sex`,
-       `pa`.`county_district`                        AS `county`,
-       `pa`.`city_village`                           AS `sub_county`,
-       `pa`.`address1`                               AS `ward`
-FROM ((`mamba_dim_person` `psn`
-    LEFT JOIN `mamba_dim_person_name` `pn` on ((`psn`.`external_person_id` = `pn`.`external_person_id`)))
-    LEFT JOIN `mamba_dim_person_address` `pa` on ((`psn`.`external_person_id` = `pa`.`external_person_id`)));
-
-
+-- Enter unknown dimension value (in case a person's date of birth is unknown)
+CALL sp_mamba_load_agegroup();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_update  ----------------------------
+-- ----------------------  sp_mamba_dim_agegroup_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_update;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_agegroup_update;
 
 ~
-CREATE PROCEDURE sp_dim_client_update()
+CREATE PROCEDURE sp_mamba_dim_agegroup_update()
 BEGIN
 -- $BEGIN
 
@@ -1503,67 +1664,58 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client  ----------------------------
+-- ----------------------  sp_mamba_dim_agegroup  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_agegroup;
 
 ~
-CREATE PROCEDURE sp_dim_client()
+CREATE PROCEDURE sp_mamba_dim_agegroup()
 BEGIN
 -- $BEGIN
 
-CALL sp_dim_client_create();
-CALL sp_dim_client_insert();
-CALL sp_dim_client_update();
-
--- $END
+CALL sp_mamba_dim_agegroup_create();
+CALL sp_mamba_dim_agegroup_insert();
+-- CALL sp_mamba_dim_agegroup_update();
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_z_encounter_obs  ----------------------------
+-- ----------------------  sp_mamba_z_encounter_obs_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs;
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_create;
 
 ~
-CREATE PROCEDURE sp_mamba_z_encounter_obs()
+CREATE PROCEDURE sp_mamba_z_encounter_obs_create()
 BEGIN
 -- $BEGIN
 
 CREATE TABLE mamba_z_encounter_obs
 (
-    obs_question_uuid    CHAR(38) CHARACTER SET UTF8MB4,
---    obs_answer_uuid      CHAR(38) CHARACTER SET UTF8MB4,
-    obs_value_coded_uuid CHAR(38) CHARACTER SET UTF8MB4,
-    encounter_type_uuid  CHAR(38) CHARACTER SET UTF8MB4
+    id                      INT           NOT NULL AUTO_INCREMENT,
+    encounter_id            INT           NULL,
+    person_id               INT           NOT NULL,
+    encounter_datetime      DATETIME      NOT NULL,
+    obs_datetime            DATETIME      NOT NULL,
+    obs_question_concept_id INT DEFAULT 0 NOT NULL,
+    obs_value_text          TEXT          NULL,
+    obs_value_numeric       DOUBLE        NULL,
+    obs_value_coded         INT           NULL,
+    obs_value_datetime      DATETIME      NULL,
+    obs_value_complex       VARCHAR(1000) NULL,
+    obs_value_drug          INT           NULL,
+    obs_question_uuid       CHAR(38),
+    obs_answer_uuid         CHAR(38),
+    obs_value_coded_uuid    CHAR(38),
+    encounter_type_uuid     CHAR(38),
+
+    PRIMARY KEY (id)
 )
-SELECT o.encounter_id         AS encounter_id,
-       o.person_id            AS person_id,
-       o.obs_datetime         AS obs_datetime,
-       o.concept_id           AS obs_question_concept_id,
-       o.value_text           AS obs_value_text,
-       o.value_numeric        AS obs_value_numeric,
-       o.value_coded          AS obs_value_coded,
-       o.value_datetime       AS obs_value_datetime,
-       o.value_complex        AS obs_value_complex,
-       o.value_drug           AS obs_value_drug,
-       et.encounter_type_uuid AS encounter_type_uuid,
-       NULL                   AS obs_question_uuid,
---       NULL                   AS obs_answer_uuid,
-       NULL                   AS obs_value_coded_uuid
-FROM obs o
-         INNER JOIN mamba_dim_encounter e
-                    ON o.encounter_id = e.external_encounter_id
-         INNER JOIN mamba_dim_encounter_type et
-                    ON e.external_encounter_type_id = et.external_encounter_type_id
-WHERE et.encounter_type_uuid
-          IN (SELECT DISTINCT(md.encounter_type_uuid)
-              FROM mamba_dim_concept_metadata md);
+    CHARSET = UTF8MB4;
 
 CREATE INDEX mamba_z_encounter_obs_encounter_id_type_uuid_person_id_index
     ON mamba_z_encounter_obs (encounter_id, encounter_type_uuid, person_id);
@@ -1583,21 +1735,88 @@ CREATE INDEX mamba_z_encounter_obs_value_coded_uuid_index
 CREATE INDEX mamba_z_encounter_obs_question_uuid_index
     ON mamba_z_encounter_obs (obs_question_uuid);
 
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_z_encounter_obs_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_insert;
+
+~
+CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
+BEGIN
+-- $BEGIN
+
+INSERT INTO mamba_z_encounter_obs (encounter_id,
+                                   person_id,
+                                   obs_datetime,
+                                   encounter_datetime,
+                                   encounter_type_uuid,
+                                   obs_question_concept_id,
+                                   obs_value_text,
+                                   obs_value_numeric,
+                                   obs_value_coded,
+                                   obs_value_datetime,
+                                   obs_value_complex,
+                                   obs_value_drug,
+                                   obs_question_uuid,
+                                   obs_answer_uuid,
+                                   obs_value_coded_uuid)
+SELECT o.encounter_id,
+       o.person_id,
+       o.obs_datetime,
+       e.encounter_datetime,
+       e.encounter_type_uuid,
+       o.concept_id     AS obs_question_concept_id,
+       o.value_text     AS obs_value_text,
+       o.value_numeric  AS obs_value_numeric,
+       o.value_coded    AS obs_value_coded,
+       o.value_datetime AS obs_value_datetime,
+       o.value_complex  AS obs_value_complex,
+       o.value_drug     AS obs_value_drug,
+       NULL             AS obs_question_uuid,
+       NULL             AS obs_answer_uuid,
+       NULL             AS obs_value_coded_uuid
+FROM obs o
+         INNER JOIN mamba_dim_encounter e
+                    ON o.encounter_id = e.encounter_id
+WHERE o.encounter_id IS NOT NULL;
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_z_encounter_obs_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_update;
+
+~
+CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
+BEGIN
+-- $BEGIN
+
 -- update obs question UUIDs
 UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_dim_concept c
-    ON z.obs_question_concept_id = c.external_concept_id
-SET z.obs_question_uuid = c.uuid
+    INNER JOIN mamba_dim_concept_metadata md
+    ON z.obs_question_concept_id = md.concept_id
+SET z.obs_question_uuid = md.concept_uuid
 WHERE TRUE;
 
--- update obs_value_coded (UUIDs & values)
+-- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_dim_concept_name cn
-    ON z.obs_value_coded = cn.external_concept_id
-    INNER JOIN mamba_dim_concept c
-    ON z.obs_value_coded = c.external_concept_id
-SET z.obs_value_text       = cn.concept_name,
-    z.obs_value_coded_uuid = c.uuid
+    INNER JOIN mamba_dim_concept_metadata md
+    ON z.obs_value_coded = md.concept_id
+SET z.obs_value_text       = md.concept_name,
+    z.obs_value_coded_uuid = md.concept_uuid
 WHERE z.obs_value_coded IS NOT NULL;
 
 -- $END
@@ -1606,18 +1825,20 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_z_tables  ----------------------------
+-- ----------------------  sp_mamba_z_encounter_obs  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_mamba_z_tables;
+DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs;
 
 ~
-CREATE PROCEDURE sp_mamba_z_tables()
+CREATE PROCEDURE sp_mamba_z_encounter_obs()
 BEGIN
 -- $BEGIN
 
-CALL sp_mamba_z_encounter_obs;
+CALL sp_mamba_z_encounter_obs_create();
+CALL sp_mamba_z_encounter_obs_insert();
+CALL sp_mamba_z_encounter_obs_update();
 
 -- $END
 END~
@@ -1625,14 +1846,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_flatten  ----------------------------
+-- ----------------------  sp_mamba_data_processing_flatten  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_flatten;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_flatten;
 
 ~
-CREATE PROCEDURE sp_data_processing_flatten()
+CREATE PROCEDURE sp_mamba_data_processing_flatten()
 BEGIN
 -- $BEGIN
 -- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
@@ -1646,11 +1867,11 @@ CALL sp_mamba_dim_concept_name;
 
 CALL sp_mamba_dim_concept;
 
+CALL sp_mamba_dim_concept_metadata;
+
 CALL sp_mamba_dim_encounter_type;
 
 CALL sp_mamba_dim_encounter;
-
-CALL sp_mamba_dim_concept_metadata;
 
 CALL sp_mamba_dim_person;
 
@@ -1658,87 +1879,87 @@ CALL sp_mamba_dim_person_name;
 
 CALL sp_mamba_dim_person_address;
 
-CALL sp_dim_client;
+CALL sp_mamba_dim_agegroup;
 
-CALL sp_mamba_z_tables;
+CALL sp_mamba_z_encounter_obs;
 
-CALL sp_flat_encounter_table_create_all;
+CALL sp_mamba_flat_encounter_table_create_all;
 
-CALL sp_flat_encounter_table_insert_all;
+CALL sp_mamba_flat_encounter_table_insert_all;
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_derived_covid  ----------------------------
+-- ----------------------  sp_mamba_data_processing_derived_covid  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_covid;
 
 ~
-CREATE PROCEDURE sp_data_processing_derived_covid()
+CREATE PROCEDURE sp_mamba_data_processing_derived_covid()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_covid;
-CALL sp_fact_encounter_covid;
+CALL sp_mamba_dim_client_covid;
+CALL sp_mamba_fact_encounter_covid;
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_derived_hts  ----------------------------
+-- ----------------------  sp_mamba_data_processing_derived_hts  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_hts;
 
 ~
-CREATE PROCEDURE sp_data_processing_derived_hts()
+CREATE PROCEDURE sp_mamba_data_processing_derived_hts()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_hiv_hts;
-CALL sp_fact_encounter_hiv_hts;
+CALL sp_mamba_dim_client_hiv_hts;
+CALL sp_mamba_fact_encounter_hiv_hts;
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_etl  ----------------------------
+-- ----------------------  sp_mamba_data_processing_etl  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_etl;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_etl;
 
 ~
-CREATE PROCEDURE sp_data_processing_etl()
+CREATE PROCEDURE sp_mamba_data_processing_etl()
 BEGIN
 -- $BEGIN
 -- add base folder SP here --
 
 -- Flatten the tables first
-CALL sp_data_processing_flatten();
+CALL sp_mamba_data_processing_flatten();
 
 -- Call the ETL process
-CALL sp_data_processing_derived_hts();
-CALL sp_data_processing_derived_covid();
+CALL sp_mamba_data_processing_derived_hts();
+CALL sp_mamba_data_processing_derived_covid();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_covid_create  ----------------------------
+-- ----------------------  sp_mamba_dim_client_covid_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_covid_create;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_covid_create;
 
 ~
-CREATE PROCEDURE sp_dim_client_covid_create()
+CREATE PROCEDURE sp_mamba_dim_client_covid_create()
 BEGIN
 -- $BEGIN
 CREATE TABLE dim_client_covid
@@ -1759,14 +1980,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_covid_insert  ----------------------------
+-- ----------------------  sp_mamba_dim_client_covid_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_covid_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_covid_insert;
 
 ~
-CREATE PROCEDURE sp_dim_client_covid_insert()
+CREATE PROCEDURE sp_mamba_dim_client_covid_insert()
 BEGIN
 -- $BEGIN
 INSERT INTO dim_client_covid (client_id,
@@ -1783,8 +2004,8 @@ SELECT c.client_id,
        county,
        sub_county,
        ward
-FROM dim_client c
-         INNER JOIN flat_encounter_covid cd
+FROM mamba_dim_client c
+         INNER JOIN mamba_flat_encounter_covid cd
                     ON c.client_id = cd.client_id;
 -- $END
 END~
@@ -1792,14 +2013,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_covid_update  ----------------------------
+-- ----------------------  sp_mamba_dim_client_covid_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_covid_update;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_covid_update;
 
 ~
-CREATE PROCEDURE sp_dim_client_covid_update()
+CREATE PROCEDURE sp_mamba_dim_client_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
@@ -1808,33 +2029,33 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_covid  ----------------------------
+-- ----------------------  sp_mamba_dim_client_covid  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_covid;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_covid;
 
 ~
-CREATE PROCEDURE sp_dim_client_covid()
+CREATE PROCEDURE sp_mamba_dim_client_covid()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_covid_create();
-CALL sp_dim_client_covid_insert();
-CALL sp_dim_client_covid_update();
+CALL sp_mamba_dim_client_covid_create();
+CALL sp_mamba_dim_client_covid_insert();
+CALL sp_mamba_dim_client_covid_update();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_covid_create  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_covid_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_create;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_covid_create;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_covid_create()
+CREATE PROCEDURE sp_mamba_fact_encounter_covid_create()
 BEGIN
 -- $BEGIN
 CREATE TABLE IF NOT EXISTS fact_encounter_covid
@@ -1911,14 +2132,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_covid_insert  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_covid_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_covid_insert;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_covid_insert()
+CREATE PROCEDURE sp_mamba_fact_encounter_covid_insert()
 BEGIN
 -- $BEGIN
 INSERT INTO fact_encounter_covid (encounter_id,
@@ -2061,14 +2282,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_covid_update  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_covid_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_covid_update;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_covid_update;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_covid_update()
+CREATE PROCEDURE sp_mamba_fact_encounter_covid_update()
 BEGIN
 -- $BEGIN
 -- $END
@@ -2077,51 +2298,51 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_covid  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_covid  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_covid;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_covid;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_covid()
+CREATE PROCEDURE sp_mamba_fact_encounter_covid()
 BEGIN
 -- $BEGIN
-CALL sp_fact_encounter_covid_create();
-CALL sp_fact_encounter_covid_insert();
-CALL sp_fact_encounter_covid_update();
+CALL sp_mamba_fact_encounter_covid_create();
+CALL sp_mamba_fact_encounter_covid_insert();
+CALL sp_mamba_fact_encounter_covid_update();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_derived_covid  ----------------------------
+-- ----------------------  sp_mamba_data_processing_derived_covid  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_derived_covid;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_covid;
 
 ~
-CREATE PROCEDURE sp_data_processing_derived_covid()
+CREATE PROCEDURE sp_mamba_data_processing_derived_covid()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_covid;
-CALL sp_fact_encounter_covid;
+CALL sp_mamba_dim_client_covid;
+CALL sp_mamba_fact_encounter_covid;
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_hiv_hts_create  ----------------------------
+-- ----------------------  sp_mamba_dim_client_hiv_hts_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_create;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_hiv_hts_create;
 
 ~
-CREATE PROCEDURE sp_dim_client_hiv_hts_create()
+CREATE PROCEDURE sp_mamba_dim_client_hiv_hts_create()
 BEGIN
 -- $BEGIN
 CREATE TABLE IF NOT EXISTS dim_client_hiv_hts
@@ -2142,14 +2363,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_hiv_hts_insert  ----------------------------
+-- ----------------------  sp_mamba_dim_client_hiv_hts_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_hiv_hts_insert;
 
 ~
-CREATE PROCEDURE sp_dim_client_hiv_hts_insert()
+CREATE PROCEDURE sp_mamba_dim_client_hiv_hts_insert()
 BEGIN
 -- $BEGIN
 INSERT INTO dim_client_hiv_hts (client_id,
@@ -2175,14 +2396,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_hiv_hts_update  ----------------------------
+-- ----------------------  sp_mamba_dim_client_hiv_hts_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts_update;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_hiv_hts_update;
 
 ~
-CREATE PROCEDURE sp_dim_client_hiv_hts_update()
+CREATE PROCEDURE sp_mamba_dim_client_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
@@ -2191,33 +2412,33 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_dim_client_hiv_hts  ----------------------------
+-- ----------------------  sp_mamba_dim_client_hiv_hts  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_dim_client_hiv_hts;
+DROP PROCEDURE IF EXISTS sp_mamba_dim_client_hiv_hts;
 
 ~
-CREATE PROCEDURE sp_dim_client_hiv_hts()
+CREATE PROCEDURE sp_mamba_dim_client_hiv_hts()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_hiv_hts_create();
-CALL sp_dim_client_hiv_hts_insert();
-CALL sp_dim_client_hiv_hts_update();
+CALL sp_mamba_dim_client_hiv_hts_create();
+CALL sp_mamba_dim_client_hiv_hts_insert();
+CALL sp_mamba_dim_client_hiv_hts_update();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_hiv_hts_create  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_hiv_hts_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_create;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_hiv_hts_create;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_hiv_hts_create()
+CREATE PROCEDURE sp_mamba_fact_encounter_hiv_hts_create()
 BEGIN
 -- $BEGIN
 CREATE TABLE fact_encounter_hiv_hts
@@ -2268,14 +2489,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_hiv_hts_insert  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_hiv_hts_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_hiv_hts_insert;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_hiv_hts_insert()
+CREATE PROCEDURE sp_mamba_fact_encounter_hiv_hts_insert()
 BEGIN
 -- $BEGIN
 INSERT INTO fact_encounter_hiv_hts (encounter_id,
@@ -2399,14 +2620,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_hiv_hts_update  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_hiv_hts_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts_update;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_hiv_hts_update;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_hiv_hts_update()
+CREATE PROCEDURE sp_mamba_fact_encounter_hiv_hts_update()
 BEGIN
 -- $BEGIN
 -- $END
@@ -2415,33 +2636,33 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_encounter_hiv_hts  ----------------------------
+-- ----------------------  sp_mamba_fact_encounter_hiv_hts  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_encounter_hiv_hts;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_encounter_hiv_hts;
 
 ~
-CREATE PROCEDURE sp_fact_encounter_hiv_hts()
+CREATE PROCEDURE sp_mamba_fact_encounter_hiv_hts()
 BEGIN
 -- $BEGIN
-CALL sp_fact_encounter_hiv_hts_create();
-CALL sp_fact_encounter_hiv_hts_insert();
-CALL sp_fact_encounter_hiv_hts_update();
+CALL sp_mamba_fact_encounter_hiv_hts_create();
+CALL sp_mamba_fact_encounter_hiv_hts_insert();
+CALL sp_mamba_fact_encounter_hiv_hts_update();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_txcurr_create  ----------------------------
+-- ----------------------  sp_mamba_fact_txcurr_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_txcurr_create;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_txcurr_create;
 
 ~
-CREATE PROCEDURE sp_fact_txcurr_create()
+CREATE PROCEDURE sp_mamba_fact_txcurr_create()
 BEGIN
 -- $BEGIN
 CREATE TABLE mamba_fact_txcurr
@@ -2492,14 +2713,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_txcurr_insert  ----------------------------
+-- ----------------------  sp_mamba_fact_txcurr_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_txcurr_insert;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_txcurr_insert;
 
 ~
-CREATE PROCEDURE sp_fact_txcurr_insert()
+CREATE PROCEDURE sp_mamba_fact_txcurr_insert()
 BEGIN
 -- $BEGIN
 INSERT INTO mamba_fact_txcurr (encounter_id,
@@ -2623,14 +2844,14 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_txcurr_update  ----------------------------
+-- ----------------------  sp_mamba_fact_txcurr_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_txcurr_update;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_txcurr_update;
 
 ~
-CREATE PROCEDURE sp_fact_txcurr_update()
+CREATE PROCEDURE sp_mamba_fact_txcurr_update()
 BEGIN
 -- $BEGIN
 -- $END
@@ -2639,26 +2860,26 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_txcurr  ----------------------------
+-- ----------------------  sp_mamba_fact_txcurr  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_fact_txcurr;
+DROP PROCEDURE IF EXISTS sp_mamba_fact_txcurr;
 
 ~
-CREATE PROCEDURE sp_fact_txcurr()
+CREATE PROCEDURE sp_mamba_fact_txcurr()
 BEGIN
 -- $BEGIN
-CALL sp_fact_txcurr_create();
-CALL sp_fact_txcurr_insert();
-CALL sp_fact_txcurr_update();
+CALL sp_mamba_fact_txcurr_create();
+CALL sp_mamba_fact_txcurr_insert();
+CALL sp_mamba_fact_txcurr_update();
 -- $END
 END~
 
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_txcurr_query  ----------------------------
+-- ----------------------  sp_mamba_fact_txcurr_query  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
@@ -2666,18 +2887,18 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_data_processing_derived_hts  ----------------------------
+-- ----------------------  sp_mamba_data_processing_derived_hts  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
 
-DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_hts;
 
 ~
-CREATE PROCEDURE sp_data_processing_derived_hts()
+CREATE PROCEDURE sp_mamba_data_processing_derived_hts()
 BEGIN
 -- $BEGIN
-CALL sp_dim_client_hiv_hts;
-CALL sp_fact_encounter_hiv_hts;
+CALL sp_mamba_dim_client_hiv_hts;
+CALL sp_mamba_fact_encounter_hiv_hts;
 -- $END
 END~
 
