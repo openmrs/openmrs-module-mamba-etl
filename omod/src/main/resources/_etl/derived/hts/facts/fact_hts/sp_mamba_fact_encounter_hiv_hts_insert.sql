@@ -113,5 +113,5 @@ SELECT hts.encounter_id,
        recency_test_type,
        recency_vl_result,
        recency_rtri_result
-FROM `flat_encounter_hts` `hts`;
+FROM `mamba_flat_encounter_hts` `hts`;
 -- $END
