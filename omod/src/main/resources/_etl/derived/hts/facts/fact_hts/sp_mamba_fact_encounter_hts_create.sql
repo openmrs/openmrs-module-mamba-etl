@@ -1,9 +1,11 @@
 -- $BEGIN
-CREATE TABLE fact_encounter_hiv_hts
+CREATE TABLE mamba_fact_encounter_hts
 (
     id                        INT AUTO_INCREMENT,
     encounter_id              INT           NULL,
     client_id                 INT           NULL,
+    encounter_date            DATETIME          NULL,
+
     date_tested               DATE          NULL,
     consent                   NVARCHAR(7)   NULL,
     community_service_point   NVARCHAR(255) NULL,
@@ -39,7 +41,9 @@ CREATE TABLE fact_encounter_hiv_hts
     recency_test_type         NVARCHAR(255) NULL,
     recency_vl_result         NVARCHAR(50)  NULL,
     recency_rtri_result       NVARCHAR(50)  NULL,
+
     PRIMARY KEY (id)
-);
+)
+    CHARSET = UTF8MB4;
 -- $END
 
