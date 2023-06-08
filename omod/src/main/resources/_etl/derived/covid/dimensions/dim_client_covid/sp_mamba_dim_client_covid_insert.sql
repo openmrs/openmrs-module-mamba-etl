@@ -13,7 +13,7 @@ SELECT c.client_id,
        county,
        sub_county,
        ward
-FROM dim_client c
-         INNER JOIN flat_encounter_covid cd
+FROM mamba_dim_client c
+         INNER JOIN mamba_flat_encounter_covid cd
                     ON c.client_id = cd.client_id;
 -- $END

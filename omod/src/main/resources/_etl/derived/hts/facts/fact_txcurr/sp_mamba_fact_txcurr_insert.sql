@@ -1,5 +1,5 @@
 -- $BEGIN
-INSERT INTO fact_encounter_hiv_hts (encounter_id,
+INSERT INTO mamba_fact_txcurr (encounter_id,
                                     client_id,
                                     date_tested,
                                     consent,

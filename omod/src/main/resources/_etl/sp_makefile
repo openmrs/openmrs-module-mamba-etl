@@ -6,10 +6,10 @@
 #############################################################################
 ############################ derived folder SPs  ############################
 #############################################################################
-derived/covid/sp_data_processing_derived_covid.sql
-derived/hts/sp_data_processing_derived_hts.sql
+derived/covid/sp_mamba_data_processing_derived_covid.sql
+derived/hts/sp_mamba_data_processing_derived_hts.sql
 
 #############################################################################
 ##### A single SP that CALLs all SPs inside the derived & base folders ######
 #############################################################################
-sp_data_processing_etl.sql
+sp_mamba_data_processing_etl.sql
