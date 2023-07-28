@@ -1,0 +1,5 @@
+-- $BEGIN
+CALL sp_mamba_fact_pregnant_women_create();
+CALL sp_mamba_fact_pregnant_women_insert();
+CALL sp_mamba_fact_pregnant_women_update();
+-- $END
