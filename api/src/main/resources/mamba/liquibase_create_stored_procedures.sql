@@ -448,9 +448,10 @@ BEGIN
             @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
-                ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
+                ON cm.concept_uuid=eo.obs_question_uuid
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
+            AND eo.row_num = cm.row_num
             GROUP BY eo.encounter_id, eo.person_id, eo.encounter_datetime;');
 
     PREPARE inserttbl FROM @insert_stmt;
@@ -1505,6 +1506,7 @@ CREATE TABLE mamba_dim_concept_metadata
     report_name         VARCHAR(255) NOT NULL,
     flat_table_name     VARCHAR(255) NULL,
     encounter_type_uuid CHAR(38)     NOT NULL,
+    row_num             INT          NULL DEFAULT 1,
 
     PRIMARY KEY (id)
 )
@@ -1616,7 +1618,7 @@ BEGIN
           "mothers_health_status": "1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "labor_delivery_child_1": "8fe7ad7a-494d-4799-bf72-9f58fbdae221",
           "labor_delivery_child_2": "8fe7ad7a-494d-4799-bf72-9f58fbdae222",
-          "stillbirth": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_start_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "reason_for_declining_hiv_test": "159803AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -1629,8 +1631,10 @@ BEGIN
           "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
           "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
           "missing_art_number": "43cb14fe-6f06-4b40-81f0-a712b805a74d",
-          "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0"
-     }
+          "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0",
+          "child_two_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "child_two_delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  }
 },
   {
   "report_name": "MotherPostnatal_Register",
@@ -1691,6 +1695,17 @@ UPDATE mamba_dim_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
     ON md.concept_id = ca.answer_concept
 SET md.concept_answer_obs = 1
+WHERE md.id > 0;
+
+-- Update row number
+UPDATE mamba_dim_concept_metadata md
+INNER JOIN (
+    SELECT
+        id,
+        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
+    FROM mamba_dim_concept_metadata)m
+ON md.id = m.id
+SET md.row_num = num
 WHERE md.id > 0;
 
 -- $END
@@ -2587,6 +2602,7 @@ CREATE TABLE mamba_z_encounter_obs
     encounter_type_uuid     CHAR(38),
     status                  VARCHAR(16)   NOT NULL,
     voided                  TINYINT       NOT NULL,
+    row_num                 INT           NULL,
 
     PRIMARY KEY (id)
 )
@@ -2651,7 +2667,8 @@ INSERT INTO mamba_z_encounter_obs
         obs_answer_uuid,
         obs_value_coded_uuid,
         status,
-        voided
+        voided,
+        row_num
     )
     SELECT o.encounter_id,
            o.person_id,
@@ -2669,7 +2686,8 @@ INSERT INTO mamba_z_encounter_obs
            NULL             AS obs_answer_uuid,
            NULL             AS obs_value_coded_uuid,
            o.status,
-           o.voided
+           o.voided,
+           ROW_NUMBER()OVER(PARTITION BY person_id,encounter_id,concept_id)
     FROM obs o
              INNER JOIN mamba_dim_encounter e
                         ON o.encounter_id = e.encounter_id
@@ -2701,14 +2719,14 @@ WHERE TRUE;
 
 -- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_dim_concept_name cn
-    ON z.obs_value_coded = cn.concept_id
+    INNER JOIN mamba_dim_concept_name md
+    ON z.obs_value_coded = md.concept_id
     INNER JOIN mamba_dim_concept c
-    ON z.obs_value_coded = c.concept_id
-SET z.obs_value_text       = cn.name,
+    ON c.concept_id = md.concept_id
+SET z.obs_value_text       = md.name,
     z.obs_value_coded_uuid = c.uuid
-WHERE z.obs_value_coded IS NOT NULL
-;
+WHERE z.obs_value_coded IS NOT NULL;
+
 
 -- $END
 END~
@@ -3980,6 +3998,23 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_exposedinfants_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_query;
+
+~
+CREATE PROCEDURE sp_mamba_fact_exposedinfants_query()
+BEGIN
+-- $BEGIN
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_fact_exposedinfants  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -3993,6 +4028,7 @@ BEGIN
 CALL sp_mamba_fact_exposedinfants_create();
 CALL sp_mamba_fact_exposedinfants_insert();
 CALL sp_mamba_fact_exposedinfants_update();
+CALL sp_mamba_fact_exposedinfants_query();
 -- $END
 END~
 
@@ -4143,6 +4179,24 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_pregnant_women_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_query;
+
+~
+CREATE PROCEDURE sp_mamba_fact_pregnant_women_query()
+BEGIN
+-- $BEGIN
+
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_fact_pregnant_women  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -4156,6 +4210,7 @@ BEGIN
 CALL sp_mamba_fact_pregnant_women_create();
 CALL sp_mamba_fact_pregnant_women_insert();
 CALL sp_mamba_fact_pregnant_women_update();
+CALL sp_mamba_fact_pregnant_women_query();
 -- $END
 END~
 
