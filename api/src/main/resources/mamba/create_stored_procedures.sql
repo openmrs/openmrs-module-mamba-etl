@@ -458,7 +458,7 @@ BEGIN
             @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
-                ON cm.concept_uuid=eo.obs_question_uuid
+                ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
             AND eo.row_num = cm.row_num
