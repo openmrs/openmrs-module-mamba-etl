@@ -10,8 +10,8 @@
 
     <artifactId>ohrimamba-api</artifactId>
     <packaging>jar</packaging>
-    <name>OHRIMamba API</name>
-    <description>API project for OHRIMamba</description>
+    <name>MambaETL Reference module - API</name>
+    <description>OpenMRS MambaETL Reference module - API</description>
 
     <dependencies>
 

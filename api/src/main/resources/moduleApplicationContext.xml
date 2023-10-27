@@ -25,29 +25,4 @@
 
     <context:component-scan base-package="org.openmrs.module.ohrimamba"/>
 
-    <bean id="flattenDatabaseDao" class="org.openmrs.module.ohrimamba.api.dao.impl.HibernateFlattenDatabaseDao">
-        <property name="sessionFactory" ref="dbSessionFactory"/>
-    </bean>
-
-    <bean id="flattenDatabaseService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="target">
-            <bean class="org.openmrs.module.ohrimamba.api.impl.FlattenDatabaseServiceImpl">
-                <property name="dao" ref="flattenDatabaseDao"/>
-            </bean>
-        </property>
-        <property name="preInterceptors" ref="serviceInterceptors"/>
-        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
-    </bean>
-
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.openmrs.module.ohrimamba.api.FlattenDatabaseService</value>
-                <ref bean="flattenDatabaseService"/>
-            </list>
-        </property>
-    </bean>
-
 </beans>

@@ -31,11 +31,17 @@
     </modules>
 
     <properties>
-        <openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.3.4-SNAPSHOT</openmrsPlatformVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
+        <version.mysql-connector>8.0.33</version.mysql-connector>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
         <mambaETLversion>2.0.1-SNAPSHOT</mambaETLversion>
+        <MODULE_ID>${project.parent.artifactId}</MODULE_ID>
+        <MODULE_NAME>MambaETL Reference Module</MODULE_NAME>
+        <MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
+
     </properties>
 
     <dependencyManagement>
@@ -92,6 +98,15 @@
                     <artifactId>powermock-api-mockito2</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${version.mysql-connector}</version>
+            <!--            <artifactId>mysql-connector-java</artifactId>-->
+            <!--            <version>5.1.45</version>-->
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
@@ -344,6 +359,42 @@
             </plugins>
 
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.openmrs.maven.plugins</groupId>
+                <artifactId>openmrs-dependency-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>retrieve-versions</goal>
+                            <goal>create-versions</goal>
+                            <goal>compare-versions</goal>
+                            <goal>attach-versions</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <configuration>
+                            <propertyPrefix>omrsVersion</propertyPrefix>
+                            <versionString>${openMRSVersion}</versionString>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
     </build>
 
     <repositories>
@@ -352,6 +403,7 @@
             <id>openmrs-repo</id>
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+            <!-- <url>https://openmrs.jfrog.io/artifactory/public/</url> -->
         </repository>
 
         <repository>
@@ -369,8 +421,9 @@
             <id>openmrs-repo</id>
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+            <!-- <url>https://openmrs.jfrog.io/artifactory/public/</url>-->
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
 
