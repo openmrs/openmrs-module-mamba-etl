@@ -42,11 +42,22 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 		    60 * 60 * 12L, false);
 	}
 	
+	@Override
+	public void stopped() {
+		log.info("Stopped MambaETL Reference Module");
+	}
+	
 	/**
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
 		log.info("Shutdown MambaETL Reference Module");
+		System.out.println("Shutdown MambaETL Reference Module");
+	}
+	
+	public void willRefreshContext() {
+		log.info("willRefreshContext MambaETL Reference Module");
+		System.out.println("willRefreshContext MambaETL Reference Module");
 	}
 	
 	/**

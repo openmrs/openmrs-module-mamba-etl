@@ -31,7 +31,7 @@
     </modules>
 
     <properties>
-        <openmrsPlatformVersion>2.3.4-SNAPSHOT</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.3.2</openmrsPlatformVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
         <version.mysql-connector>8.0.33</version.mysql-connector>
         <junit5Version>5.7.2</junit5Version>
