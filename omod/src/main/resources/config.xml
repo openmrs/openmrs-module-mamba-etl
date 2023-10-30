@@ -2,15 +2,20 @@
 
 <module configVersion="1.2">
 
-    <!-- Base Module Properties -->
+    <!-- MambaETL Reference Module Properties -->
+    <!--    <id>@MODULE_ID@</id>-->
+    <!--    <name>@MODULE_NAME@</name>-->
+    <!--    <version>@MODULE_VERSION@</version>-->
+    <!--	<package>@MODULE_PACKAGE@</package>-->
     <id>${project.parent.artifactId}</id>
     <name>${project.parent.name}</name>
     <version>${project.parent.version}</version>
     <package>org.openmrs.module.ohrimamba</package>
-    <author>Arthur D. Mugume [OHRI]</author>
+    <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]</author>
     <description>${project.parent.description}</description>
 
     <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
+    <!--    <activator>@MODULE_PACKAGE@.OHRIMambaActivator</activator>-->
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
@@ -33,5 +38,28 @@
         <file>messages_es.properties</file>
     </messages>
 
-</module>
+    <globalProperty>
+        <property>mambaetl.analysis.db.url</property>
+        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true</defaultValue>
+        <description>JDBC Connection string</description>
+    </globalProperty>
 
+    <globalProperty>
+        <property>mambaetl.analysis.db.username</property>
+        <defaultValue>mamba</defaultValue>
+        <description>MambaETL username</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>mambaetl.analysis.db.password</property>
+        <defaultValue>4#edRmgaF+k?</defaultValue>
+        <description>MambaETL user password</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>mambaetl.analysis.db.driver</property>
+        <defaultValue>com.mysql.jdbc.Driver</defaultValue>
+        <description>MambaETL JDBC driver</description>
+    </globalProperty>
+
+</module>
