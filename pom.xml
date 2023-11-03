@@ -31,7 +31,7 @@
     </modules>
 
     <properties>
-        <openmrsPlatformVersion>2.3.2</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.6.0</openmrsPlatformVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
         <version.mysql-connector>8.0.33</version.mysql-connector>
         <junit5Version>5.7.2</junit5Version>
@@ -48,6 +48,44 @@
         <dependencies>
 
             <dependency>
+                <groupId>org.openmrs.api</groupId>
+                <artifactId>openmrs-api</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.api</groupId>
+                <artifactId>openmrs-api</artifactId>
+                <type>test-jar</type>
+                <version>${openmrsPlatformVersion}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.api</groupId>
+                <artifactId>openmrs-api</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.web</groupId>
+                <artifactId>openmrs-web</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.web</groupId>
+                <artifactId>openmrs-web</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>legacyui-omod</artifactId>
                 <version>${legacyUIomodVersion}</version>
@@ -57,63 +95,9 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
-            <version>${openmrsPlatformVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
-            <type>test-jar</type>
-            <version>${openmrsPlatformVersion}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
-            <version>${openmrsPlatformVersion}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.test</groupId>
-            <artifactId>openmrs-test</artifactId>
-            <type>pom</type>
-            <version>${openmrsPlatformVersion}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.powermock</groupId>
-                    <artifactId>powermock-module-junit4</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.powermock</groupId>
-                    <artifactId>powermock-api-mockito2</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <version>${version.mysql-connector}</version>
-            <!--            <artifactId>mysql-connector-java</artifactId>-->
-            <!--            <version>5.1.45</version>-->
-            <scope>runtime</scope>
-        </dependency>
-
-    </dependencies>
-
     <build>
 
-        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
+        <!--<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>-->
 
         <pluginManagement>
 
@@ -248,7 +232,7 @@
                                     <argument>compile.sh</argument>
 
                                     <!-- The source database (OpenMRS database) -->
-                                    <argument>-d kibagabaga</argument>
+                                    <argument>-d openmrs</argument>
 
                                     <!-- The target or analysis Database where the ETL data is stored -->
                                     <argument>-a analysis_db</argument>
@@ -388,7 +372,7 @@
                         </goals>
                         <configuration>
                             <propertyPrefix>omrsVersion</propertyPrefix>
-                            <versionString>${openMRSVersion}</versionString>
+                            <versionString>${openmrsPlatformVersion}</versionString>
                         </configuration>
                     </execution>
                 </executions>

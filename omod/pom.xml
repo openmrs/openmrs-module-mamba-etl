@@ -17,6 +17,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.openmrs.api</groupId>
+            <artifactId>openmrs-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-api</artifactId>
             <version>${project.parent.version}</version>
@@ -38,12 +43,6 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>legacyui-omod</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-omod</artifactId>
-            <version>${mambaETLversion}</version>
         </dependency>
 
     </dependencies>

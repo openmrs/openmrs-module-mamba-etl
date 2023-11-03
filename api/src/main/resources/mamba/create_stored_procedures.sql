@@ -1013,7 +1013,7 @@ SELECT location_id,
        address13,
        address14,
        address15
-FROM kibagabaga.location;
+FROM openmrs.location;
 
 -- $END
 END //
@@ -1120,7 +1120,7 @@ SELECT patient_identifier_type_id,
        name,
        description,
        uuid
-FROM kibagabaga.patient_identifier_type;
+FROM openmrs.patient_identifier_type;
 
 -- $END
 END //
@@ -1215,7 +1215,7 @@ INSERT INTO mamba_dim_concept_datatype (concept_datatype_id,
                                         datatype_name)
 SELECT dt.concept_datatype_id AS concept_datatype_id,
        dt.name                AS datatype_name
-FROM kibagabaga.concept_datatype dt;
+FROM openmrs.concept_datatype dt;
 -- WHERE dt.retired = 0;
 
 -- $END
@@ -1308,7 +1308,7 @@ SELECT c.uuid        AS uuid,
        c.concept_id  AS concept_id,
        c.datatype_id AS datatype_id,
        c.retired
-FROM kibagabaga.concept c;
+FROM openmrs.concept c;
 -- WHERE c.retired = 0;
 
 -- $END
@@ -1419,7 +1419,7 @@ SELECT ca.concept_answer_id AS concept_answer_id,
        ca.concept_id        AS concept_id,
        ca.answer_concept    AS answer_concept,
        ca.answer_drug       AS answer_drug
-FROM kibagabaga.concept_answer ca;
+FROM openmrs.concept_answer ca;
 
 -- $END
 END //
@@ -1519,7 +1519,7 @@ SELECT cn.concept_name_id,
        cn.locale,
        cn.locale_preferred,
        cn.concept_name_type
-FROM kibagabaga.concept_name cn
+FROM openmrs.concept_name cn
  WHERE cn.locale = 'en'
   AND cn.locale_preferred = 1
     AND cn.voided = 0;
@@ -1604,7 +1604,7 @@ INSERT INTO mamba_dim_encounter_type (encounter_type_id,
 SELECT et.encounter_type_id,
        et.uuid,
        et.name
-FROM kibagabaga.encounter_type et;
+FROM openmrs.encounter_type et;
 -- WHERE et.retired = 0;
 
 -- $END
@@ -1720,7 +1720,7 @@ SELECT e.encounter_id,
        e.date_created,
        e.voided,
        e.visit_id
-FROM kibagabaga.encounter e
+FROM openmrs.encounter e
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
@@ -2287,7 +2287,7 @@ SELECT psn.person_id,
                                                                     AS person_name_long,
        psn.uuid,
        psn.voided
-FROM kibagabaga.person psn
+FROM openmrs.person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
@@ -2418,7 +2418,7 @@ SELECT patient_id,
        date_created,
        uuid,
        voided
-FROM kibagabaga.patient_identifier;
+FROM openmrs.patient_identifier;
 
 -- $END
 END //
@@ -2550,7 +2550,7 @@ SELECT pn.person_name_id,
        pn.family_name_suffix,
        pn.degree,
        pn.voided
-FROM kibagabaga.person_name pn;
+FROM openmrs.person_name pn;
 -- $END
 END //
 
@@ -2673,7 +2673,7 @@ SELECT person_address_id,
        country,
        latitude,
        longitude
-FROM kibagabaga.person_address;
+FROM openmrs.person_address;
 
 -- $END
 END //
@@ -2787,7 +2787,7 @@ BEGIN
             retire_reason,
             uuid,
             email
-        FROM kibagabaga.users c;
+        FROM openmrs.users c;
 -- $END
 END //
 
@@ -2924,7 +2924,7 @@ SELECT
     date_voided,
     void_reason,
     uuid
-FROM kibagabaga.relationship;
+FROM openmrs.relationship;
 
 -- $END
 END //
@@ -3096,7 +3096,7 @@ SELECT order_id,
        sort_weight,
        fulfiller_comment,
        fulfiller_status
-FROM kibagabaga.orders;
+FROM openmrs.orders;
 
 -- $END
 END //
@@ -3383,7 +3383,7 @@ SELECT o.encounter_id,
        o.status,
        o.voided,
        ROW_NUMBER() OVER (PARTITION BY person_id,encounter_id,concept_id)
-FROM kibagabaga.obs o
+FROM openmrs.obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
 WHERE o.encounter_id IS NOT NULL;

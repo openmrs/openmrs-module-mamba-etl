@@ -16,6 +16,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.openmrs.api</groupId>
+            <artifactId>openmrs-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
@@ -24,13 +29,6 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>ohrimamba-core-api</artifactId>
-            <version>${mambaETLversion}</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-api-2.1</artifactId>
             <version>${mambaETLversion}</version>
             <type>jar</type>
         </dependency>
