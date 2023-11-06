@@ -149,120 +149,6 @@ DELIMITER ;
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  fn_mamba_age_calculator  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
-
-CREATE FUNCTION fn_mamba_age_calculator (birthdate DATE,deathDate DATE) RETURNS  Integer
-    DETERMINISTIC
-BEGIN
-    DECLARE onDate DATE;
-    DECLARE today DATE;
-    DECLARE bday DATE;
-    DECLARE age INT;
-    DECLARE todaysMonth INT;
-    DECLARE bdayMonth INT;
-    DECLARE todaysDay INT;
-    DECLARE bdayDay INT;
-
-    SET onDate = NULL ;
-
-    IF birthdate IS NULL THEN
-        RETURN NULL;
-    ELSE
-        SET today = CURDATE();
-
-        IF onDate IS NOT NULL THEN
-            SET today = onDate;
-        END IF;
-
-        IF deathDate IS NOT NULL AND today > deathDate THEN
-            SET today = deathDate;
-        END IF;
-
-        SET bday = birthdate;
-        SET age = YEAR(today) - YEAR(bday);
-        SET todaysMonth = MONTH(today);
-        SET bdayMonth = MONTH(bday);
-        SET todaysDay = DAY(today);
-        SET bdayDay = DAY(bday);
-
-        IF todaysMonth < bdayMonth THEN
-            SET age = age - 1;
-        ELSEIF todaysMonth = bdayMonth AND todaysDay < bdayDay THEN
-            SET age = age - 1;
-        END IF;
-
-        RETURN age;
-    END IF;
-END;
-
-
-DELIMITER ;
-
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  fn_mamba_age_calculator  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
-
-CREATE FUNCTION fn_mamba_age_calculator (birthdate DATE,deathDate DATE) RETURNS  Integer
-    DETERMINISTIC
-BEGIN
-    DECLARE onDate DATE;
-    DECLARE today DATE;
-    DECLARE bday DATE;
-    DECLARE age INT;
-    DECLARE todaysMonth INT;
-    DECLARE bdayMonth INT;
-    DECLARE todaysDay INT;
-    DECLARE bdayDay INT;
-
-    SET onDate = NULL ;
-
-    IF birthdate IS NULL THEN
-        RETURN NULL;
-    ELSE
-        SET today = CURDATE();
-
-        IF onDate IS NOT NULL THEN
-            SET today = onDate;
-        END IF;
-
-        IF deathDate IS NOT NULL AND today > deathDate THEN
-            SET today = deathDate;
-        END IF;
-
-        SET bday = birthdate;
-        SET age = YEAR(today) - YEAR(bday);
-        SET todaysMonth = MONTH(today);
-        SET bdayMonth = MONTH(bday);
-        SET todaysDay = DAY(today);
-        SET bdayDay = DAY(bday);
-
-        IF todaysMonth < bdayMonth THEN
-            SET age = age - 1;
-        ELSEIF todaysMonth = bdayMonth AND todaysDay < bdayDay THEN
-            SET age = age - 1;
-        END IF;
-
-        RETURN age;
-    END IF;
-END;
-
-
-DELIMITER ;
-
-
-        
--- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_xf_system_drop_all_functions_in_schema  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -581,7 +467,7 @@ BEGIN
             @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
-                ON cm.concept_uuid=eo.obs_question_uuid
+                ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
             AND eo.row_num = cm.row_num
@@ -1234,15 +1120,7 @@ SELECT patient_identifier_type_id,
        name,
        description,
        uuid
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 FROM openmrs.patient_identifier_type;
-=======
-FROM patient_identifier_type;
->>>>>>> Stashed changes
-=======
-FROM patient_identifier_type;
->>>>>>> Stashed changes
 
 -- $END
 END //
@@ -1967,11 +1845,7 @@ CREATE PROCEDURE sp_mamba_dim_concept_metadata_insert()
 BEGIN
       -- $BEGIN
 
-<<<<<<< Updated upstream
       SET @report_data = '{"flat_report_metadata":[{
-=======
-  SET @report_data = '{"flat_report_metadata":[
-  {
   "report_name": "PMTCT Infant Postnatal visit",
   "flat_table_name": "mamba_flat_encounter_pmtct_infant_postnatal",
   "encounter_type_uuid": "af1f1b24-d2e8-4282-b308-0bf79b365584",
@@ -1996,8 +1870,7 @@ BEGIN
         "confirmatory_test_performed_on_this_vist": "8c2b3506-5b77-4916-a5c8-677a37a65007",
         "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed"
       }
-},
-  {
+},{
   "report_name": "PMTCT ANC visit",
   "flat_table_name": "mamba_flat_encounter_pmtct_anc",
   "encounter_type_uuid": "677d1a80-dbbe-4399-be34-aa7f54f11405",
@@ -2024,12 +1897,7 @@ BEGIN
     "missing": "54b96458-6585-4c4c-a5b1-b3ca7f1be351",
     "ptracker_id": "6c45421e-2566-47cb-bbb3-07586fffbfe2"
   }
-},
-  {
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+},{
   "report_name": "ART_Register",
   "flat_table_name": "mamba_flat_encounter_art_card",
   "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f" ,
@@ -2150,8 +2018,7 @@ BEGIN
     "referred_disclosure_support": "846a63c0-4530-4008-b6a1-12201b9e0b88",
     "is_referred_other_support": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
-},
-  {
+},{
   "report_name": "LaborandDelivery_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_labor_delivery",
   "encounter_type_uuid": "6dc5308d-27c9-4d49-b16f-2c5e3c759757" ,
@@ -2183,8 +2050,7 @@ BEGIN
           "child_two_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "child_two_delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
-},
-  {
+},{
   "report_name": "Mamba Tester Report",
   "flat_table_name": "mamba_flat_encounter_mamba_tester",
   "encounter_type_uuid": "498289e5-a59e-4be2-a089-eea3e87c0c26" ,
@@ -2198,8 +2064,7 @@ BEGIN
     "p_datapoints": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
     "p_gender": "e3fc99e4-b46d-4eab-906f-2de1a49306bf"
   }
-},
-  {
+},{
   "report_name": "MotherPostnatal_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_mother_postnatal",
   "encounter_type_uuid": "a4362fd2d-1866-4ea0-84ef-5e5da9627440" ,
@@ -2217,51 +2082,6 @@ BEGIN
         "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
         "missing_reason_for_refusing_art_initiation": "0117ec63-6fc8-4b37-99e9-7f6d99652852"
     }
-},
-  {
-  "report_definitions": [
-    {
-      "report_name": "MCH Mother HIV Status",
-      "report_id": "mother_hiv_status",
-      "report_sql": {
-        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
-        "query_params": [
-          {
-            "name": "ptracker_id",
-            "type": "VARCHAR(255)"
-          },
-          {
-            "name": "person_uuid",
-            "type": "VARCHAR(255)"
-          }
-        ]
-      }
-    },
-    {
-      "report_name": "MCH Total Deliveries",
-      "report_id": "total_deliveries",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''6dc5308d-27c9-4d49-b16f-2c5e3c759757'' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
-        "query_params": []
-      }
-    },
-    {
-      "report_name": "MCH HIV-Exposed Infants",
-      "report_id": "hiv_exposed_infants",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE()",
-        "query_params": []
-      }
-    },
-    {
-      "report_name": "MCH Total Pregnant women",
-      "report_id": "total_pregnant_women",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) AS total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type like 'New%' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
-        "query_params": []
-      }
-    }
-  ]
 }]}';
 
       CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
@@ -2319,28 +2139,6 @@ UPDATE mamba_dim_concept_metadata md
                        ROW_NUMBER() OVER (PARTITION BY flat_table_name,concept_id ORDER BY id ASC) num
                 FROM mamba_dim_concept_metadata) m
     ON md.id = m.id
-SET md.row_num = num
-WHERE md.id > 0;
-
--- Update row number
-UPDATE mamba_dim_concept_metadata md
-INNER JOIN (
-    SELECT
-        id,
-        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
-    FROM mamba_dim_concept_metadata)m
-ON md.id = m.id
-SET md.row_num = num
-WHERE md.id > 0;
-
--- Update row number
-UPDATE mamba_dim_concept_metadata md
-INNER JOIN (
-    SELECT
-        id,
-        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
-    FROM mamba_dim_concept_metadata)m
-ON md.id = m.id
 SET md.row_num = num
 WHERE md.id > 0;
 
@@ -2437,7 +2235,49 @@ CREATE PROCEDURE sp_mamba_dim_report_definition_insert()
 BEGIN
 -- $BEGIN
 SET @report_definition_json = '{
-  "report_definitions": []
+  "report_definitions": [
+    {
+      "report_name": "MCH Mother HIV Status",
+      "report_id": "mother_hiv_status",
+      "report_sql": {
+        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "query_params": [
+          {
+            "name": "ptracker_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "MCH Total Deliveries",
+      "report_id": "total_deliveries",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''''6dc5308d-27c9-4d49-b16f-2c5e3c759757'''' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), ''-01-01 00:00:00'')",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH HIV-Exposed Infants",
+      "report_id": "hiv_exposed_infants",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE()",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH Total Pregnant women",
+      "report_id": "total_pregnant_women",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) AS total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type like ''New%'' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
+        "query_params": []
+      }
+    }
+  ]
 }';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
 -- $END
@@ -2499,8 +2339,6 @@ BEGIN
 
 CREATE TABLE mamba_dim_person
 (
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     id                  INT          NOT NULL AUTO_INCREMENT,
     person_id           INT          NOT NULL,
     birthdate           DATE         NULL,
@@ -2515,27 +2353,6 @@ CREATE TABLE mamba_dim_person
     person_name_long    TEXT         NULL,
     uuid                CHAR(38)     NOT NULL,
     voided              TINYINT(1)   NOT NULL,
-=======
-=======
->>>>>>> Stashed changes
-    id                  INT      NOT NULL AUTO_INCREMENT,
-    person_id           INT      NOT NULL,
-    birthdate           DATE NULL,
-    birthdate_estimated TINYINT  NOT NULL,
-    age                 INT NULL,
-    dead                TINYINT  NOT NULL,
-    death_date          DATETIME NULL,
-    deathdate_estimated TINYINT  NOT NULL,
-    gender              VARCHAR(255) NULL,
-    date_created        DATETIME NOT NULL,
-    person_name_short   VARCHAR(255) NULL,
-    person_name_long    TEXT NULL,
-    uuid                CHAR(38) NOT NULL,
-    voided              TINYINT  NOT NULL,
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
     PRIMARY KEY (id)
 ) CHARSET = UTF8MB4;
@@ -2564,8 +2381,6 @@ CREATE PROCEDURE sp_mamba_dim_person_insert()
 BEGIN
 -- $BEGIN
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 INSERT INTO mamba_dim_person (person_id,
                               birthdate,
                               birthdate_estimated,
@@ -2600,66 +2415,7 @@ FROM openmrs.person psn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
   AND pn.voided = 0;
-=======
-=======
->>>>>>> Stashed changes
-INSERT INTO mamba_dim_person
-    (
-        person_id,
-        birthdate,
-        birthdate_estimated,
-        age,
-        dead,
-        death_date,
-        deathdate_estimated,
-        gender,
-        date_created,
-        uuid,
-        voided
-    )
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
-    SELECT psn.person_id,
-           psn.birthdate,
-           psn.birthdate_estimated,
-           fn_mamba_age_calculator(birthdate,death_date) AS age,
-           psn.dead,
-           psn.death_date,
-           psn.deathdate_estimated,
-           psn.gender,
-           psn.date_created,
-           psn.uuid,
-           psn.voided
-    FROM person psn;
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_person_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_person_update;
-
-CREATE PROCEDURE sp_mamba_dim_person_update()
-BEGIN
--- $BEGIN
-UPDATE mamba_dim_person dp
-    INNER JOIN person psn  on psn.person_id = dp.person_id
-    INNER JOIN  person_name pn on psn.person_id = pn.person_id
-    SET   person_name_short = CONCAT_WS(' ',prefix,given_name,middle_name,family_name),
-        person_name_long = CONCAT_WS(' ',prefix,given_name, middle_name,family_name_prefix, family_name,family_name2,family_name_suffix, degree)
-WHERE  pn.preferred=1
-;
-<<<<<<< Updated upstream
 -- $END
 END //
 
@@ -2677,8 +2433,6 @@ DELIMITER //
 CREATE PROCEDURE sp_mamba_dim_person_update()
 BEGIN
 -- $BEGIN
-=======
->>>>>>> Stashed changes
 -- $END
 END //
 
@@ -2750,15 +2504,9 @@ CREATE INDEX mamba_dim_patient_identifier_identifier_type_index
 CREATE INDEX mamba_dim_patient_identifier_uuid_index
     ON mamba_dim_patient_identifier (uuid);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 CREATE INDEX mamba_dim_patient_identifier_preferred_index
     ON mamba_dim_patient_identifier (preferred);
 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 -- $END
 END //
 
@@ -3079,540 +2827,6 @@ DELIMITER ;
         
 -- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_dim_user_create  ----------------------------
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
-
-CREATE PROCEDURE sp_mamba_dim_user_create()
-BEGIN
--- $BEGIN
-    CREATE TABLE mamba_dim_users
-    (
-        id            INT          NOT NULL AUTO_INCREMENT,
-        user_id       INT          NOT NULL,
-        system_id     VARCHAR(50)  NOT NULL,
-        username      VARCHAR(50)  NULL,
-        creator       INT          NOT NULL,
-        date_created  DATETIME     NOT NULL,
-        changed_by    INT          NULL,
-        date_changed  DATETIME     NULL,
-        person_id     INT          NOT NULL,
-        retired       TINYINT(1)   NOT NULL,
-        retired_by    INT          NULL,
-        date_retired  DATETIME     NULL,
-        retire_reason VARCHAR(255) NULL,
-        uuid          CHAR(38)     NOT NULL,
-        email         VARCHAR(255) NULL,
-
-        PRIMARY KEY (id)
-    )
-        CHARSET = UTF8MB4;
-
-    CREATE INDEX mamba_dim_users_user_id_index
-        ON mamba_dim_users (user_id);
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user_insert  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_insert;
-
-CREATE PROCEDURE sp_mamba_dim_user_insert()
-BEGIN
--- $BEGIN
-    INSERT INTO mamba_dim_users
-        (
-            user_id,
-            system_id,
-            username,
-            creator,
-            date_created,
-            changed_by,
-            date_changed,
-            person_id,
-            retired,
-            retired_by,
-            date_retired,
-            retire_reason,
-            uuid,
-            email
-        )
-        SELECT
-            user_id,
-            system_id,
-            username,
-            creator,
-            date_created,
-            changed_by,
-            date_changed,
-            person_id,
-            retired,
-            retired_by,
-            date_retired,
-            retire_reason,
-            uuid,
-            email
-        FROM users c;
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_update;
-
-CREATE PROCEDURE sp_mamba_dim_user_update()
-BEGIN
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user;
-
-CREATE PROCEDURE sp_mamba_dim_user()
-BEGIN
--- $BEGIN
-    CALL sp_mamba_dim_user_create();
-    CALL sp_mamba_dim_user_insert();
-    CALL sp_mamba_dim_user_update();
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_create  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_create;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_create()
-BEGIN
--- $BEGIN
-CREATE TABLE mamba_dim_relationship
-(
-    relationship_id INT                  NOT NULL AUTO_INCREMENT,
-    person_a        INT                  NOT NULL,
-    relationship    INT                  NOT NULL,
-    person_b        INT                  NOT NULL,
-    start_date      DATETIME             NULL,
-    end_date        DATETIME             NULL,
-    creator         INT                  NOT NULL,
-    date_created    DATETIME             NOT NULL,
-    date_changed    DATETIME             NULL,
-    changed_by      INT                  NULL,
-    voided          TINYINT(1)           NOT NULL ,
-    voided_by       INT                  NULL,
-    date_voided     DATETIME             NULL,
-    void_reason     VARCHAR(255)         NULL,
-    uuid            CHAR(38)             NOT NULL,
-
-    PRIMARY KEY (relationship_id)
-)
-
-    CHARSET = UTF8MB3;
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_insert  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_insert;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_insert()
-BEGIN
--- $BEGIN
-
-INSERT INTO mamba_dim_relationship
-    (
-        relationship_id,
-        person_a,
-        relationship,
-        person_b,
-        start_date,
-        end_date,
-        creator,
-        date_created,
-        date_changed,
-        changed_by,
-        voided,
-        voided_by,
-        date_voided,
-        void_reason,
-        uuid
-    )
-SELECT
-    relationship_id,
-    person_a,
-    relationship,
-    person_b,
-    start_date,
-    end_date,
-    creator,
-    date_created,
-    date_changed,
-    changed_by,
-    voided,
-    voided_by,
-    date_voided,
-    void_reason,
-    uuid
-FROM relationship;
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_update;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_update()
-BEGIN
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship;
-
-CREATE PROCEDURE sp_mamba_dim_relationship()
-BEGIN
--- $BEGIN
-
-CALL sp_mamba_dim_relationship_create();
-CALL sp_mamba_dim_relationship_insert();
-CALL sp_mamba_dim_relationship_update();
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_agegroup_create  ----------------------------
->>>>>>> Stashed changes
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
-
-CREATE PROCEDURE sp_mamba_dim_user_create()
-BEGIN
--- $BEGIN
-    CREATE TABLE mamba_dim_users
-    (
-        id            INT          NOT NULL AUTO_INCREMENT,
-        user_id       INT          NOT NULL,
-        system_id     VARCHAR(50)  NOT NULL,
-        username      VARCHAR(50)  NULL,
-        creator       INT          NOT NULL,
-        date_created  DATETIME     NOT NULL,
-        changed_by    INT          NULL,
-        date_changed  DATETIME     NULL,
-        person_id     INT          NOT NULL,
-        retired       TINYINT(1)   NOT NULL,
-        retired_by    INT          NULL,
-        date_retired  DATETIME     NULL,
-        retire_reason VARCHAR(255) NULL,
-        uuid          CHAR(38)     NOT NULL,
-        email         VARCHAR(255) NULL,
-
-        PRIMARY KEY (id)
-    )
-        CHARSET = UTF8MB4;
-
-    CREATE INDEX mamba_dim_users_user_id_index
-        ON mamba_dim_users (user_id);
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user_insert  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_insert;
-
-CREATE PROCEDURE sp_mamba_dim_user_insert()
-BEGIN
--- $BEGIN
-    INSERT INTO mamba_dim_users
-        (
-            user_id,
-            system_id,
-            username,
-            creator,
-            date_created,
-            changed_by,
-            date_changed,
-            person_id,
-            retired,
-            retired_by,
-            date_retired,
-            retire_reason,
-            uuid,
-            email
-        )
-        SELECT
-            user_id,
-            system_id,
-            username,
-            creator,
-            date_created,
-            changed_by,
-            date_changed,
-            person_id,
-            retired,
-            retired_by,
-            date_retired,
-            retire_reason,
-            uuid,
-            email
-        FROM users c;
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user_update;
-
-CREATE PROCEDURE sp_mamba_dim_user_update()
-BEGIN
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_user  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_user;
-
-CREATE PROCEDURE sp_mamba_dim_user()
-BEGIN
--- $BEGIN
-    CALL sp_mamba_dim_user_create();
-    CALL sp_mamba_dim_user_insert();
-    CALL sp_mamba_dim_user_update();
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_create  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_create;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_create()
-BEGIN
--- $BEGIN
-CREATE TABLE mamba_dim_relationship
-(
-    relationship_id INT                  NOT NULL AUTO_INCREMENT,
-    person_a        INT                  NOT NULL,
-    relationship    INT                  NOT NULL,
-    person_b        INT                  NOT NULL,
-    start_date      DATETIME             NULL,
-    end_date        DATETIME             NULL,
-    creator         INT                  NOT NULL,
-    date_created    DATETIME             NOT NULL,
-    date_changed    DATETIME             NULL,
-    changed_by      INT                  NULL,
-    voided          TINYINT(1)           NOT NULL ,
-    voided_by       INT                  NULL,
-    date_voided     DATETIME             NULL,
-    void_reason     VARCHAR(255)         NULL,
-    uuid            CHAR(38)             NOT NULL,
-
-    PRIMARY KEY (relationship_id)
-)
-
-    CHARSET = UTF8MB3;
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_insert  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_insert;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_insert()
-BEGIN
--- $BEGIN
-
-INSERT INTO mamba_dim_relationship
-    (
-        relationship_id,
-        person_a,
-        relationship,
-        person_b,
-        start_date,
-        end_date,
-        creator,
-        date_created,
-        date_changed,
-        changed_by,
-        voided,
-        voided_by,
-        date_voided,
-        void_reason,
-        uuid
-    )
-SELECT
-    relationship_id,
-    person_a,
-    relationship,
-    person_b,
-    start_date,
-    end_date,
-    creator,
-    date_created,
-    date_changed,
-    changed_by,
-    voided,
-    voided_by,
-    date_voided,
-    void_reason,
-    uuid
-FROM relationship;
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_update;
-
-CREATE PROCEDURE sp_mamba_dim_relationship_update()
-BEGIN
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_relationship  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship;
-
-CREATE PROCEDURE sp_mamba_dim_relationship()
-BEGIN
--- $BEGIN
-
-CALL sp_mamba_dim_relationship_create();
-CALL sp_mamba_dim_relationship_insert();
-CALL sp_mamba_dim_relationship_update();
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_dim_agegroup_create  ----------------------------
->>>>>>> Stashed changes
 -- ---------------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
@@ -4256,7 +3470,6 @@ BEGIN
 -- $BEGIN
 
 INSERT INTO mamba_z_encounter_obs
-<<<<<<< Updated upstream
 (encounter_id,
  person_id,
  obs_datetime,
@@ -4297,50 +3510,6 @@ FROM openmrs.obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
 WHERE o.encounter_id IS NOT NULL;
-=======
-    (
-        encounter_id,
-        person_id,
-        obs_datetime,
-        encounter_datetime,
-        encounter_type_uuid,
-        obs_question_concept_id,
-        obs_value_text,
-        obs_value_numeric,
-        obs_value_coded,
-        obs_value_datetime,
-        obs_value_complex,
-        obs_value_drug,
-        obs_question_uuid,
-        obs_answer_uuid,
-        obs_value_coded_uuid,
-        status,
-        voided,
-        row_num
-    )
-    SELECT o.encounter_id,
-           o.person_id,
-           o.obs_datetime,
-           e.encounter_datetime,
-           e.encounter_type_uuid,
-           o.concept_id     AS obs_question_concept_id,
-           o.value_text     AS obs_value_text,
-           o.value_numeric  AS obs_value_numeric,
-           o.value_coded    AS obs_value_coded,
-           o.value_datetime AS obs_value_datetime,
-           o.value_complex  AS obs_value_complex,
-           o.value_drug     AS obs_value_drug,
-           NULL             AS obs_question_uuid,
-           NULL             AS obs_answer_uuid,
-           NULL             AS obs_value_coded_uuid,
-           o.status,
-           o.voided,
-           ROW_NUMBER()OVER(PARTITION BY person_id,encounter_id,concept_id)
-    FROM obs o
-             INNER JOIN mamba_dim_encounter e
-                        ON o.encounter_id = e.encounter_id
-    WHERE o.encounter_id IS NOT NULL;
->>>>>>> Stashed changes
 
 -- $END
 END //
@@ -4369,21 +3538,11 @@ WHERE TRUE;
 
 -- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_dim_concept_name md
-    ON z.obs_value_coded = md.concept_id
+    INNER JOIN mamba_dim_concept_name cn
+    ON z.obs_value_coded = cn.concept_id
     INNER JOIN mamba_dim_concept c
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     ON c.concept_id = cn.concept_id
 SET z.obs_value_text       = cn.name,
-=======
-    ON c.concept_id = md.concept_id
-SET z.obs_value_text       = md.name,
->>>>>>> Stashed changes
-=======
-    ON c.concept_id = md.concept_id
-SET z.obs_value_text       = md.name,
->>>>>>> Stashed changes
     z.obs_value_coded_uuid = c.uuid
 WHERE z.obs_value_coded IS NOT NULL;
 
@@ -4517,33 +3676,11 @@ DELIMITER ;
         
 -- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_data_processing_derived_pmtct  ----------------------------
-<<<<<<< Updated upstream
-=======
 -- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
 
-CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
-BEGIN
--- $BEGIN
-CALL sp_mamba_fact_exposedinfants;
-CALL sp_mamba_fact_pregnant_women;
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_data_processing_etl  ----------------------------
->>>>>>> Stashed changes
--- ---------------------------------------------------------------------------------------------
-
 DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
 
 CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
 BEGIN
@@ -5606,9 +4743,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_exposedinfants_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_create;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_exposedinfants_create()
 BEGIN
@@ -5625,7 +4762,6 @@ CREATE TABLE mamba_fact_pmtct_exposedinfants
     linked_to_art                             VARCHAR(100) NULL,
     infant_hiv_test                           VARCHAR(100) NULL,
     hiv_test_performed                        VARCHAR(100) NULL,
-    missing_art_number                        VARCHAR(100) NULL,
     result_of_hiv_test                        VARCHAR(100) NULL,
     viral_load_results                        VARCHAR(100) NULL,
     hiv_exposure_status                       VARCHAR(100) NULL,
@@ -5652,9 +4788,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_exposedinfants_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_insert;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_exposedinfants_insert()
 BEGIN
@@ -5670,7 +4806,6 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
     linked_to_art,
     infant_hiv_test,
     hiv_test_performed,
-    missing_art_number,
     result_of_hiv_test,
     viral_load_results,
     hiv_exposure_status,
@@ -5695,7 +4830,6 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
         linked_to_art,
         infant_hiv_test,
         hiv_test_performed,
-        missing_art_number,
         result_of_hiv_test,
         viral_load_results,
         hiv_exposure_status,
@@ -5740,9 +4874,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_exposedinfants_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_update;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_exposedinfants_update()
 BEGIN
@@ -5757,9 +4891,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_exposedinfants  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_exposedinfants()
 BEGIN
@@ -5777,9 +4911,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_pregnant_women_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_create;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_pregnant_women_create()
 BEGIN
@@ -5821,9 +4955,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_pregnant_women_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_insert;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_pregnant_women_insert()
 BEGIN
@@ -5907,9 +5041,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_pregnant_women_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_update;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_pregnant_women_update()
 BEGIN
@@ -5924,9 +5058,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_fact_pregnant_women  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_fact_pregnant_women()
 BEGIN
@@ -5944,9 +5078,9 @@ DELIMITER ;
 -- ----------------------  sp_mamba_data_processing_derived_pmtct  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
+
+DELIMITER //
 
 CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
 BEGIN
