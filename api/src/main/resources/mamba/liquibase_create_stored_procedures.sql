@@ -86,11 +86,25 @@ END~
 -- ----------------------  fn_mamba_age_calculator  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
 
 
 ~
 CREATE FUNCTION fn_mamba_age_calculator(birthdate DATE, deathDate DATE) RETURNS Integer
+=======
+=======
+>>>>>>> Stashed changes
+
+DROP FUNCTION IF EXISTS fn_mamba_age_calculator;
+
+~
+CREATE FUNCTION fn_mamba_age_calculator (birthdate DATE,deathDate DATE) RETURNS  Integer
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     DETERMINISTIC
 BEGIN
     DECLARE onDate DATE;
@@ -101,22 +115,41 @@ BEGIN
     DECLARE bdayMonth INT;
     DECLARE todaysDay INT;
     DECLARE bdayDay INT;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     DECLARE birthdateCheck VARCHAR(255) DEFAULT NULL;
 
     SET onDate = NULL;
 
     -- Check if birthdate is not null and not an empty string
     IF birthdate IS NULL OR TRIM(birthdate) = '' THEN
+=======
+=======
+>>>>>>> Stashed changes
+
+    SET onDate = NULL ;
+
+    IF birthdate IS NULL THEN
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         RETURN NULL;
     ELSE
         SET today = CURDATE();
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         -- Check if birthdate is a valid date using STR_TO_DATE &  -- Check if birthdate is not in the future
         SET birthdateCheck = STR_TO_DATE(birthdate, '%Y-%m-%d');
         IF birthdateCheck IS NULL OR birthdateCheck > today THEN
             RETURN NULL;
         END IF;
 
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         IF onDate IS NOT NULL THEN
             SET today = onDate;
         END IF;
@@ -140,7 +173,17 @@ BEGIN
 
         RETURN age;
     END IF;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 END~
+=======
+END;
+
+>>>>>>> Stashed changes
+=======
+END;
+
+>>>>>>> Stashed changes
 
 
 
@@ -1097,7 +1140,15 @@ SELECT patient_identifier_type_id,
        name,
        description,
        uuid
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 FROM openmrs.patient_identifier_type;
+=======
+FROM patient_identifier_type;
+>>>>>>> Stashed changes
+=======
+FROM patient_identifier_type;
+>>>>>>> Stashed changes
 
 -- $END
 END~
@@ -1798,7 +1849,69 @@ CREATE PROCEDURE sp_mamba_dim_concept_metadata_insert()
 BEGIN
       -- $BEGIN
 
+<<<<<<< Updated upstream
       SET @report_data = '{"flat_report_metadata":[{
+=======
+  SET @report_data = '{"flat_report_metadata":[
+  {
+  "report_name": "PMTCT Infant Postnatal visit",
+  "flat_table_name": "mamba_flat_encounter_pmtct_infant_postnatal",
+  "encounter_type_uuid": "af1f1b24-d2e8-4282-b308-0bf79b365584",
+  "concepts_locale": "en",
+  "table_columns": {
+        "arv_prophylaxis_status": "1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "viral_load_results": "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "arv_adherence": "1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "patient_outcome_status": "160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "cotrimoxazole_adherence": "161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "viral_load_test_done": "163310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "visit_type": "164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "hiv_test_performed": "164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "unique_antiretroviral_therapy_number": "164402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "child_hiv_dna_pcr_test_result": "164461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "rapid_hiv_antibody_test_result_at_18_mths": "164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
+        "hiv_exposure_status": "6027869c-5d7e-4a82-b22f-6d9c57d61a4d",
+        "ctx_prophylaxis_status": "f3de6eb3-5d4a-43ca-8648-74649271238c",
+        "infant_hiv_test": "ee8c0292-47f8-4c01-8b60-8ba13a560e1a",
+        "confirmatory_test_performed_on_this_vist": "8c2b3506-5b77-4916-a5c8-677a37a65007",
+        "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed"
+      }
+},
+  {
+  "report_name": "PMTCT ANC visit",
+  "flat_table_name": "mamba_flat_encounter_pmtct_anc",
+  "encounter_type_uuid": "677d1a80-dbbe-4399-be34-aa7f54f11405",
+  "concepts_locale": "en",
+  "table_columns": {
+    "hiv_test_result": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "hiv_test_result_negative": "664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "hiv_test_result_positive": "703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "hiv_test_result_indeterminate": "1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "parity": "1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "date_of_last_menstrual_period": "1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "return_visit_date": "5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "estimated_date_of_delivery": "5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "gravida": "5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "return_anc_visit": "160530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "partner_hiv_tested": "161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "new_anc_visit": "164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "visit_type": "164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "hiv_test_performed": "164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "previously_known_positive": "8b8951a8-e8d6-40ca-ad70-89e8f8f71fa8",
+    "tested_for_hiv_during_this_visit": "6f041992-f0fd-4ec7-b7b6-c06b0f60bf3f",
+    "not_tested_for_hiv_during_this_visit": "d18fa331-f158-47d0-b344-cf147c7125a4",
+    "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
+    "missing": "54b96458-6585-4c4c-a5b1-b3ca7f1be351",
+    "ptracker_id": "6c45421e-2566-47cb-bbb3-07586fffbfe2"
+  }
+},
+  {
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   "report_name": "ART_Register",
   "flat_table_name": "mamba_flat_encounter_art_card",
   "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f" ,
@@ -1919,6 +2032,118 @@ BEGIN
     "referred_disclosure_support": "846a63c0-4530-4008-b6a1-12201b9e0b88",
     "is_referred_other_support": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
+},
+  {
+  "report_name": "LaborandDelivery_Register",
+  "flat_table_name": "mamba_flat_encounter_pmtct_labor_delivery",
+  "encounter_type_uuid": "6dc5308d-27c9-4d49-b16f-2c5e3c759757" ,
+  "concepts_locale": "en",
+  "table_columns": {
+          "arv_prophylaxis_status": "1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "infant_feeding_method": "1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "viral_load_results": "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "partners_hiv_status": "1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "number_of_births_from_current_pregnancy": "1568AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "child_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "antenatal_card_present": "1719AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "mothers_health_status": "1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "labor_delivery_child_1": "8fe7ad7a-494d-4799-bf72-9f58fbdae221",
+          "labor_delivery_child_2": "8fe7ad7a-494d-4799-bf72-9f58fbdae222",
+          "delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "art_start_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "reason_for_declining_hiv_test": "159803AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "qualitative_birth_outcome": "159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "partner_hiv_tested": "161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "viral_load_test_done": "163310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "hiv_test_performed": "164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "infants_date_of_birth": "164802AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "infants_medical_record_number": "164803AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
+          "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
+          "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0",
+          "child_two_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "child_two_delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  }
+},
+  {
+  "report_name": "Mamba Tester Report",
+  "flat_table_name": "mamba_flat_encounter_mamba_tester",
+  "encounter_type_uuid": "498289e5-a59e-4be2-a089-eea3e87c0c26" ,
+  "concepts_locale": "en",
+  "table_columns": {
+    "patient_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "data_points": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "p_age": "93ab5c26-c6d0-4637-8ad4-7ad08f5f6194",
+    "p_summary": "63313088-0fc5-43ec-9449-ac43044c934a",
+    "p_datapoints": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_gender": "e3fc99e4-b46d-4eab-906f-2de1a49306bf"
+  }
+},
+  {
+  "report_name": "MotherPostnatal_Register",
+  "flat_table_name": "mamba_flat_encounter_pmtct_mother_postnatal",
+  "encounter_type_uuid": "a4362fd2d-1866-4ea0-84ef-5e5da9627440" ,
+  "concepts_locale": "en",
+  "table_columns": {
+        "viral_load_results": "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "partners_hiv_status": "1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "return_visit_date": "5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "transferred_out_to": "159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "partner_hiv_tested": "161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "viral_load_test_done": "163310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "hiv_test_performed": "164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
+        "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
+        "missing_reason_for_refusing_art_initiation": "0117ec63-6fc8-4b37-99e9-7f6d99652852"
+    }
+},
+  {
+  "report_definitions": [
+    {
+      "report_name": "MCH Mother HIV Status",
+      "report_id": "mother_hiv_status",
+      "report_sql": {
+        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "query_params": [
+          {
+            "name": "ptracker_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "MCH Total Deliveries",
+      "report_id": "total_deliveries",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''6dc5308d-27c9-4d49-b16f-2c5e3c759757'' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH HIV-Exposed Infants",
+      "report_id": "hiv_exposed_infants",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE()",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH Total Pregnant women",
+      "report_id": "total_pregnant_women",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) AS total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type like 'New%' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
+        "query_params": []
+      }
+    }
+  ]
 }]}';
 
       CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
@@ -1960,7 +2185,14 @@ UPDATE mamba_dim_concept_metadata md
     INNER JOIN mamba_dim_concept_answer ca
     ON md.concept_id = ca.answer_concept
 SET md.concept_answer_obs = 1
-WHERE md.id > 0;
+WHERE md.id > 0 AND
+        md.concept_id IN (SELECT DISTINCT ca.concept_id
+                          FROM  mamba_dim_concept_answer ca);
+
+-- Update to for multiple selects/dropdowns/options this field is an obs answer to an obs Question
+UPDATE mamba_dim_concept_metadata md
+SET md.concept_answer_obs = 1
+WHERE md.id > 0 and concept_datatype = 'N/A';
 
 -- Update row number
 UPDATE mamba_dim_concept_metadata md
@@ -1968,6 +2200,28 @@ UPDATE mamba_dim_concept_metadata md
                        ROW_NUMBER() OVER (PARTITION BY flat_table_name,concept_id ORDER BY id ASC) num
                 FROM mamba_dim_concept_metadata) m
     ON md.id = m.id
+SET md.row_num = num
+WHERE md.id > 0;
+
+-- Update row number
+UPDATE mamba_dim_concept_metadata md
+INNER JOIN (
+    SELECT
+        id,
+        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
+    FROM mamba_dim_concept_metadata)m
+ON md.id = m.id
+SET md.row_num = num
+WHERE md.id > 0;
+
+-- Update row number
+UPDATE mamba_dim_concept_metadata md
+INNER JOIN (
+    SELECT
+        id,
+        ROW_NUMBER()  OVER (PARTITION BY  flat_table_name,concept_id ORDER BY id ASC) num
+    FROM mamba_dim_concept_metadata)m
+ON md.id = m.id
 SET md.row_num = num
 WHERE md.id > 0;
 
@@ -2061,49 +2315,7 @@ CREATE PROCEDURE sp_mamba_dim_report_definition_insert()
 BEGIN
 -- $BEGIN
 SET @report_definition_json = '{
-  "report_definitions": [
-    {
-      "report_name": "PMTCT Mother HIV Status",
-      "report_id": "mother_hiv_status",
-      "report_sql": {
-        "sql_query": "SELECT pm.hiv_test_result from mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
-        "query_params": [
-          {
-            "name": "ptracker_id",
-            "type": "VARCHAR(255)"
-          },
-          {
-            "name": "person_uuid",
-            "type": "VARCHAR(255)"
-          }
-        ]
-      }
-    },
-    {
-      "report_name": "PMTCT Total Deliveries",
-      "report_id": "total_deliveries",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM encounter e INNER JOIN encounter_type et ON e.encounter_type = et.encounter_type_id WHERE et.uuid = ''2678423c-0523-4d76-b0da-18177b439eed'' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), ''-01-01 00:00:00'')",
-        "query_params": []
-      }
-    },
-    {
-      "report_name": "PMTCT HIV-Exposed Infants",
-      "report_id": "hiv_exposed_infants",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) hiv_exposed_infants_count FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE()",
-        "query_params": []
-      }
-    },
-    {
-      "report_name": "PMTCT Total Pregnant women",
-      "report_id": "total_pregnant_women",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type = ''New ANC Visit'' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), ''%Y-01-01'') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
-        "query_params": []
-      }
-    }
-  ]
+  "report_definitions": []
 }';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
 -- $END
@@ -2162,6 +2374,8 @@ BEGIN
 
 CREATE TABLE mamba_dim_person
 (
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     id                  INT          NOT NULL AUTO_INCREMENT,
     person_id           INT          NOT NULL,
     birthdate           DATE         NULL,
@@ -2176,6 +2390,27 @@ CREATE TABLE mamba_dim_person
     person_name_long    TEXT         NULL,
     uuid                CHAR(38)     NOT NULL,
     voided              TINYINT(1)   NOT NULL,
+=======
+=======
+>>>>>>> Stashed changes
+    id                  INT      NOT NULL AUTO_INCREMENT,
+    person_id           INT      NOT NULL,
+    birthdate           DATE NULL,
+    birthdate_estimated TINYINT  NOT NULL,
+    age                 INT NULL,
+    dead                TINYINT  NOT NULL,
+    death_date          DATETIME NULL,
+    deathdate_estimated TINYINT  NOT NULL,
+    gender              VARCHAR(255) NULL,
+    date_created        DATETIME NOT NULL,
+    person_name_short   VARCHAR(255) NULL,
+    person_name_long    TEXT NULL,
+    uuid                CHAR(38) NOT NULL,
+    voided              TINYINT  NOT NULL,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
     PRIMARY KEY (id)
 ) CHARSET = UTF8MB4;
@@ -2203,6 +2438,8 @@ CREATE PROCEDURE sp_mamba_dim_person_insert()
 BEGIN
 -- $BEGIN
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 INSERT INTO mamba_dim_person (person_id,
                               birthdate,
                               birthdate_estimated,
@@ -2237,7 +2474,65 @@ FROM openmrs.person psn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
   AND pn.voided = 0;
+=======
+=======
+>>>>>>> Stashed changes
+INSERT INTO mamba_dim_person
+    (
+        person_id,
+        birthdate,
+        birthdate_estimated,
+        age,
+        dead,
+        death_date,
+        deathdate_estimated,
+        gender,
+        date_created,
+        uuid,
+        voided
+    )
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
+    SELECT psn.person_id,
+           psn.birthdate,
+           psn.birthdate_estimated,
+           fn_mamba_age_calculator(birthdate,death_date) AS age,
+           psn.dead,
+           psn.death_date,
+           psn.deathdate_estimated,
+           psn.gender,
+           psn.date_created,
+           psn.uuid,
+           psn.voided
+    FROM person psn;
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_dim_person_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_person_update;
+
+~
+CREATE PROCEDURE sp_mamba_dim_person_update()
+BEGIN
+-- $BEGIN
+UPDATE mamba_dim_person dp
+    INNER JOIN person psn  on psn.person_id = dp.person_id
+    INNER JOIN  person_name pn on psn.person_id = pn.person_id
+    SET   person_name_short = CONCAT_WS(' ',prefix,given_name,middle_name,family_name),
+        person_name_long = CONCAT_WS(' ',prefix,given_name, middle_name,family_name_prefix, family_name,family_name2,family_name_suffix, degree)
+WHERE  pn.preferred=1
+;
+<<<<<<< Updated upstream
 -- $END
 END~
 
@@ -2254,6 +2549,8 @@ DROP PROCEDURE IF EXISTS sp_mamba_dim_person_update;
 CREATE PROCEDURE sp_mamba_dim_person_update()
 BEGIN
 -- $BEGIN
+=======
+>>>>>>> Stashed changes
 -- $END
 END~
 
@@ -2323,9 +2620,15 @@ CREATE INDEX mamba_dim_patient_identifier_identifier_type_index
 CREATE INDEX mamba_dim_patient_identifier_uuid_index
     ON mamba_dim_patient_identifier (uuid);
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 CREATE INDEX mamba_dim_patient_identifier_preferred_index
     ON mamba_dim_patient_identifier (preferred);
 
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 -- $END
 END~
 
@@ -2638,8 +2941,18 @@ END~
 -- ----------------------  sp_mamba_dim_user_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_create;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_user_create()
@@ -2679,8 +2992,18 @@ END~
 -- ----------------------  sp_mamba_dim_user_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_user_insert;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_insert;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_insert;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_user_insert()
@@ -2718,7 +3041,15 @@ BEGIN
             retire_reason,
             uuid,
             email
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         FROM openmrs.users c;
+=======
+        FROM users c;
+>>>>>>> Stashed changes
+=======
+        FROM users c;
+>>>>>>> Stashed changes
 -- $END
 END~
 
@@ -2728,8 +3059,18 @@ END~
 -- ----------------------  sp_mamba_dim_user_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_user_update;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_update;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user_update;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_user_update()
@@ -2745,8 +3086,18 @@ END~
 -- ----------------------  sp_mamba_dim_user  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_user;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_user;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_user()
@@ -2764,8 +3115,18 @@ END~
 -- ----------------------  sp_mamba_dim_relationship_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_create;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_create;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_create;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_relationship_create()
@@ -2773,6 +3134,8 @@ BEGIN
 -- $BEGIN
 CREATE TABLE mamba_dim_relationship
 (
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
     relationship_id INT          NOT NULL AUTO_INCREMENT,
     person_a        INT          NOT NULL,
@@ -2799,6 +3162,33 @@ CREATE INDEX mamba_dim_relationship_person_a_index
 
 CREATE INDEX mamba_dim_relationship_person_b_index
     ON mamba_dim_relationship (person_b);
+=======
+=======
+>>>>>>> Stashed changes
+    relationship_id INT                  NOT NULL AUTO_INCREMENT,
+    person_a        INT                  NOT NULL,
+    relationship    INT                  NOT NULL,
+    person_b        INT                  NOT NULL,
+    start_date      DATETIME             NULL,
+    end_date        DATETIME             NULL,
+    creator         INT                  NOT NULL,
+    date_created    DATETIME             NOT NULL,
+    date_changed    DATETIME             NULL,
+    changed_by      INT                  NULL,
+    voided          TINYINT(1)           NOT NULL ,
+    voided_by       INT                  NULL,
+    date_voided     DATETIME             NULL,
+    void_reason     VARCHAR(255)         NULL,
+    uuid            CHAR(38)             NOT NULL,
+
+    PRIMARY KEY (relationship_id)
+)
+
+    CHARSET = UTF8MB3;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 -- $END
 END~
@@ -2809,8 +3199,18 @@ END~
 -- ----------------------  sp_mamba_dim_relationship_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_insert;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_insert;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_insert;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_relationship_insert()
@@ -2851,7 +3251,15 @@ SELECT
     date_voided,
     void_reason,
     uuid
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 FROM openmrs.relationship;
+=======
+FROM relationship;
+>>>>>>> Stashed changes
+=======
+FROM relationship;
+>>>>>>> Stashed changes
 
 -- $END
 END~
@@ -2862,8 +3270,18 @@ END~
 -- ----------------------  sp_mamba_dim_relationship_update  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_update;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_update;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship_update;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_relationship_update()
@@ -2879,8 +3297,18 @@ END~
 -- ----------------------  sp_mamba_dim_relationship  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship;
 
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship;
+>>>>>>> Stashed changes
+=======
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_relationship;
+>>>>>>> Stashed changes
 
 ~
 CREATE PROCEDURE sp_mamba_dim_relationship()
@@ -2897,6 +3325,8 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 -- ----------------------  sp_mamba_dim_orders_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -3064,6 +3494,10 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 -- ----------------------  sp_mamba_dim_agegroup_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -3262,6 +3696,7 @@ BEGIN
 -- $BEGIN
 
 INSERT INTO mamba_z_encounter_obs
+<<<<<<< Updated upstream
 (encounter_id,
  person_id,
  obs_datetime,
@@ -3302,6 +3737,50 @@ FROM openmrs.obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
 WHERE o.encounter_id IS NOT NULL;
+=======
+    (
+        encounter_id,
+        person_id,
+        obs_datetime,
+        encounter_datetime,
+        encounter_type_uuid,
+        obs_question_concept_id,
+        obs_value_text,
+        obs_value_numeric,
+        obs_value_coded,
+        obs_value_datetime,
+        obs_value_complex,
+        obs_value_drug,
+        obs_question_uuid,
+        obs_answer_uuid,
+        obs_value_coded_uuid,
+        status,
+        voided,
+        row_num
+    )
+    SELECT o.encounter_id,
+           o.person_id,
+           o.obs_datetime,
+           e.encounter_datetime,
+           e.encounter_type_uuid,
+           o.concept_id     AS obs_question_concept_id,
+           o.value_text     AS obs_value_text,
+           o.value_numeric  AS obs_value_numeric,
+           o.value_coded    AS obs_value_coded,
+           o.value_datetime AS obs_value_datetime,
+           o.value_complex  AS obs_value_complex,
+           o.value_drug     AS obs_value_drug,
+           NULL             AS obs_question_uuid,
+           NULL             AS obs_answer_uuid,
+           NULL             AS obs_value_coded_uuid,
+           o.status,
+           o.voided,
+           ROW_NUMBER()OVER(PARTITION BY person_id,encounter_id,concept_id)
+    FROM obs o
+             INNER JOIN mamba_dim_encounter e
+                        ON o.encounter_id = e.encounter_id
+    WHERE o.encounter_id IS NOT NULL;
+>>>>>>> Stashed changes
 
 -- $END
 END~
@@ -3329,11 +3808,21 @@ WHERE TRUE;
 
 -- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
-    INNER JOIN mamba_dim_concept_name cn
-    ON z.obs_value_coded = cn.concept_id
+    INNER JOIN mamba_dim_concept_name md
+    ON z.obs_value_coded = md.concept_id
     INNER JOIN mamba_dim_concept c
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     ON c.concept_id = cn.concept_id
 SET z.obs_value_text       = cn.name,
+=======
+    ON c.concept_id = md.concept_id
+SET z.obs_value_text       = md.name,
+>>>>>>> Stashed changes
+=======
+    ON c.concept_id = md.concept_id
+SET z.obs_value_text       = md.name,
+>>>>>>> Stashed changes
     z.obs_value_coded_uuid = c.uuid
 WHERE z.obs_value_coded IS NOT NULL;
 
@@ -3461,6 +3950,45 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_data_processing_derived_pmtct  ----------------------------
+<<<<<<< Updated upstream
+=======
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
+
+~
+CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_fact_exposedinfants;
+CALL sp_mamba_fact_pregnant_women;
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_data_processing_etl  ----------------------------
+>>>>>>> Stashed changes
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
+
+~
+CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_fact_exposedinfants;
+CALL sp_mamba_fact_pregnant_women;
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_data_processing_etl  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -3478,7 +4006,8 @@ CALL sp_mamba_data_processing_flatten();
 
 -- Call the ETL process
 CALL sp_mamba_data_processing_derived_hts();
-CALL sp_mamba_data_processing_derived_covid();
+-- CALL sp_mamba_data_processing_derived_covid();
+CALL sp_mamba_data_processing_derived_pmtct();
 -- $END
 END~
 
@@ -4481,208 +5010,361 @@ CALL sp_mamba_fact_encounter_hts;
 END~
 
 
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_mother_hiv_status_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_mother_hiv_status_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_mother_hiv_status_query(IN ptracker_id VARCHAR(255), IN person_uuid VARCHAR(255))
-BEGIN
-
-SELECT pm.hiv_test_result from mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id;
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_mother_hiv_status_columns_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_mother_hiv_status_columns_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_mother_hiv_status_columns_query(IN ptracker_id VARCHAR(255), IN person_uuid VARCHAR(255))
-BEGIN
-
--- Create Table to store report column names with no rows
-DROP TABLE IF EXISTS mamba_dim_mother_hiv_status;
-CREATE TABLE mamba_dim_mother_hiv_status AS
-SELECT pm.hiv_test_result from mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id
-LIMIT 0;
-
--- Select report column names from Table
-SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-INTO @column_names
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'mamba_dim_mother_hiv_status';
-
--- Update Table with report column names
-UPDATE mamba_dim_report_definition
-SET result_column_names = @column_names
-WHERE report_id='mother_hiv_status';
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_total_deliveries_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_total_deliveries_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_total_deliveries_query()
-BEGIN
-
-SELECT COUNT(*) AS total_deliveries FROM encounter e INNER JOIN encounter_type et ON e.encounter_type = et.encounter_type_id WHERE et.uuid = '2678423c-0523-4d76-b0da-18177b439eed' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00');
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_total_deliveries_columns_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_total_deliveries_columns_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_total_deliveries_columns_query()
-BEGIN
-
--- Create Table to store report column names with no rows
-DROP TABLE IF EXISTS mamba_dim_total_deliveries;
-CREATE TABLE mamba_dim_total_deliveries AS
-SELECT COUNT(*) AS total_deliveries FROM encounter e INNER JOIN encounter_type et ON e.encounter_type = et.encounter_type_id WHERE et.uuid = '2678423c-0523-4d76-b0da-18177b439eed' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')
-LIMIT 0;
-
--- Select report column names from Table
-SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-INTO @column_names
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'mamba_dim_total_deliveries';
-
--- Update Table with report column names
-UPDATE mamba_dim_report_definition
-SET result_column_names = @column_names
-WHERE report_id='total_deliveries';
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_hiv_exposed_infants_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_hiv_exposed_infants_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_hiv_exposed_infants_query()
-BEGIN
-
-SELECT COUNT(DISTINCT ei.infant_client_id) hiv_exposed_infants_count FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE();
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_hiv_exposed_infants_columns_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_hiv_exposed_infants_columns_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_hiv_exposed_infants_columns_query()
-BEGIN
-
--- Create Table to store report column names with no rows
-DROP TABLE IF EXISTS mamba_dim_hiv_exposed_infants;
-CREATE TABLE mamba_dim_hiv_exposed_infants AS
-SELECT COUNT(DISTINCT ei.infant_client_id) hiv_exposed_infants_count FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE()
-LIMIT 0;
-
--- Select report column names from Table
-SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-INTO @column_names
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'mamba_dim_hiv_exposed_infants';
-
--- Update Table with report column names
-UPDATE mamba_dim_report_definition
-SET result_column_names = @column_names
-WHERE report_id='hiv_exposed_infants';
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_total_pregnant_women_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_total_pregnant_women_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_total_pregnant_women_query()
-BEGIN
-
-SELECT COUNT(DISTINCT pw.client_id) total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type = 'New ANC Visit' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE();
-
-END~
-
-
-
-
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_total_pregnant_women_columns_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_total_pregnant_women_columns_query;
-
-
-~
-CREATE PROCEDURE sp_mamba_total_pregnant_women_columns_query()
-BEGIN
-
--- Create Table to store report column names with no rows
-DROP TABLE IF EXISTS mamba_dim_total_pregnant_women;
-CREATE TABLE mamba_dim_total_pregnant_women AS
-SELECT COUNT(DISTINCT pw.client_id) total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type = 'New ANC Visit' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()
-LIMIT 0;
-
--- Select report column names from Table
-SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
-INTO @column_names
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'mamba_dim_total_pregnant_women';
-
--- Update Table with report column names
-UPDATE mamba_dim_report_definition
-SET result_column_names = @column_names
-WHERE report_id='total_pregnant_women';
-
-END~
-
-
-
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 USE openmrs;
+=======
+=======
+>>>>>>> Stashed changes
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_exposedinfants_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_create;
+
+~
+CREATE PROCEDURE sp_mamba_fact_exposedinfants_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE mamba_fact_pmtct_exposedinfants
+(
+
+    encounter_id                              INT          NOT NULL,
+    infant_client_id                          INT          NOT NULL,
+    encounter_datetime                        DATE         NOT NULL,
+    mother_client_id                          INT          NULL,
+    visit_type                                VARCHAR(100) NULL,
+    arv_adherence                             VARCHAR(100) NULL,
+    linked_to_art                             VARCHAR(100) NULL,
+    infant_hiv_test                           VARCHAR(100) NULL,
+    hiv_test_performed                        VARCHAR(100) NULL,
+    missing_art_number                        VARCHAR(100) NULL,
+    result_of_hiv_test                        VARCHAR(100) NULL,
+    viral_load_results                        VARCHAR(100) NULL,
+    hiv_exposure_status                       VARCHAR(100) NULL,
+    viral_load_test_done                      VARCHAR(100) NULL,
+    art_initiation_status                     VARCHAR(100) NULL,
+    arv_prophylaxis_status                    VARCHAR(100) NULL,
+    ctx_prophylaxis_status                    VARCHAR(100) NULL,
+    patient_outcome_status                    VARCHAR(100) NULL,
+    cotrimoxazole_adherence                   VARCHAR(100) NULL,
+    child_hiv_dna_pcr_test_result             VARCHAR(100) NULL,
+    unique_antiretroviral_therapy_number      VARCHAR(100) NULL,
+    confirmatory_test_performed_on_this_vist  VARCHAR(100) NULL,
+    rapid_hiv_antibody_test_result_at_18_mths VARCHAR(100) NULL,
+
+    PRIMARY KEY (encounter_id)
+);
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_exposedinfants_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_insert;
+
+~
+CREATE PROCEDURE sp_mamba_fact_exposedinfants_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO mamba_fact_pmtct_exposedinfants
+(
+    encounter_id,
+    infant_client_id ,
+    encounter_datetime,
+    mother_client_id,
+    visit_type,
+    arv_adherence,
+    linked_to_art,
+    infant_hiv_test,
+    hiv_test_performed,
+    missing_art_number,
+    result_of_hiv_test,
+    viral_load_results,
+    hiv_exposure_status,
+    viral_load_test_done,
+    art_initiation_status,
+    arv_prophylaxis_status,
+    ctx_prophylaxis_status,
+    patient_outcome_status,
+    cotrimoxazole_adherence,
+    child_hiv_dna_pcr_test_result,
+    unique_antiretroviral_therapy_number,
+    confirmatory_test_performed_on_this_vist,
+    rapid_hiv_antibody_test_result_at_18_mths
+)
+    SELECT
+        DISTINCT encounter_id,
+        client_id ,
+        encounter_datetime,
+        a.person_a mother_person_id,
+        visit_type,
+        arv_adherence,
+        linked_to_art,
+        infant_hiv_test,
+        hiv_test_performed,
+        missing_art_number,
+        result_of_hiv_test,
+        viral_load_results,
+        hiv_exposure_status,
+        viral_load_test_done,
+        art_initiation_status,
+        arv_prophylaxis_status,
+        ctx_prophylaxis_status,
+        patient_outcome_status,
+        cotrimoxazole_adherence,
+        child_hiv_dna_pcr_test_result,
+        unique_antiretroviral_therapy_number,
+        confirmatory_test_performed_on_this_vist,
+        rapid_hiv_antibody_test_result_at_18_mths
+
+    FROM mamba_flat_encounter_pmtct_infant_postnatal ip
+        INNER JOIN mamba_dim_person p
+            ON ip.client_id = p.person_id
+    LEFT JOIN relationship a ON  ip.client_id = a.person_b
+    WHERE   (ip.client_id in (SELECT person_b FROM relationship a
+                INNER JOIN mamba_flat_encounter_pmtct_anc anc
+                    ON a.person_a = anc.client_id
+                WHERE (anc.hiv_test_result ='HIV Positive'
+                           OR anc.hiv_test_performed = 'Previously known positive'))
+            OR ip.client_id in (SELECT person_b FROM relationship a
+                INNER JOIN mamba_flat_encounter_pmtct_labor_delivery ld
+                    ON a.person_a = ld.client_id
+                where (ld.result_of_hiv_test ='HIV Positive'
+                           OR ld.hiv_test_performed = 'Previously known positive'))
+            OR ip.client_id in (SELECT person_b FROM relationship a
+                INNER JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
+                    ON a.person_a = mp.client_id
+                where (mp.result_of_hiv_test like '%Positive%'
+                           OR mp.hiv_test_performed = 'Previously known positive')))
+;
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_exposedinfants_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_update;
+
+~
+CREATE PROCEDURE sp_mamba_fact_exposedinfants_update()
+BEGIN
+-- $BEGIN
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_exposedinfants  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants;
+
+~
+CREATE PROCEDURE sp_mamba_fact_exposedinfants()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_fact_exposedinfants_create();
+CALL sp_mamba_fact_exposedinfants_insert();
+CALL sp_mamba_fact_exposedinfants_update();
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_pregnant_women_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_create;
+
+~
+CREATE PROCEDURE sp_mamba_fact_pregnant_women_create()
+BEGIN
+-- $BEGIN
+create table mamba_fact_pmtct_pregnant_women
+(
+    encounter_id                         INT      NOT NULL,
+    client_id                            INT      NOT NULL,
+    encounter_datetime                   datetime NOT NULL,
+    parity                               VARCHAR(100)     NULL,
+    gravida                              VARCHAR(100)     NULL,
+    missing                              VARCHAR(100)     NULL,
+    visit_type                           VARCHAR(100)     NULL,
+    ptracker_id                          VARCHAR(100)     NULL,
+    new_anc_visit                        VARCHAR(100)     NULL,
+    hiv_test_result                      VARCHAR(100)     NULL,
+    return_anc_visit                     VARCHAR(100)     NULL,
+    return_visit_date                    VARCHAR(100)     NULL,
+    hiv_test_performed                   VARCHAR(100)     NULL,
+    partner_hiv_tested                   VARCHAR(100)     NULL,
+    hiv_test_result_negative             VARCHAR(100)     NULL,
+    hiv_test_result_positive             VARCHAR(100)     NULL,
+    previously_known_positive            VARCHAR(100)     NULL,
+    estimated_date_of_delivery           VARCHAR(100)     NULL,
+    facility_of_next_appointment         VARCHAR(100)     NULL,
+    date_of_last_menstrual_period        VARCHAR(100)     NULL,
+    hiv_test_result_indeterminate        VARCHAR(100)     NULL,
+    tested_for_hiv_during_this_visit     VARCHAR(100)     NULL,
+    not_tested_for_hiv_during_this_visit VARCHAR(100)     NULL
+);
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_pregnant_women_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_insert;
+
+~
+CREATE PROCEDURE sp_mamba_fact_pregnant_women_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO mamba_fact_pmtct_pregnant_women
+(
+    encounter_id,
+    client_id,
+    encounter_datetime,
+    parity,
+    gravida,
+    missing,
+    visit_type,
+    ptracker_id,
+    new_anc_visit,
+    hiv_test_result,
+    return_anc_visit,
+    return_visit_date,
+    hiv_test_performed,
+    partner_hiv_tested,
+    hiv_test_result_negative,
+    hiv_test_result_positive,
+    previously_known_positive,
+    estimated_date_of_delivery,
+    facility_of_next_appointment,
+    date_of_last_menstrual_period,
+    hiv_test_result_indeterminate,
+    tested_for_hiv_during_this_visit,
+    not_tested_for_hiv_during_this_visit
+)
+    SELECT
+        anc.encounter_id,
+        client_id,
+        encounter_datetime,
+        parity,
+        gravida,
+        missing,
+        visit_type,
+        ptracker_id,
+        new_anc_visit,
+        hiv_test_result,
+        return_anc_visit,
+        return_visit_date,
+        hiv_test_performed,
+        partner_hiv_tested,
+        hiv_test_result_negative,
+        hiv_test_result_positive,
+        previously_known_positive,
+        estimated_date_of_delivery,
+        facility_of_next_appointment,
+        date_of_last_menstrual_period,
+        hiv_test_result_indeterminate,
+        tested_for_hiv_during_this_visit,
+        not_tested_for_hiv_during_this_visit
+FROM mamba_flat_encounter_pmtct_anc anc
+    INNER JOIN mamba_dim_person  p
+        ON anc.client_id = p.person_id
+WHERE visit_type like 'New %'
+    AND (anc.client_id NOT in (SELECT anc.client_id
+                               FROM mamba_flat_encounter_pmtct_anc anc
+                                        LEFT JOIN mamba_flat_encounter_pmtct_labor_delivery ld
+                                                  ON ld.client_id = anc.client_id
+                               WHERE ld.encounter_datetime >
+                                     DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
+    OR anc.client_id NOT in (SELECT anc.client_id
+                             FROM mamba_flat_encounter_pmtct_anc anc
+                                      LEFT JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
+                                                ON mp.client_id = anc.client_id
+                             WHERE mp.encounter_datetime >
+                                   DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
+    )
+
+;
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_pregnant_women_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_update;
+
+~
+CREATE PROCEDURE sp_mamba_fact_pregnant_women_update()
+BEGIN
+-- $BEGIN
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_fact_pregnant_women  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women;
+
+~
+CREATE PROCEDURE sp_mamba_fact_pregnant_women()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_fact_pregnant_women_create();
+CALL sp_mamba_fact_pregnant_women_insert();
+CALL sp_mamba_fact_pregnant_women_update();
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_data_processing_derived_pmtct  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_pmtct;
+
+~
+CREATE PROCEDURE sp_mamba_data_processing_derived_pmtct()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_fact_exposedinfants;
+CALL sp_mamba_fact_pregnant_women;
+-- $END
+END~
+
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes

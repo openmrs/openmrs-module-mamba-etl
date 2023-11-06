@@ -1,0 +1,15 @@
+{
+  "report_name": "Mamba Tester Report",
+  "flat_table_name": "mamba_flat_encounter_mamba_tester",
+  "encounter_type_uuid": "498289e5-a59e-4be2-a089-eea3e87c0c26" ,
+  "concepts_locale": "en",
+  "table_columns": {
+    "patient_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "data_points": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "p_age": "93ab5c26-c6d0-4637-8ad4-7ad08f5f6194",
+    "p_summary": "63313088-0fc5-43ec-9449-ac43044c934a",
+    "p_datapoints": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_gender": "e3fc99e4-b46d-4eab-906f-2de1a49306bf"
+  }
+}

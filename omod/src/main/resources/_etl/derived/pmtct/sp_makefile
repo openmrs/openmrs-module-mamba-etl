@@ -1,0 +1,21 @@
+#############################################################################
+####################### PMTCT Clients Dimension SPs #######################
+#############################################################################
+
+#############################################################################
+##################### PMTCT Fact Encounter Table SPs  #####################
+#############################################################################
+facts/infants/sp_mamba_fact_exposedinfants_create.sql
+facts/infants/sp_mamba_fact_exposedinfants_insert.sql
+facts/infants/sp_mamba_fact_exposedinfants_update.sql
+facts/infants/sp_mamba_fact_exposedinfants.sql
+
+facts/anc/sp_mamba_fact_pregnant_women_create.sql
+facts/anc/sp_mamba_fact_pregnant_women_insert.sql
+facts/anc/sp_mamba_fact_pregnant_women_update.sql
+facts/anc/sp_mamba_fact_pregnant_women.sql
+
+#############################################################################
+###### A single stored procedure that invokes (CALLs) the above SPs #########
+#############################################################################
+sp_mamba_data_processing_derived_pmtct.sql
