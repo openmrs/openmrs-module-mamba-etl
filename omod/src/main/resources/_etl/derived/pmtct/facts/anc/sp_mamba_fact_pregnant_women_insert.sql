@@ -52,7 +52,7 @@ INSERT INTO mamba_fact_pmtct_pregnant_women
 FROM mamba_flat_encounter_pmtct_anc anc
     INNER JOIN mamba_dim_person  p
         ON anc.client_id = p.person_id
-WHERE visit_type = 'New ANC Visit'
+WHERE visit_type like 'New %'
     AND (anc.client_id NOT in (SELECT anc.client_id
                                FROM mamba_flat_encounter_pmtct_anc anc
                                         LEFT JOIN mamba_flat_encounter_pmtct_labor_delivery ld

@@ -1,0 +1,45 @@
+{
+  "report_definitions": [
+    {
+      "report_name": "MCH Mother HIV Status",
+      "report_id": "mother_hiv_status",
+      "report_sql": {
+        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "query_params": [
+          {
+            "name": "ptracker_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "MCH Total Deliveries",
+      "report_id": "total_deliveries",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''6dc5308d-27c9-4d49-b16f-2c5e3c759757'' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH HIV-Exposed Infants",
+      "report_id": "hiv_exposed_infants",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE()",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH Total Pregnant women",
+      "report_id": "total_pregnant_women",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) AS total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type like 'New%' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
+        "query_params": []
+      }
+    }
+  ]
+}

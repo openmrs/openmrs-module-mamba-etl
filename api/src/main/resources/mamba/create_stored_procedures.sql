@@ -458,7 +458,7 @@ BEGIN
             @column_labels, '
             FROM mamba_z_encounter_obs eo
                 INNER JOIN mamba_dim_concept_metadata cm
-                ON IF(cm.concept_answer_obs=1, cm.concept_uuid=eo.obs_value_coded_uuid, cm.concept_uuid=eo.obs_question_uuid)
+                ON cm.concept_uuid=eo.obs_question_uuid
             WHERE cm.flat_table_name = ''', @tbl_name, '''
             AND eo.encounter_type_uuid = cm.encounter_type_uuid
             AND eo.row_num = cm.row_num
@@ -1647,6 +1647,129 @@ BEGIN
   }
 },
   {
+  "report_name": "ART_Register",
+  "flat_table_name": "mamba_flat_encounter_art_card",
+  "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f" ,
+  "concepts_locale": "en",
+  "table_columns": {
+    "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
+    "current_regimen": "dd2b0b4d-30ab-102d-86b0-7a5022ba4115",
+    "who_stage": "dcdff274-30ab-102d-86b0-7a5022ba4115",
+    "no_of_days": "7593ede6-6574-4326-a8a6-3d742e843659",
+    "no_of_pills": "b0e53f0a-eaca-49e6-b663-d0df61601b70",
+    "tb_status": "dce02aa1-30ab-102d-86b0-7a5022ba4115",
+    "dsdm": "73312fee-c321-11e8-a355-529269fb1459",
+    "pregnant": "dcda5179-30ab-102d-86b0-7a5022ba4115",
+    "emtct": "dcd7e8e5-30ab-102d-86b0-7a5022ba4115",
+    "cotrim": "c3d744f6-00ef-4774-b9a7-d33c58f5b017"
+  }
+},
+  {
+  "report_name": "HTS Report",
+  "flat_table_name": "mamba_flat_encounter_hts",
+  "encounter_type_uuid": "79c1f50f-f77d-42e2-ad2a-d29304dde2fe",
+  "concepts_locale": "en",
+  "table_columns": {
+    "test_setting": "13abe5c9-6de2-4970-b348-36d352ee8eeb",
+    "community_service_point": "74a3b695-30f7-403b-8f63-3f766461e104",
+    "facility_service_point": "80bcc9c1-e328-47e8-affe-6d1bffe4adf1",
+    "hts_approach": "9641ead9-8821-4898-b633-a8e96c0933cf",
+    "pop_type": "166432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "key_pop_type": "d3d4ae96-8c8a-43db-a9dc-dac951f5dcb3",
+    "key_pop_migrant_worker": "63ea75cb-205f-4e7b-9ede-5f9b8a4dda9f",
+    "key_pop_uniformed_forces": "b282bb08-62a7-42c2-9bea-8751c267d13e",
+    "key_pop_transgender": "22b202fc-67de-4af9-8c88-46e22559d4b2",
+    "key_pop_AGYW": "678f3144-302f-493e-ba22-7ec60a84732a",
+    "key_pop_fisher_folk": "def00c73-f6d5-42fb-bcec-0b192b5be22d",
+    "key_pop_prisoners": "8da9bf92-22f6-40be-b468-1ad08de7d457",
+    "key_pop_refugees": "dc1058ea-4edd-4780-aeaa-a474f7f3a437",
+    "key_pop_msm": "160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "key_pop_fsw": "160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "key_pop_truck_driver": "162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "key_pop_pwd": "365371fd-0106-4a53-abc4-575e3d65d372",
+    "key_pop_pwid": "c038bff0-8e33-408c-b51f-7fb6448d2f6c",
+    "sexually_active": "160109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "unprotected_sex_last_12mo": "159218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "sti_last_6mo": "156660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "ever_tested_hiv": "1492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "duration_since_last_test": "e7947a45-acff-49e1-ba1c-33e43a710e0d",
+    "last_test_result": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "reason_for_test": "ce3816e7-082d-496b-890b-a2b169922c22",
+    "pretest_counselling": "de32152d-93b0-412a-908a-20af0c46f215",
+    "type_pretest_counselling": "0473ec07-2f34-4447-9c58-e35a1c491b6f",
+    "consent_provided": "1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "test_conducted": "164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "date_test_conducted": "164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "initial_kit_name": "afa64df8-50af-4bc3-8135-6e6603f62068",
+    "initial_test_result": "e767ba5d-7560-43ba-a746-2b0ff0a2a513",
+    "confirmatory_kit_name": "b78d89e7-08aa-484f-befb-1e3e70cd6985",
+    "tiebreaker_kit_name": "73434a78-e4fc-42f7-a812-f30f3b3cabe3",
+    "tiebreaker_test_result": "bfc5fbb9-2b23-422e-a741-329bb2597032",
+    "final_test_result": "e16b0068-b6a2-46b7-aba9-e3be00a7b4ab",
+    "syphilis_test_result": "165303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "given_result": "164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "date_given_result": "160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "result_received_couple": "445846e9-b929-4519-bc83-d51c051918f5",
+    "couple_result": "5f38bc97-d6ca-43f8-a019-b9a9647d0c6a",
+    "recency_consent": "976ca997-fb2b-4bef-a299-f7c9e16b50a8",
+    "recency_test_done": "4fe5857e-c804-41cf-b3c9-0acc1f516ab7",
+    "recency_test_type": "05112308-79ba-4e00-802e-a7576733b98e",
+    "recency_rtri_result": "165092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "recency_vl_result": "856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tb_symptoms": "159800AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tb_symptoms_fever": "1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tb_symptoms_cough": "159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tb_symptoms_hemoptysis": "138905AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tb_symptoms_nightsweats": "133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "sti_symptoms": "c4f81292-61a3-4561-a4ae-78be7d16d928",
+    "sti_symptoms_female_genitalulcers": "153872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "sti_symptoms_genitalsores": "faf06026-fce9-4d2c-9ef2-24fb45343804",
+    "sti_symptoms_lower_abdominalpain": "06be8996-ef55-438b-bbb9-5bebeb18e779",
+    "sti_symptoms_scrotalmass": "d8e46cc0-4d08-45d9-a46d-bd083db63057",
+    "sti_symptoms_male_genitalulcers": "123861AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "sti_symptoms_urethral_discharge": "60817acb-90f1-4d46-be87-2c47e150770b",
+    "sti_symptomsVaginal_discharge": "9a24bedc-d42c-422e-9f5d-371b59af0660",
+    "client_linked_care": "e8e8fe71-adbb-48e7-b531-589985094d30",
+    "facility_referred_care": "161562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_for_services": "494117dd-c763-4374-8402-5ed91bd9b8d0",
+    "is_referred_prevention_services": "5832db34-152d-4ead-a591-c627683c7f05",
+    "is_referred_srh_services": "7ea48919-1cfd-46fd-9ea0-8255d596e463",
+    "is_referred_clinical_services": "ca0b979e-d69a-43d3-bbea-9b24290b021e",
+    "referred_support_services": "fbe382b6-6f01-49ff-a6c9-19c1cb50b916",
+    "referred_prevention_services": "5f394708-ca7d-4558-8d23-a73de181b02d",
+    "referred_preexposure_services": "88cdde2b-753b-48ac-a51a-ae5e1ab24846",
+    "referred_postexposure_services": "1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_vmmc_services": "162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_harmreduction_services": "da0238c1-0ddd-49cc-b10d-c552391b6332",
+    "referred_behavioural_services": "ac2e75dc-fceb-4591-9ffb-3f852c0750d9",
+    "referred_postgbv_services": "0be6a668-b4ff-4fc5-bbae-0e2a86af1bd1",
+    "referred_prevention_info_services": "e7ee9ec2-3cc7-4e59-8172-9fd08911e8c5",
+    "referred_other_prevention_services": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_srh_services": "bf634be9-197a-433b-8e4e-7a04242a4e1d",
+    "referred_hiv_partner_kpcontacts_testing": "a56cdd43-f2eb-49d6-88fd-113aaea2e85f",
+    "referred_hiv_partner_testing": "f0589be1-d457-4138-b244-bfb115cdea21",
+    "referred_sti_testing_tx": "46da10c7-49e3-45e5-8e82-7c529d52a1a8",
+    "referred_analcancer_screening": "9d4c029a-2ac3-44c3-9a20-fb32c81a9ba2",
+    "referred_cacx_screening_tx": "060dd5b2-2d65-4db5-85f0-cd1ba809350f",
+    "referred_pregnancy_check": "0097d9b1-6758-4754-8713-91638efe12ea",
+    "referred_contraception_fp": "6488e62a-314b-49da-b8d4-ca9c7a6941fc",
+    "referred_srh_other": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_clinical_services": "960f2980-35e2-4677-88ed-79424fe0fc91",
+    "referred_tb_program": "160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_ipt_rogram": "164128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_ctx_services": "858f0f06-bc62-4b04-b864-cef98a2f3845",
+    "referred_vaccinations_services": "0cf2ce2c-cd3f-478b-89b7-542018674dba",
+    "referred_other_clinical_services": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_other_support": "b5afd495-00fc-4d94-9e26-8f6c8cc8caa0",
+    "referred_psychosocial_support": "5490AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_mentalhealth_support": "5489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "referred_violence_support": "ea08440d-41d4-4795-bb4d-4639cf32645c",
+    "referred_legal_support": "a046ce31-e0d9-4044-a384-ecc429dc4035",
+    "referred_disclosure_support": "846a63c0-4530-4008-b6a1-12201b9e0b88",
+    "is_referred_other_support": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  }
+},
+  {
   "report_name": "LaborandDelivery_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_labor_delivery",
   "encounter_type_uuid": "2678423c-0523-4d76-b0da-18177b439eed" ,
@@ -1681,6 +1804,21 @@ BEGIN
   }
 },
   {
+  "report_name": "Mamba Tester Report",
+  "flat_table_name": "mamba_flat_encounter_mamba_tester",
+  "encounter_type_uuid": "498289e5-a59e-4be2-a089-eea3e87c0c26" ,
+  "concepts_locale": "en",
+  "table_columns": {
+    "patient_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "data_points": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
+    "p_age": "93ab5c26-c6d0-4637-8ad4-7ad08f5f6194",
+    "p_summary": "63313088-0fc5-43ec-9449-ac43044c934a",
+    "p_datapoints": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
+    "p_gender": "e3fc99e4-b46d-4eab-906f-2de1a49306bf"
+  }
+},
+  {
   "report_name": "MotherPostnatal_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_mother_postnatal",
   "encounter_type_uuid": "af1f1b24-d2e8-4282-b308-0bf79b365584" ,
@@ -1698,6 +1836,51 @@ BEGIN
         "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
         "missing_reason_for_refusing_art_initiation": "0117ec63-6fc8-4b37-99e9-7f6d99652852"
     }
+},
+  {
+  "report_definitions": [
+    {
+      "report_name": "MCH Mother HIV Status",
+      "report_id": "mother_hiv_status",
+      "report_sql": {
+        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "query_params": [
+          {
+            "name": "ptracker_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "MCH Total Deliveries",
+      "report_id": "total_deliveries",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''6dc5308d-27c9-4d49-b16f-2c5e3c759757'' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH HIV-Exposed Infants",
+      "report_id": "hiv_exposed_infants",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE()",
+        "query_params": []
+      }
+    },
+    {
+      "report_name": "MCH Total Pregnant women",
+      "report_id": "total_pregnant_women",
+      "report_sql": {
+        "sql_query": "SELECT COUNT(DISTINCT pw.client_id) AS total_pregnant_women FROM mamba_fact_pmtct_pregnant_women pw WHERE visit_type like 'New%' AND encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND CURDATE() AND DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK) > CURDATE()",
+        "query_params": []
+      }
+    }
+  ]
 }]}';
 
   CALL sp_mamba_extract_report_metadata(@report_data, 'mamba_dim_concept_metadata');
@@ -2889,6 +3072,44 @@ DELIMITER ;
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_data_processing_derived_covid  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_covid;
+
+CREATE PROCEDURE sp_mamba_data_processing_derived_covid()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_dim_client_covid;
+CALL sp_mamba_fact_encounter_covid;
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_data_processing_derived_hts  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_mamba_data_processing_derived_hts;
+
+CREATE PROCEDURE sp_mamba_data_processing_derived_hts()
+BEGIN
+-- $BEGIN
+CALL sp_mamba_dim_client_hts;
+CALL sp_mamba_fact_encounter_hts;
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_data_processing_derived_pmtct  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -2924,6 +3145,8 @@ BEGIN
 CALL sp_mamba_data_processing_flatten();
 
 -- Call the ETL process
+CALL sp_mamba_data_processing_derived_hts();
+-- CALL sp_mamba_data_processing_derived_covid();
 CALL sp_mamba_data_processing_derived_pmtct();
 -- $END
 END //
@@ -4103,24 +4326,6 @@ DELIMITER ;
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_fact_exposedinfants_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_fact_exposedinfants_query;
-
-CREATE PROCEDURE sp_mamba_fact_exposedinfants_query()
-BEGIN
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_fact_exposedinfants  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -4134,7 +4339,6 @@ BEGIN
 CALL sp_mamba_fact_exposedinfants_create();
 CALL sp_mamba_fact_exposedinfants_insert();
 CALL sp_mamba_fact_exposedinfants_update();
-CALL sp_mamba_fact_exposedinfants_query();
 -- $END
 END //
 
@@ -4249,7 +4453,7 @@ INSERT INTO mamba_fact_pmtct_pregnant_women
 FROM mamba_flat_encounter_pmtct_anc anc
     INNER JOIN mamba_dim_person  p
         ON anc.client_id = p.person_id
-WHERE visit_type = 'New ANC Visit'
+WHERE visit_type like 'New %'
     AND (anc.client_id NOT in (SELECT anc.client_id
                                FROM mamba_flat_encounter_pmtct_anc anc
                                         LEFT JOIN mamba_flat_encounter_pmtct_labor_delivery ld
@@ -4289,25 +4493,6 @@ DELIMITER ;
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_fact_pregnant_women_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_mamba_fact_pregnant_women_query;
-
-CREATE PROCEDURE sp_mamba_fact_pregnant_women_query()
-BEGIN
--- $BEGIN
-
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_fact_pregnant_women  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -4321,7 +4506,6 @@ BEGIN
 CALL sp_mamba_fact_pregnant_women_create();
 CALL sp_mamba_fact_pregnant_women_insert();
 CALL sp_mamba_fact_pregnant_women_update();
-CALL sp_mamba_fact_pregnant_women_query();
 -- $END
 END //
 
