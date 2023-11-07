@@ -11,7 +11,6 @@ CREATE TABLE mamba_fact_pmtct_exposedinfants
     linked_to_art                             VARCHAR(100) NULL,
     infant_hiv_test                           VARCHAR(100) NULL,
     hiv_test_performed                        VARCHAR(100) NULL,
-    missing_art_number                        VARCHAR(100) NULL,
     result_of_hiv_test                        VARCHAR(100) NULL,
     viral_load_results                        VARCHAR(100) NULL,
     hiv_exposure_status                       VARCHAR(100) NULL,
