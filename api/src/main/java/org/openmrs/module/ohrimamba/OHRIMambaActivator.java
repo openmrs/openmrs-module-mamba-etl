@@ -35,11 +35,11 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		
-		log.info("MambaETL flattening Task...");
-		System.out.println("MambaETL flattening Task...");
-		registerTask("MambaETL Task", "MambaETL - Task to Flatten and Prepare Reporting Data.", FlattenTableTask.class,
-		    60 * 60 * 12L, false);
+		System.out.println("started MambaETL Reference Module");
+		System.out.println("MambaETL DB Flattening Task registering...");
+		log.info("MambaETL DB Flattening Task registering..");
+		registerTask("MambaETL Task", "MambaETL Task - To Flatten and Prepare Reporting Data.", FlattenTableTask.class,
+		    60 * 60 * 12L, true);
 	}
 	
 	@Override
@@ -91,7 +91,7 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 				Context.getSchedulerService().scheduleTask(taskDef);
 				//Context.getSchedulerService().saveTaskDefinition(taskDef);
 			}
-			
+			System.out.println("A Task '" + name + "' has been Registered Successfully!");
 		}
 		catch (SchedulerException ex) {
 			log.warn("Unable to register task '" + name + "' with scheduler", ex);

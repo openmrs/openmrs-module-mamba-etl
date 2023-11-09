@@ -2,20 +2,14 @@
 
 <module configVersion="1.2">
 
-    <!-- MambaETL Reference Module Properties -->
-    <!--    <id>@MODULE_ID@</id>-->
-    <!--    <name>@MODULE_NAME@</name>-->
-    <!--    <version>@MODULE_VERSION@</version>-->
-    <!--	<package>@MODULE_PACKAGE@</package>-->
     <id>${project.parent.artifactId}</id>
     <name>${project.parent.name}</name>
     <version>${project.parent.version}</version>
     <package>org.openmrs.module.ohrimamba</package>
-    <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]</author>
+    <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF], Amos Laboso [UoN]</author>
     <description>${project.parent.description}</description>
 
     <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
-    <!--    <activator>@MODULE_PACKAGE@.OHRIMambaActivator</activator>-->
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
@@ -23,7 +17,14 @@
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
     </aware_of_modules>
 
-    <!-- Internationalization -->
+    <require_modules>
+        <require_module>org.openmrs.module.webservices.rest</require_module>
+    </require_modules>
+
+    <aware_of_modules>
+        <aware_of_module>org.openmrs.module.ohrimambacore</aware_of_module>
+    </aware_of_modules>
+
     <!-- All message codes should start with @MODULE_ID@.* -->
     <messages>
         <lang>en</lang>
@@ -58,7 +59,7 @@
 
     <globalProperty>
         <property>mambaetl.analysis.db.driver</property>
-        <defaultValue>com.mysql.jdbc.Driver</defaultValue>
+        <defaultValue>com.mysql.cj.jdbc.Driver</defaultValue>
         <description>MambaETL JDBC driver</description>
     </globalProperty>
 
