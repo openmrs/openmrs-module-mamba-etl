@@ -51,18 +51,18 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
     FROM mamba_flat_encounter_pmtct_infant_postnatal ip
         INNER JOIN mamba_dim_person p
             ON ip.client_id = p.person_id
-    LEFT JOIN relationship a ON  ip.client_id = a.person_b
-    WHERE   (ip.client_id in (SELECT person_b FROM relationship a
+    LEFT JOIN mamba_dim_relationship a ON  ip.client_id = a.person_b
+    WHERE   (ip.client_id in (SELECT person_b FROM mamba_dim_relationship a
                 INNER JOIN mamba_flat_encounter_pmtct_anc anc
                     ON a.person_a = anc.client_id
                 WHERE (anc.hiv_test_result ='HIV Positive'
                            OR anc.hiv_test_performed = 'Previously known positive'))
-            OR ip.client_id in (SELECT person_b FROM relationship a
+            OR ip.client_id in (SELECT person_b FROM mamba_dim_relationship a
                 INNER JOIN mamba_flat_encounter_pmtct_labor_delivery ld
                     ON a.person_a = ld.client_id
                 where (ld.result_of_hiv_test ='HIV Positive'
                            OR ld.hiv_test_performed = 'Previously known positive'))
-            OR ip.client_id in (SELECT person_b FROM relationship a
+            OR ip.client_id in (SELECT person_b FROM mamba_dim_relationship a
                 INNER JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
                     ON a.person_a = mp.client_id
                 where (mp.result_of_hiv_test like '%Positive%'

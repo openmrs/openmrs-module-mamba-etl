@@ -31,12 +31,13 @@
     </modules>
 
     <properties>
-        <openmrsPlatformVersion>2.6.0</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
+        <webservicesRestVersion>2.21.0</webservicesRestVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
+        <mambaETLCoreVersion>2.0.1-SNAPSHOT</mambaETLCoreVersion>
         <version.mysql-connector>8.0.33</version.mysql-connector>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
-        <mambaETLversion>2.0.1-SNAPSHOT</mambaETLversion>
         <MODULE_ID>${project.parent.artifactId}</MODULE_ID>
         <MODULE_NAME>MambaETL Reference Module</MODULE_NAME>
         <MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
@@ -87,17 +88,59 @@
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod-common</artifactId>
+                <version>${webservicesRestVersion}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod-common</artifactId>
+                <version>${webservicesRestVersion}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod-2.0</artifactId>
+                <version>${webservicesRestVersion}</version>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
                 <artifactId>legacyui-omod</artifactId>
                 <version>${legacyUIomodVersion}</version>
                 <scope>provided</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>ohrimamba-core-omod</artifactId>
+                <version>${mambaETLCoreVersion}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>ohrimamba-core-api</artifactId>
+                <version>${mambaETLCoreVersion}</version>
+                <type>jar</type>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
-    <build>
+    <dependencies>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>ohrimamba-core-api</artifactId>
+        </dependency>
+    </dependencies>
 
-        <!--<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>-->
+    <build>
 
         <pluginManagement>
 
@@ -120,8 +163,6 @@
                                     <artifactItem>
                                         <groupId>org.openmrs.module</groupId>
                                         <artifactId>ohrimamba-core-api</artifactId>
-                                        <version>${mambaETLversion}</version>
-                                        <type>jar</type>
                                         <outputDirectory>${project.build.directory}/mamba-etl</outputDirectory>
                                         <includes>_core/**</includes>
                                     </artifactItem>
