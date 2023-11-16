@@ -132,15 +132,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-api</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
-
         <pluginManagement>
 
             <plugins>
@@ -190,6 +182,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.2.0</version>
+                    <configuration>
+                        <includeEmptyDirs>true</includeEmptyDirs>
+                    </configuration>
                     <executions>
 
                         <!-- 2. Copy contents of the resources directory of the dependency jar to a target location -->
@@ -380,45 +375,67 @@
                     <version>2.1</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.openmrs.maven.plugins</groupId>
+                    <artifactId>openmrs-dependency-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>retrieve-versions</goal>
+                                <goal>create-versions</goal>
+                                <goal>compare-versions</goal>
+                                <goal>attach-versions</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>parse-version</goal>
+                            </goals>
+                            <configuration>
+                                <propertyPrefix>omrsVersion</propertyPrefix>
+                                <versionString>${openmrsPlatformVersion}</versionString>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                <plugin>
+                    <groupId>org.openmrs.maven.plugins</groupId>
+                    <artifactId>openmrs-sdk-maven-plugin</artifactId>
+                    <version>3.9.0</version>
+                    <executions>
+                        <execution>
+                            <id>build-distro</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>build-distro</goal>
+                            </goals>
+                            <configuration>
+                                <dir>${project.build.directory}/docker</dir>
+                                <bundled>true</bundled>
+                                <distro>${project.build.directory}/classes/openmrs-distro.properties</distro>
+                                <batchAnswers>
+                                    <param>n</param>
+                                </batchAnswers>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                -->
+
             </plugins>
 
         </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.openmrs.maven.plugins</groupId>
-                <artifactId>openmrs-dependency-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>retrieve-versions</goal>
-                            <goal>create-versions</goal>
-                            <goal>compare-versions</goal>
-                            <goal>attach-versions</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                        <configuration>
-                            <propertyPrefix>omrsVersion</propertyPrefix>
-                            <versionString>${openmrsPlatformVersion}</versionString>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-
     </build>
 
     <repositories>

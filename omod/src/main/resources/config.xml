@@ -13,37 +13,15 @@
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
-    <aware_of_modules>
-        <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
-    </aware_of_modules>
-
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
     </require_modules>
 
-    <aware_of_modules>
-        <aware_of_module>org.openmrs.module.ohrimambacore</aware_of_module>
-    </aware_of_modules>
-
-    <!-- All message codes should start with @MODULE_ID@.* -->
-    <messages>
-        <lang>en</lang>
-        <file>messages.properties</file>
-    </messages>
-    <messages>
-        <lang>fr</lang>
-        <file>messages_fr.properties</file>
-    </messages>
-    <messages>
-        <lang>es</lang>
-        <file>messages_es.properties</file>
-    </messages>
-
     <globalProperty>
         <property>mambaetl.analysis.db.url</property>
-        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true</defaultValue>
-<!--        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&amp;noAccessToProcedureBodies=true</defaultValue>-->
-        <description>MambaETL JDBC Connection string</description>
+        <defaultValue>jdbc:mysql://db:3306/analysis_db?autoReconnect=true</defaultValue>
+        <description>MambaETL JDBC Connection string
+        </description>
     </globalProperty>
 
     <globalProperty>
@@ -63,5 +41,19 @@
         <defaultValue>com.mysql.jdbc.Driver</defaultValue>
         <description>MambaETL JDBC driver</description>
     </globalProperty>
+
+    <!-- All message codes should start with @MODULE_ID@.* -->
+    <messages>
+        <lang>en</lang>
+        <file>messages.properties</file>
+    </messages>
+    <messages>
+        <lang>fr</lang>
+        <file>messages_fr.properties</file>
+    </messages>
+    <messages>
+        <lang>es</lang>
+        <file>messages_es.properties</file>
+    </messages>
 
 </module>
