@@ -132,15 +132,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-api</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
-
         <pluginManagement>
 
             <plugins>
@@ -383,6 +375,39 @@
                     <version>2.1</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.openmrs.maven.plugins</groupId>
+                    <artifactId>openmrs-dependency-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>retrieve-versions</goal>
+                                <goal>create-versions</goal>
+                                <goal>compare-versions</goal>
+                                <goal>attach-versions</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>parse-version</goal>
+                            </goals>
+                            <configuration>
+                                <propertyPrefix>omrsVersion</propertyPrefix>
+                                <versionString>${openmrsPlatformVersion}</versionString>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <!--
                 <plugin>
                     <groupId>org.openmrs.maven.plugins</groupId>
@@ -411,42 +436,6 @@
             </plugins>
 
         </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.openmrs.maven.plugins</groupId>
-                <artifactId>openmrs-dependency-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>retrieve-versions</goal>
-                            <goal>create-versions</goal>
-                            <goal>compare-versions</goal>
-                            <goal>attach-versions</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                        <configuration>
-                            <propertyPrefix>omrsVersion</propertyPrefix>
-                            <versionString>${openmrsPlatformVersion}</versionString>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-
     </build>
 
     <repositories>
