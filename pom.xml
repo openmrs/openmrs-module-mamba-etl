@@ -132,6 +132,13 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>ohrimamba-core-api</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
 
         <pluginManagement>
