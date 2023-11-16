@@ -296,3 +296,5 @@ liquibase/snapshots/*.xml
 
 *.db*
 personal/
+
+api/src/main/resources/mamba/

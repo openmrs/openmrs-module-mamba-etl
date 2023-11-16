@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <module configVersion="1.2">
-    <!-- MambaETL Reference Module Properties -->
-    <!--    <id>@MODULE_ID@</id>-->
-    <!--    <name>@MODULE_NAME@</name>-->
-    <!--    <version>@MODULE_VERSION@</version>-->
-    <!--	<package>@MODULE_PACKAGE@</package>-->
+
     <id>${project.parent.artifactId}</id>
     <name>${project.parent.name}</name>
     <version>${project.parent.version}</version>
     <package>org.openmrs.module.ohrimamba</package>
-    <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]</author>
+    <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF], Amos Laboso [UoN]</author>
     <description>${project.parent.description}</description>
 
     <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
-    <!--    <activator>@MODULE_PACKAGE@.OHRIMambaActivator</activator>-->
+
     <require_version>${openmrsPlatformVersion}</require_version>
 
     <aware_of_modules>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
     </aware_of_modules>
 
-    <!-- Internationalization -->
+    <require_modules>
+        <require_module>org.openmrs.module.webservices.rest</require_module>
+    </require_modules>
+
+    <aware_of_modules>
+        <aware_of_module>org.openmrs.module.ohrimambacore</aware_of_module>
+    </aware_of_modules>
+
     <!-- All message codes should start with @MODULE_ID@.* -->
     <messages>
         <lang>en</lang>
@@ -35,21 +38,23 @@
         <lang>es</lang>
         <file>messages_es.properties</file>
     </messages>
+
     <globalProperty>
         <property>mambaetl.analysis.db.url</property>
         <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true</defaultValue>
-        <description>JDBC Connection string</description>
+<!--        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&amp;noAccessToProcedureBodies=true</defaultValue>-->
+        <description>MambaETL JDBC Connection string</description>
     </globalProperty>
 
     <globalProperty>
         <property>mambaetl.analysis.db.username</property>
-        <defaultValue>mamba</defaultValue>
+        <defaultValue>root</defaultValue>
         <description>MambaETL username</description>
     </globalProperty>
 
     <globalProperty>
         <property>mambaetl.analysis.db.password</property>
-        <defaultValue>4#edRmgaF+k?</defaultValue>
+        <defaultValue>openmrs</defaultValue>
         <description>MambaETL user password</description>
     </globalProperty>
 
