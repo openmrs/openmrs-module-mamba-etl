@@ -22,8 +22,4 @@
   		    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
   		    http://www.springframework.org/schema/util
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-
-    <context:component-scan base-package="org.openmrs.module.ohrimamba"/>
-    <context:component-scan base-package="org.openmrs.module.ohrimambacore"/>
-
 </beans>

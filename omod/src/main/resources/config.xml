@@ -14,16 +14,12 @@
     <require_version>${openmrsPlatformVersion}</require_version>
 
     <aware_of_modules>
-        <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+        <aware_of_module>org.openmrs.module.ohrimambacore</aware_of_module>
     </aware_of_modules>
 
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
     </require_modules>
-
-    <aware_of_modules>
-        <aware_of_module>org.openmrs.module.ohrimambacore</aware_of_module>
-    </aware_of_modules>
 
     <!-- All message codes should start with @MODULE_ID@.* -->
     <messages>
@@ -42,8 +38,8 @@
     <globalProperty>
         <property>mambaetl.analysis.db.url</property>
         <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true</defaultValue>
-<!--        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true&amp;noAccessToProcedureBodies=true</defaultValue>-->
-        <description>MambaETL JDBC Connection string</description>
+        <description>MambaETL JDBC Connection string
+        </description>
     </globalProperty>
 
     <globalProperty>
