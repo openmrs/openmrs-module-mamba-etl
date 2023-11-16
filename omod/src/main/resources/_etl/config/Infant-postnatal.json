@@ -21,7 +21,6 @@
         "ctx_prophylaxis_status": "f3de6eb3-5d4a-43ca-8648-74649271238c",
         "infant_hiv_test": "ee8c0292-47f8-4c01-8b60-8ba13a560e1a",
         "confirmatory_test_performed_on_this_vist": "8c2b3506-5b77-4916-a5c8-677a37a65007",
-        "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed",
-        "missing_art_number": "43cb14fe-6f06-4b40-81f0-a712b805a74d"
+        "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed"
       }
 }

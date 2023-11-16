@@ -1,7 +1,7 @@
 {
   "report_name": "MotherPostnatal_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_mother_postnatal",
-  "encounter_type_uuid": "af1f1b24-d2e8-4282-b308-0bf79b365584" ,
+  "encounter_type_uuid": "a4362fd2d-1866-4ea0-84ef-5e5da9627440" ,
   "concepts_locale": "en",
   "table_columns": {
         "viral_load_results": "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",

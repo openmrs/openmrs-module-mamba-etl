@@ -1217,7 +1217,7 @@ SELECT location_id,
        address13,
        address14,
        address15
-FROM openmrs.location;
+FROM kibagabaga.location;
 
 -- $END
 END //
@@ -1324,7 +1324,7 @@ SELECT patient_identifier_type_id,
        name,
        description,
        uuid
-FROM openmrs.patient_identifier_type;
+FROM kibagabaga.patient_identifier_type;
 
 -- $END
 END //
@@ -1419,7 +1419,7 @@ INSERT INTO mamba_dim_concept_datatype (concept_datatype_id,
                                         datatype_name)
 SELECT dt.concept_datatype_id AS concept_datatype_id,
        dt.name                AS datatype_name
-FROM openmrs.concept_datatype dt;
+FROM kibagabaga.concept_datatype dt;
 -- WHERE dt.retired = 0;
 
 -- $END
@@ -1512,7 +1512,7 @@ SELECT c.uuid        AS uuid,
        c.concept_id  AS concept_id,
        c.datatype_id AS datatype_id,
        c.retired
-FROM openmrs.concept c;
+FROM kibagabaga.concept c;
 -- WHERE c.retired = 0;
 
 -- $END
@@ -1623,7 +1623,7 @@ SELECT ca.concept_answer_id AS concept_answer_id,
        ca.concept_id        AS concept_id,
        ca.answer_concept    AS answer_concept,
        ca.answer_drug       AS answer_drug
-FROM openmrs.concept_answer ca;
+FROM kibagabaga.concept_answer ca;
 
 -- $END
 END //
@@ -1723,7 +1723,7 @@ SELECT cn.concept_name_id,
        cn.locale,
        cn.locale_preferred,
        cn.concept_name_type
-FROM openmrs.concept_name cn
+FROM kibagabaga.concept_name cn
  WHERE cn.locale = 'en'
   AND cn.locale_preferred = 1
     AND cn.voided = 0;
@@ -1808,7 +1808,7 @@ INSERT INTO mamba_dim_encounter_type (encounter_type_id,
 SELECT et.encounter_type_id,
        et.uuid,
        et.name
-FROM openmrs.encounter_type et;
+FROM kibagabaga.encounter_type et;
 -- WHERE et.retired = 0;
 
 -- $END
@@ -1924,7 +1924,7 @@ SELECT e.encounter_id,
        e.date_created,
        e.voided,
        e.visit_id
-FROM openmrs.encounter e
+FROM kibagabaga.encounter e
          INNER JOIN mamba_dim_encounter_type et
                     ON e.encounter_type = et.encounter_type_id
 WHERE et.uuid
@@ -2072,13 +2072,12 @@ BEGIN
         "ctx_prophylaxis_status": "f3de6eb3-5d4a-43ca-8648-74649271238c",
         "infant_hiv_test": "ee8c0292-47f8-4c01-8b60-8ba13a560e1a",
         "confirmatory_test_performed_on_this_vist": "8c2b3506-5b77-4916-a5c8-677a37a65007",
-        "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed",
-        "missing_art_number": "43cb14fe-6f06-4b40-81f0-a712b805a74d"
+        "linked_to_art": "a40d8bc4-56b8-4f28-a1dd-412da5cf20ed"
       }
 },{
   "report_name": "PMTCT ANC visit",
   "flat_table_name": "mamba_flat_encounter_pmtct_anc",
-  "encounter_type_uuid": "2549af50-75c8-4aeb-87ca-4bb2cef6c69a",
+  "encounter_type_uuid": "677d1a80-dbbe-4399-be34-aa7f54f11405",
   "concepts_locale": "en",
   "table_columns": {
     "hiv_test_result": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -2214,10 +2213,7 @@ BEGIN
     "cardiovascular_system_review": "3909220e-0d0e-4547-a54e-fecd619cd861",
     "heent_systems_review": "33b614d0-1953-4056-ac84-66b0492394e5",
     "respiratory_systems_review": "f089c930-1c55-4ab6-934e-f7e7eca6f4e0",
-    "tuberculosis_treatment_plan": "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "sub_form_control": "c731a01e-7268-11ee-b962-0242ac120002",
-    "name_of_subform_filled": "5ac76d80-726a-11ee-b962-0242ac120002",
-    "sub_form_filled": "9674e958-7269-11ee-b962-0242ac120002"
+    "tuberculosis_treatment_plan": "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
 },{
   "report_name": "HTS Report",
@@ -2326,7 +2322,7 @@ BEGIN
 },{
   "report_name": "LaborandDelivery_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_labor_delivery",
-  "encounter_type_uuid": "2678423c-0523-4d76-b0da-18177b439eed" ,
+  "encounter_type_uuid": "6dc5308d-27c9-4d49-b16f-2c5e3c759757" ,
   "concepts_locale": "en",
   "table_columns": {
           "arv_prophylaxis_status": "1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -2351,29 +2347,14 @@ BEGIN
           "infants_medical_record_number": "164803AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
           "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
-          "missing_art_number": "43cb14fe-6f06-4b40-81f0-a712b805a74d",
           "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0",
           "child_two_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "child_two_delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
 },{
-  "report_name": "Mamba Tester Report",
-  "flat_table_name": "mamba_flat_encounter_mamba_tester",
-  "encounter_type_uuid": "498289e5-a59e-4be2-a089-eea3e87c0c26" ,
-  "concepts_locale": "en",
-  "table_columns": {
-    "patient_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
-    "data_points": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
-    "p_name": "d614d6b1-e229-4c61-810c-9ea86370fadb",
-    "p_age": "93ab5c26-c6d0-4637-8ad4-7ad08f5f6194",
-    "p_summary": "63313088-0fc5-43ec-9449-ac43044c934a",
-    "p_datapoints": "ce54a4ef-30ce-4295-9186-32c90dfe6f5e",
-    "p_gender": "e3fc99e4-b46d-4eab-906f-2de1a49306bf"
-  }
-},{
   "report_name": "MotherPostnatal_Register",
   "flat_table_name": "mamba_flat_encounter_pmtct_mother_postnatal",
-  "encounter_type_uuid": "af1f1b24-d2e8-4282-b308-0bf79b365584" ,
+  "encounter_type_uuid": "a4362fd2d-1866-4ea0-84ef-5e5da9627440" ,
   "concepts_locale": "en",
   "table_columns": {
         "viral_load_results": "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -2716,7 +2697,7 @@ SELECT psn.person_id,
                                                                     AS person_name_long,
        psn.uuid,
        psn.voided
-FROM openmrs.person psn
+FROM kibagabaga.person psn
          INNER JOIN mamba_dim_person_name pn
                     on psn.person_id = pn.person_id
 WHERE pn.preferred = 1
@@ -2847,7 +2828,7 @@ SELECT patient_id,
        date_created,
        uuid,
        voided
-FROM openmrs.patient_identifier;
+FROM kibagabaga.patient_identifier;
 
 -- $END
 END //
@@ -2979,7 +2960,7 @@ SELECT pn.person_name_id,
        pn.family_name_suffix,
        pn.degree,
        pn.voided
-FROM openmrs.person_name pn;
+FROM kibagabaga.person_name pn;
 -- $END
 END //
 
@@ -3102,7 +3083,7 @@ SELECT person_address_id,
        country,
        latitude,
        longitude
-FROM openmrs.person_address;
+FROM kibagabaga.person_address;
 
 -- $END
 END //
@@ -3216,7 +3197,7 @@ BEGIN
             retire_reason,
             uuid,
             email
-        FROM openmrs.users c;
+        FROM kibagabaga.users c;
 -- $END
 END //
 
@@ -3353,7 +3334,7 @@ SELECT
     date_voided,
     void_reason,
     uuid
-FROM openmrs.relationship;
+FROM kibagabaga.relationship;
 
 -- $END
 END //
@@ -3525,7 +3506,7 @@ SELECT order_id,
        sort_weight,
        fulfiller_comment,
        fulfiller_status
-FROM openmrs.orders;
+FROM kibagabaga.orders;
 
 -- $END
 END //
@@ -3818,7 +3799,7 @@ SELECT o.encounter_id,
        o.status,
        o.voided,
        ROW_NUMBER() OVER (PARTITION BY person_id,encounter_id,concept_id)
-FROM openmrs.obs o
+FROM kibagabaga.obs o
          INNER JOIN mamba_dim_encounter e
                     ON o.encounter_id = e.encounter_id
 WHERE o.encounter_id IS NOT NULL;
@@ -3903,8 +3884,6 @@ CALL sp_xf_system_drop_all_tables_in_schema();
 
 CALL sp_mamba_dim_location;
 
-CALL sp_mamba_dim_patient_identifier_type;
-
 CALL sp_mamba_dim_concept_datatype;
 
 CALL sp_mamba_dim_concept_answer;
@@ -3930,6 +3909,8 @@ CALL sp_mamba_dim_person_address;
 CALL sp_mamba_dim_user;
 
 CALL sp_mamba_dim_relationship;
+
+CALL sp_mamba_dim_patient_identifier_type;
 
 CALL sp_mamba_dim_patient_identifier;
 
@@ -5122,6 +5103,7 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
     linked_to_art,
     infant_hiv_test,
     hiv_test_performed,
+    missing_art_number,
     result_of_hiv_test,
     viral_load_results,
     hiv_exposure_status,
@@ -5146,6 +5128,7 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
         linked_to_art,
         infant_hiv_test,
         hiv_test_performed,
+        missing_art_number,
         result_of_hiv_test,
         viral_load_results,
         hiv_exposure_status,
