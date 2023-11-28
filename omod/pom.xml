@@ -42,8 +42,7 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod-common</artifactId>
-            <type>jar</type>
+            <artifactId>legacyui-omod</artifactId>
         </dependency>
 
         <dependency>
@@ -60,7 +59,8 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>legacyui-omod</artifactId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <type>jar</type>
         </dependency>
 
         <dependency>
