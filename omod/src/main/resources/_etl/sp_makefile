@@ -6,8 +6,6 @@
 #############################################################################
 ############################ derived folder SPs  ############################
 #############################################################################
-derived/covid/sp_mamba_data_processing_derived_covid.sql
-derived/hts/sp_mamba_data_processing_derived_hts.sql
 derived/pmtct/sp_mamba_data_processing_derived_pmtct.sql
 
 #############################################################################
