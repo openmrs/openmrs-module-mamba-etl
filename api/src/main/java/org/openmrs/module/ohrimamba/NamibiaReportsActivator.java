@@ -19,7 +19,7 @@ import org.openmrs.module.BaseModuleActivator;
  *         This class contains the logic that is run every time this module is either started or
  *         shutdown
  */
-public class OHRIMambaActivator extends BaseModuleActivator {
+public class NamibiaReportsActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(getClass());
 	
@@ -27,24 +27,24 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		System.out.println("Started MambaETL Reference Module");
+		System.out.println("Started Namibia Reports module");
 	}
 	
 	@Override
 	public void stopped() {
-		log.info("Stopped MambaETL Reference Module");
+		log.info("Stopped Namibia Reports module");
 	}
 	
 	/**
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutdown MambaETL Reference Module");
-		System.out.println("Shutdown MambaETL Reference Module");
+		log.info("Shutdown Namibia Reports module");
+		System.out.println("Shutdown Namibia Reports module");
 	}
 	
 	public void willRefreshContext() {
-		log.info("willRefreshContext MambaETL Reference Module");
-		System.out.println("willRefreshContext MambaETL Reference Module");
+		log.info("willRefreshContext Namibia Reports module");
+		System.out.println("willRefreshContext Namibia Reports module");
 	}
 }

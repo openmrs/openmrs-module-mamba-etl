@@ -9,7 +9,7 @@
     <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF], Amos Laboso [UoN]</author>
     <description>${project.parent.description}</description>
 
-    <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
+    <activator>org.openmrs.module.namibiareports.NamibiaReportsActivator</activator>
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
