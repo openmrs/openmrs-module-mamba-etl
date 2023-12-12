@@ -11,6 +11,7 @@ CREATE TABLE mamba_fact_pmtct_exposedinfants
     linked_to_art                             VARCHAR(100) NULL,
     infant_hiv_test                           VARCHAR(100) NULL,
     hiv_test_performed                        VARCHAR(100) NULL,
+    missing_art_number                        VARCHAR(100) NULL,
     result_of_hiv_test                        VARCHAR(100) NULL,
     viral_load_results                        VARCHAR(100) NULL,
     hiv_exposure_status                       VARCHAR(100) NULL,
@@ -27,4 +28,14 @@ CREATE TABLE mamba_fact_pmtct_exposedinfants
 
     PRIMARY KEY (encounter_id)
 );
+
+CREATE INDEX mamba_fact_pmtct_exposedinfants_infant_client_id_index
+    ON mamba_fact_pmtct_exposedinfants (infant_client_id);
+
+CREATE INDEX mamba_fact_pmtct_exposedinfants_mother_client_id_index
+    ON mamba_fact_pmtct_exposedinfants (mother_client_id);
+
+CREATE INDEX mamba_fact_pmtct_exposedinfants_encounter_datetime_index
+    ON mamba_fact_pmtct_exposedinfants (encounter_datetime);
+
 -- $END

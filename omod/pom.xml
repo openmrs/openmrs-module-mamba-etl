@@ -5,14 +5,14 @@
 
     <parent>
         <groupId>org.openmrs.module</groupId>
-        <artifactId>ohrimamba</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
+        <artifactId>namibiareports</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ohrimamba-omod</artifactId>
+    <artifactId>namibiareports-omod</artifactId>
     <packaging>jar</packaging>
-    <name>MambaETL Reference module - OMOD</name>
-    <description>OpenMRS MambaETL Reference module - OMOD</description>
+    <name>Namibia Reports module - OMOD</name>
+    <description>OpenMRS Namibia Reports module - OMOD</description>
 
     <dependencies>
 
@@ -42,8 +42,7 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod-common</artifactId>
-            <type>jar</type>
+            <artifactId>legacyui-omod</artifactId>
         </dependency>
 
         <dependency>
@@ -60,7 +59,8 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>legacyui-omod</artifactId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <type>jar</type>
         </dependency>
 
         <dependency>
