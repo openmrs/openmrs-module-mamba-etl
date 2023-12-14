@@ -17,6 +17,6 @@ Call sp_mamba_hiv_exposed_infants_columns_query;
 Call sp_mamba_total_deliveries_columns_query;
 CALL sp_mamba_mother_hiv_status_query('', '');
 CALL sp_mamba_total_active_ds_cases_columns_query;
-Call sp_mamba_total_active_ds_cases_query;
+Call sp_mamba_total_active_dr_cases_columns_query;
 
 -- $END
