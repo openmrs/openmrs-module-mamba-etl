@@ -10,7 +10,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>ohrimamba</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MambaETL Reference Module</name>
     <description>MambaETL Reference Module</description>
@@ -21,7 +21,7 @@
         <connection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-ohri-mamba.git</connection>
         <url>https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba</url>
         <developerConnection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-ohri-mamba.git</developerConnection>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
