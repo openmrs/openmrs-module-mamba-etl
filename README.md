@@ -1,31 +1,19 @@
-${moduleName}
-==========================
-
-Description
------------
-This is a very basic module which can be used as a starting point in creating a new module.
-
-Building from Source
---------------------
-You will need to have Java 1.6+ and Maven 2.x+ installed.  Use the command 'mvn install' to 
-compile, package and install the module.  The .omod file will be in the omod/target folder.
-
-Alternatively you can add the snippet provided in the [Creating Modules](https://wiki.openmrs.org/x/cAEr) page to your 
-omod/pom.xml and use the mvn command:
-
-    mvn install -P deploy-web -D deploy.path="../../openmrs-1.8.x/webapp/src/main/webapp"
-
-It will allow you to deploy any changes to your web 
-resources such as jsp or js files without re-installing the module. The deploy path says 
-where OpenMRS is deployed.
-
-Installation
-------------
-1. Build the module to produce the .omod file.
-2. Use the OpenMRS Administration > Manage Modules screen to upload and install the .omod file.
-
-If uploads are not allowed from the web (changable via a runtime property), you can drop the omod
-into the ~/.OpenMRS/modules folder.  (Where ~/.OpenMRS is assumed to be the Application 
-Data Directory that the running openmrs is currently using.)  After putting the file in there 
-simply restart OpenMRS/tomcat and the module will be loaded and started.
 # openmrs-module-ohri-mamba
+
+![MambaETL.png](..%2F..%2F..%2F..%2F_markdown%2FMambaETL.png)
+
+## **Background**
+
+MambaETL (or simply known as Mamba) is an OpenMRS (Open Electronic Medical Records System) implementation of data Extraction, Loading and Transforming (ETL) of data into a more denormalised format for faster data retrieval and analysis.
+
+OpenMRS stores patient observational data in a long format. Essentially, for each encounter type for a given patient, multiple rows are saved into the OpenMRS Obs table. Sometimes as many as 50 or more rows saved for a single encounter in just the Obs table.
+
+This means that the Obs table quickly grows to millions of records in fairly sized facilities making reporting and any analysis on such data incredibly slow and difficult.
+
+## **Purpose of this module**
+
+The purpose of the `openmrs-module-ohri-mamba` is to demonstrate the use of the MambaETL core module `openmrs-module-ohri-mamba-core` which
+is found [here](https://github.com/UCSF-IGHS/openmrs-module-mamba-core).
+This module uses [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of MambaETL.
+
+You can read more about MambaETL [here](https://ucsf-ighs.notion.site/MambaETL-Documentation-v1-0-3f0467b435744e34a261049383c5e4ef?pvs=4).

@@ -10,7 +10,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>ohrimamba</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MambaETL Reference Module</name>
     <description>MambaETL Reference Module</description>
@@ -33,7 +33,7 @@
         <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
-        <mambaETLCoreVersion>3.0.1</mambaETLCoreVersion>
+        <mambaETLCoreVersion>1.0.0</mambaETLCoreVersion>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
         <MODULE_ID>${project.parent.artifactId}</MODULE_ID>
