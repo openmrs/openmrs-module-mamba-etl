@@ -27,7 +27,7 @@
     },
     {
       "report_name": "MCH HIV-Exposed Infants",
-      "report_id": "hiv_exposed_infants",
+      "report_id": "total_hiv_exposed_infants",
       "report_sql": {
         "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW()",
         "query_params": []
