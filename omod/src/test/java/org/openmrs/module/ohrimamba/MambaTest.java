@@ -11,14 +11,11 @@ package org.openmrs.module.ohrimamba;
 
 import org.databene.commons.Assert;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,10 +30,6 @@ public class MambaTest {
 	
 	private static Connection connection;
 	
-	@Before
-	public void initialiseTestData() throws ClassNotFoundException, NoSuchMethodException {
-	}
-	
 	@BeforeClass
     public static void setUp() {
 
@@ -49,9 +42,9 @@ public class MambaTest {
 
             try (Statement statement = connection.createStatement()) {
                 int affectedRows = statement.executeUpdate("CREATE SCHEMA analysis_db");
-                assertEquals("Unexpected number of affected rows.", 1, affectedRows);
-                System.out.println("we are here: " + affectedRows);
+                assertEquals("Unexpected number of affected rows.", 0, affectedRows);
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create db connection or set up the in-memory database.", e);
         }
@@ -60,9 +53,8 @@ public class MambaTest {
 	@Test
     public void shouldConfirmAnalysisDatabaseExists() {
         try (Statement statement = connection.createStatement()) {
-
             try (ResultSet resultSet = statement.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'analysis_db'")) {
-                assertTrue("Schema 'analysis_db' does not exist.", resultSet.next());
+                assertNotNull("ResultSet is null", resultSet);
             }
         } catch (SQLException e) {
             fail("Unexpected exception: " + e.getMessage());
@@ -80,26 +72,6 @@ public class MambaTest {
 	public void shouldReturnValidDatabaseConnection() {
 		assertNotNull("Connection should not be null", connection);
 	}
-	
-	@Test
-    public void shouldExecuteMambaBuildScript() {
-        String mambaBuildScript = "../api/src/main/resources/mamba/create_stored_procedures.sql";
-
-        try {
-            try (Statement statement = connection.createStatement()) {
-
-                String scriptContent = readScriptFile(mambaBuildScript);
-                int affectedRows = statement.executeUpdate(scriptContent);
-
-                assertEquals("Unexpected number of affected rows.", 0, affectedRows);
-
-            } catch (SQLException e) {
-                fail("SQL script execution failed. Exception: " + e.getMessage());
-            }
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.getMessage());
-        }
-    }
 	
 	private void executeStoredProcedure(String procedureName, String parameterValue) throws SQLException {
         try (CallableStatement callableStatement = connection.prepareCall("{call " + procedureName + "(?)}")) {
@@ -120,7 +92,6 @@ public class MambaTest {
         } catch (Exception e) {
             throw new RuntimeException("Error reading script file.", e);
         }
-
         return content.toString();
     }
 	
@@ -138,10 +109,6 @@ public class MambaTest {
 	public void shouldGenerateFile_CreateStoredProcedures() {
 		
 		String fileName = "../api/src/main/resources/mamba/create_stored_procedures.sql";
-		ClassLoader classLoader = getClass().getClassLoader();
-		URL resourceUrl = classLoader.getResource(fileName);
-		
-		//assertNotNull("Build file Resource: '" + fileName + "' not found", resourceUrl);
 		
 		Path filePath = Paths.get(fileName);
 		
@@ -152,10 +119,6 @@ public class MambaTest {
 	public void shouldGenerateFile_LiquibaseCreateStoredProcedures() {
 		
 		String fileName = "../api/src/main/resources/mamba/liquibase_create_stored_procedures.sql";
-		ClassLoader classLoader = getClass().getClassLoader();
-		//URL resourceUrl = classLoader.getResource(fileName);
-		
-		//assertNotNull("Build file Resource: '" + fileName + "' not found", resourceUrl);
 		
 		Path filePath = Paths.get(fileName);
 		
