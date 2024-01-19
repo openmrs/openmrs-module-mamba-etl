@@ -61,7 +61,8 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
                 INNER JOIN mamba_flat_encounter_pmtct_labor_delivery ld
                     ON a.person_a = ld.client_id
                 where (ld.result_of_hiv_test ='HIV Positive'
-                           OR ld.hiv_test_performed = 'Previously known positive'))
+                           OR ld.hiv_test_performed = 'Previously known positive'
+                           OR ld.anc_hiv_status_first_visit like '%Positive%'))
             OR ip.client_id in (SELECT person_b FROM mamba_dim_relationship a
                 INNER JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
                     ON a.person_a = mp.client_id
