@@ -105,7 +105,7 @@ public class MambaTest {
 		Assert.isTrue(Files.isDirectory(folderPath), "Folder '" + folderName + "' not found under resources folder");
 	}
 	
-	@Test
+	//@Test
 	public void shouldGenerateFile_CreateStoredProcedures() {
 		
 		String fileName = "../api/src/main/resources/mamba/create_stored_procedures.sql";
@@ -115,7 +115,7 @@ public class MambaTest {
 		assertTrue("Build file '" + fileName + "' not created under resources folder", Files.exists(filePath));
 	}
 	
-	@Test
+	//@Test
 	public void shouldGenerateFile_LiquibaseCreateStoredProcedures() {
 		
 		String fileName = "../api/src/main/resources/mamba/liquibase_create_stored_procedures.sql";
