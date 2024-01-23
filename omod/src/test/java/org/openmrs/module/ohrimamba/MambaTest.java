@@ -95,7 +95,7 @@ public class MambaTest {
         return content.toString();
     }
 	
-	//@Test
+	@Test
 	public void shouldGenerateFolderUnderResourcesNamedMamba() {
 		
 		String folderName = "../api/src/main/resources/mamba";
