@@ -34,7 +34,7 @@
         <openmrsPlatformVersion>2.0.0</openmrsPlatformVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
         <legacyUIomodVersion>1.8.2</legacyUIomodVersion>
-        <mambaETLCoreVersion>1.0.0</mambaETLCoreVersion>
+        <mambaETLCoreVersion>1.0.1</mambaETLCoreVersion>
         <junit5Version>5.7.2</junit5Version>
         <junit4Version>4.13.1</junit4Version>
         <MODULE_ID>${project.parent.artifactId}</MODULE_ID>
@@ -284,7 +284,7 @@
                                     <argument>-n mysql</argument>
 
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
-                                    <argument>-b 0</argument>
+                                    <argument>-b 1</argument>
 
                                     <!-- add any other arguments below -->
                                     <argument/>
