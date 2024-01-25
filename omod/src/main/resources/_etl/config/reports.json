@@ -69,6 +69,19 @@
         }
         ]
       }
+    },
+    {
+      "report_name": "MNCH EDD",
+      "report_id": "estimated_date_of_delivery",
+      "report_sql": {
+        "sql_query": "SELECT DATE_FORMAT(o.value_datetime, '%d %m %Y') as estimated_date_of_delivery FROM mamba_source_db.obs o INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id  WHERE p.uuid = :person_uuid AND c.uuid = '5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' AND o.encounter_id = (SELECT e.encounter_id FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = '677d1a80-dbbe-4399-be34-aa7f54f11405' AND c.uuid = '5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' AND p.uuid = :person_uuid ORDER BY encounter_datetime desc  LIMIT 1) ORDER BY o.value_datetime DESC  LIMIT 1",
+        "query_params": [
+          {
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
     }
   ]
 }
