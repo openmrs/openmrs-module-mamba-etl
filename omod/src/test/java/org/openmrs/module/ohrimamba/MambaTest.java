@@ -27,10 +27,10 @@ import static org.junit.Assert.*;
  * date: 17/01/2024
  */
 public class MambaTest {
-
-    private static Connection connection;
-
-    @BeforeClass
+	
+	private static Connection connection;
+	
+	@BeforeClass
     public static void setUp() {
 
         try {
@@ -49,15 +49,15 @@ public class MambaTest {
             throw new RuntimeException("Failed to create db connection or set up the in-memory database.", e);
         }
     }
-
-    @AfterClass
-    public static void tearDown() throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    @Test
+	
+	@AfterClass
+	public static void tearDown() throws SQLException {
+		if (connection != null) {
+			connection.close();
+		}
+	}
+	
+	@Test
     public void shouldConfirmAnalysisDatabaseExists() {
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'analysis_db'")) {
@@ -67,21 +67,21 @@ public class MambaTest {
             fail("Unexpected exception: " + e.getMessage());
         }
     }
-
-    @Test
-    public void shouldReturnValidDatabaseConnection() {
-        assertNotNull("Connection should not be null", connection);
-    }
-
-    private void executeStoredProcedure(String procedureName, String parameterValue) throws SQLException {
+	
+	@Test
+	public void shouldReturnValidDatabaseConnection() {
+		assertNotNull("Connection should not be null", connection);
+	}
+	
+	private void executeStoredProcedure(String procedureName, String parameterValue) throws SQLException {
         try (CallableStatement callableStatement = connection.prepareCall("{call " + procedureName + "(?)}")) {
 
             callableStatement.setString(1, parameterValue);
             callableStatement.execute();
         }
     }
-
-    private static String readScriptFile(String filePath) {
+	
+	private static String readScriptFile(String filePath) {
         StringBuilder content = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -94,34 +94,34 @@ public class MambaTest {
         }
         return content.toString();
     }
-
-    @Test
-    public void shouldGenerateFolderUnderResourcesNamedMamba() {
-
-        String folderName = "../api/src/main/resources/mamba";
-
-        Path folderPath = Paths.get(folderName);
-
-        Assert.isTrue(Files.isDirectory(folderPath), "Folder '" + folderName + "' not found under resources folder");
-    }
-
-    //@Test
-    public void shouldGenerateFile_CreateStoredProcedures() {
-
-        String fileName = "../api/src/main/resources/mamba/create_stored_procedures.sql";
-
-        Path filePath = Paths.get(fileName);
-
-        assertTrue("Build file '" + fileName + "' not created under resources folder", Files.exists(filePath));
-    }
-
-    //@Test
-    public void shouldGenerateFile_LiquibaseCreateStoredProcedures() {
-
-        String fileName = "../api/src/main/resources/mamba/liquibase_create_stored_procedures.sql";
-
-        Path filePath = Paths.get(fileName);
-
-        assertTrue("Build file '" + fileName + "' not created under resources folder", Files.exists(filePath));
-    }
+	
+	@Test
+	public void shouldGenerateFolderUnderResourcesNamedMamba() {
+		
+		String folderName = "../api/src/main/resources/mamba";
+		
+		Path folderPath = Paths.get(folderName);
+		
+		Assert.isTrue(Files.isDirectory(folderPath), "Folder '" + folderName + "' not found under resources folder");
+	}
+	
+	//@Test
+	public void shouldGenerateFile_CreateStoredProcedures() {
+		
+		String fileName = "../api/src/main/resources/mamba/create_stored_procedures.sql";
+		
+		Path filePath = Paths.get(fileName);
+		
+		assertTrue("Build file '" + fileName + "' not created under resources folder", Files.exists(filePath));
+	}
+	
+	//@Test
+	public void shouldGenerateFile_LiquibaseCreateStoredProcedures() {
+		
+		String fileName = "../api/src/main/resources/mamba/liquibase_create_stored_procedures.sql";
+		
+		Path filePath = Paths.get(fileName);
+		
+		assertTrue("Build file '" + fileName + "' not created under resources folder", Files.exists(filePath));
+	}
 }
