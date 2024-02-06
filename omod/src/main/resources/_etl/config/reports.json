@@ -108,6 +108,14 @@
           }
         ]
       }
+    },
+    {
+      "report_name": "TPT Active clients",
+      "report_id": "total_active_tpt",
+      "report_sql": {
+        "sql_query": "SELECT DISTINCT COUNT(DISTINCT e.patient_id) AS total_active_tpt FROM mamba_source_db.obs o  INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id LEFT JOIN (SELECT DISTINCT e.patient_id,max(value_datetime) date_enrolled FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id  WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND o.concept_id =  (SELECT concept_id FROM mamba_source_db.concept WHERE uuid = '162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') GROUP BY e.patient_id) ed ON ed.patient_id = e.patient_id LEFT JOIN(SELECT DISTINCT e.patient_id, max(value_datetime) date_disenrolled FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND o.concept_id = (SELECT concept_id FROM mamba_source_db.concept WHERE uuid = '163284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') GROUP BY e.patient_id) dd ON dd.patient_id = e.patient_id WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND (dd.date_disenrolled IS NULL OR ed.date_enrolled > dd.date_disenrolled)",
+        "query_params": []
+      }
     }
   ]
 }
