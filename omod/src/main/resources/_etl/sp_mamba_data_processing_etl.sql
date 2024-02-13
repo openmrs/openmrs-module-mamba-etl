@@ -24,5 +24,5 @@ CALL sp_mamba_estimated_date_of_delivery_query('');
 CALL sp_mamba_next_appointment_date_query('');
 CALL sp_mamba_no_of_anc_visits_query('');
 
-CALL sp_mamba_total_active_tpt_query('');
+CALL sp_mamba_total_active_tpt_query;
 -- $END
