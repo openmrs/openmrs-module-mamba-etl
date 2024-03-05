@@ -14,37 +14,33 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
 
 /**
- * @author Arthur D. Mugume, Laureen G. Omare
- *         <p>
- *         This class contains the logic that is run every time this module is either started or
- *         shutdown
+ * This class contains the logic that is run every time this module is either started or
+ * shutdown
  */
 public class OHRIMambaActivator extends BaseModuleActivator {
-	
-	private Log log = LogFactory.getLog(getClass());
-	
-	/**
-	 * @see #started()
-	 */
-	public void started() {
-		System.out.println("Started MambaETL Reference Module");
-	}
-	
-	@Override
-	public void stopped() {
-		log.info("Stopped MambaETL Reference Module");
-	}
-	
-	/**
-	 * @see #shutdown()
-	 */
-	public void shutdown() {
-		log.info("Shutdown MambaETL Reference Module");
-		System.out.println("Shutdown MambaETL Reference Module");
-	}
-	
-	public void willRefreshContext() {
-		log.info("willRefreshContext MambaETL Reference Module");
-		System.out.println("willRefreshContext MambaETL Reference Module");
-	}
+
+    private Log log = LogFactory.getLog(getClass());
+
+    /**
+     * @see #started()
+     */
+    public void started() {
+         log.info("Started MambaETL Reference Module");
+    }
+
+    @Override
+    public void stopped() {
+        log.info("Stopped MambaETL Reference Module");
+    }
+
+    /**
+     * @see #shutdown()
+     */
+    public void shutdown() {
+        log.info("Shutdown MambaETL Reference Module");
+    }
+
+    public void willRefreshContext() {
+        log.info("willRefreshContext MambaETL Reference Module");
+    }
 }
