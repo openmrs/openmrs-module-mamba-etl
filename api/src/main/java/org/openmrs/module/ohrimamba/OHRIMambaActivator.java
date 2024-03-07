@@ -9,37 +9,39 @@
  */
 package org.openmrs.module.ohrimamba;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openmrs.module.BaseModuleActivator;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class OHRIMambaActivator extends BaseModuleActivator {
-	
-	private Log log = LogFactory.getLog(getClass());
-	
-	/**
-	 * @see #started()
-	 */
-	public void started() {
-		log.info("Started MambaETL Reference Module");
-	}
-	
-	@Override
-	public void stopped() {
-		log.info("Stopped MambaETL Reference Module");
-	}
-	
-	/**
-	 * @see #shutdown()
-	 */
-	public void shutdown() {
-		log.info("Shutdown MambaETL Reference Module");
-	}
-	
-	public void willRefreshContext() {
-		log.info("willRefreshContext MambaETL Reference Module");
-	}
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    /**
+     * @see #started()
+     */
+    @Override
+    public void started() {
+        log.info("Started MambaETL Reference Module");
+    }
+
+    @Override
+    public void stopped() {
+        log.info("Stopped MambaETL Reference Module");
+    }
+
+    /**
+     * @see #shutdown()
+     */
+    public void shutdown() {
+        log.info("Shutdown MambaETL Reference Module");
+    }
+
+    @Override
+    public void willRefreshContext() {
+        log.info("willRefreshContext MambaETL Reference Module");
+    }
 }
