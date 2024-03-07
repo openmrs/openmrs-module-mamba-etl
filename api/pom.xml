@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-api</artifactId>
+            <artifactId>mamba-core-api</artifactId>
         </dependency>
 
     </dependencies>

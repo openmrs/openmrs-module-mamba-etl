@@ -1,0 +1,2 @@
+Every time you build this module, 2 files: 'create_stored_procedures.sql' and  'liquibase_create_stored_procedures.sql'
+are auto-generated and created this folder.
