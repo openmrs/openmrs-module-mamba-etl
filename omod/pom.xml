@@ -65,7 +65,7 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>ohrimamba-core-omod</artifactId>
+            <artifactId>mamba-core-omod</artifactId>
         </dependency>
 
         <dependency>

@@ -118,13 +118,13 @@
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>ohrimamba-core-omod</artifactId>
+                <artifactId>mamba-core-omod</artifactId>
                 <version>${mambaETLCoreVersion}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>ohrimamba-core-api</artifactId>
+                <artifactId>mamba-core-api</artifactId>
                 <version>${mambaETLCoreVersion}</version>
                 <type>jar</type>
             </dependency>
@@ -153,7 +153,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>org.openmrs.module</groupId>
-                                        <artifactId>ohrimamba-core-api</artifactId>
+                                        <artifactId>mamba-core-api</artifactId>
                                         <outputDirectory>${project.build.directory}/mamba-etl</outputDirectory>
                                         <includes>_core/**</includes>
                                     </artifactItem>
