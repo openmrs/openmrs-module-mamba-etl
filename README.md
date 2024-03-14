@@ -1,4 +1,4 @@
-# openmrs-module-ohri-mamba
+# openmrs-module-mamba-etl
 
 ![MambaETL.png](..%2F..%2F..%2F..%2F_markdown%2FMambaETL.png)
 
@@ -12,7 +12,7 @@ This means that the Obs table quickly grows to millions of records in fairly siz
 
 ## **Purpose of this module**
 
-The purpose of the `openmrs-module-ohri-mamba` is to demonstrate the use of the MambaETL core module `openmrs-module-ohri-mamba-core` which
+The purpose of the `openmrs-module-mamba-etl` is to demonstrate the use of the MambaETL core module `openmrs-module-mamba-core` which
 is found [here](https://github.com/UCSF-IGHS/openmrs-module-mamba-core).
 This module uses [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of MambaETL.
 
