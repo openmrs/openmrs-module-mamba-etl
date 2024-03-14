@@ -4,11 +4,11 @@
 
     <parent>
         <groupId>org.openmrs.module</groupId>
-        <artifactId>ohrimamba</artifactId>
+        <artifactId>mamba-etl</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ohrimamba-api</artifactId>
+    <artifactId>mamba-etl-api</artifactId>
     <packaging>jar</packaging>
     <name>MambaETL Reference module - API</name>
     <description>OpenMRS MambaETL Reference module - API</description>

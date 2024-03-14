@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.ohrimamba;
+package org.openmrs.module.mambaetl;
 
 import org.databene.commons.Assert;
 import org.junit.AfterClass;
