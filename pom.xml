@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>org.openmrs.module</groupId>
-    <artifactId>ohrimamba</artifactId>
+    <artifactId>mamba-etl</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MambaETL Reference Module</name>
@@ -286,7 +286,6 @@
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
 
-                                    <!-- add any other arguments below -->
                                     <argument/>
 
                                     <argument/>
@@ -507,5 +506,26 @@
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>OpenMRS-MambaETL-MakSPH</id>
+            <name>Arthur D. Mugume</name>
+            <organization>MakSPH</organization>
+            <organizationUrl>https://mets.or.ug</organizationUrl>
+        </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UCSF</id>
+            <name>Laureen G. Omare</name>
+            <organization>UCSF</organization>
+            <organizationUrl>http://ucglobalprograms.org/kenya</organizationUrl>
+        </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UoN</id>
+            <name>Amos Laboso</name>
+            <organization>UoN</organization>
+            <organizationUrl>https://www.uonbi.ac.ke</organizationUrl>
+        </developer>
+    </developers>
 
 </project>

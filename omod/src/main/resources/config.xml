@@ -5,11 +5,11 @@
     <id>${project.parent.artifactId}</id>
     <name>${project.parent.name}</name>
     <version>${project.parent.version}</version>
-    <package>org.openmrs.module.ohrimamba</package>
+    <package>org.openmrs.module.mambaetl</package>
     <author>Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF], Amos Laboso [UoN]</author>
     <description>${project.parent.description}</description>
 
-    <activator>org.openmrs.module.ohrimamba.OHRIMambaActivator</activator>
+    <activator>org.openmrs.module.mambaetl.MambaETLActivator</activator>
 
     <require_version>${openmrsPlatformVersion}</require_version>
 

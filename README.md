@@ -1,4 +1,4 @@
-# openmrs-module-ohri-mamba
+# openmrs-module-mamba-etl
 
 ![MambaETL.png](..%2F..%2F..%2F..%2F_markdown%2FMambaETL.png)
 
@@ -12,8 +12,9 @@ This means that the Obs table quickly grows to millions of records in fairly siz
 
 ## **Purpose of this module**
 
-The purpose of the `openmrs-module-ohri-mamba` is to demonstrate the use of the MambaETL core module `openmrs-module-ohri-mamba-core` which
-is found [here](https://github.com/UCSF-IGHS/openmrs-module-mamba-core).
-This module uses [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of MambaETL.
+The `openmrs-module-mamba-etl` module is a demo or example module showcasing how to use the MambaETL core library `openmrs-module-mamba-core` to achieve automated flattening of OpenMRS data.
+The module is found [here](https://github.com/UCSF-IGHS/openmrs-module-mamba-core). When this module is deployed as is, out of the box it supports flattening of Encounters and Obs data in OpenMRS.
+
+It uses [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of MambaETL Core.
 
 You can read more about MambaETL [here](https://ucsf-ighs.notion.site/MambaETL-Documentation-v1-0-3f0467b435744e34a261049383c5e4ef?pvs=4).
