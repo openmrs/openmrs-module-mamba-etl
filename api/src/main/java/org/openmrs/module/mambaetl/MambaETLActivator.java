@@ -20,9 +20,6 @@ public class MambaETLActivator extends BaseModuleActivator {
 	
 	private static final Logger log = LoggerFactory.getLogger(MambaETLActivator.class);
 	
-	/**
-	 * @see #started()
-	 */
 	@Override
 	public void started() {
 		log.info("Started MambaETL Reference Module");
@@ -33,9 +30,6 @@ public class MambaETLActivator extends BaseModuleActivator {
 		log.info("Stopped MambaETL Reference Module");
 	}
 	
-	/**
-	 * @see #shutdown()
-	 */
 	public void shutdown() {
 		log.info("Shutdown MambaETL Reference Module");
 	}

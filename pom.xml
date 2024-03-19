@@ -286,6 +286,9 @@
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
 
+                                    <!-- Set the concepts locale here -->
+                                    <argument>-l en</argument>
+
                                     <argument/>
 
                                     <argument/>
@@ -414,6 +417,7 @@
                         </execution>
                     </executions>
                 </plugin>
+
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>

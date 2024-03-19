@@ -23,9 +23,6 @@ import java.sql.*;
 
 import static org.junit.Assert.*;
 
-/**
- * date: 17/01/2024
- */
 public class MambaTest {
 	
 	private static Connection connection;
