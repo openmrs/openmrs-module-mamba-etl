@@ -13,34 +13,9 @@
 
     <require_version>${openmrsPlatformVersion}</require_version>
 
-    <require_modules>
-        <require_module>org.openmrs.module.webservices.rest</require_module>
-    </require_modules>
-
-    <globalProperty>
-        <property>mambaetl.analysis.db.url</property>
-        <defaultValue>jdbc:mysql://localhost:3306/analysis_db?autoReconnect=true</defaultValue>
-        <description>MambaETL JDBC Connection string
-        </description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>mambaetl.analysis.db.username</property>
-        <defaultValue>root</defaultValue>
-        <description>MambaETL username</description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>mambaetl.analysis.db.password</property>
-        <defaultValue>openmrs</defaultValue>
-        <description>MambaETL user password</description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>mambaetl.analysis.db.driver</property>
-        <defaultValue>com.mysql.jdbc.Driver</defaultValue>
-        <description>MambaETL JDBC driver</description>
-    </globalProperty>
+    <aware_of_modules>
+        <aware_of_module>org.openmrs.module.webservices.rest</aware_of_module>
+    </aware_of_modules>
 
     <!-- All message codes should start with @MODULE_ID@.* -->
     <messages>
