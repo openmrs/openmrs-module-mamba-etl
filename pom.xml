@@ -126,12 +126,6 @@
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>mamba-core-omod</artifactId>
-                <version>${mambaETLCoreVersion}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
                 <artifactId>mamba-core-api</artifactId>
                 <version>${mambaETLCoreVersion}</version>
                 <type>jar</type>
