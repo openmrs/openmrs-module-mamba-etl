@@ -12,9 +12,7 @@ This means that the Obs table quickly grows to millions of records in fairly siz
 
 ## **Purpose of this module**
 
-The `openmrs-module-mamba-etl` module is a demo or example module showcasing how to use the MambaETL core library `openmrs-module-mamba-core` to achieve automated flattening of OpenMRS data.
+The `openmrs-module-mamba-etl` module is a quick-start guide demo or example module showcasing how to use the MambaETL core library `openmrs-module-mamba-core` to achieve automated flattening of OpenMRS data.
 The module is found [here](https://github.com/UCSF-IGHS/openmrs-module-mamba-core). When this module is deployed as is, out of the box it supports flattening of Encounters and Obs data in OpenMRS.
 
-It uses [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of MambaETL Core.
-
-You can read more about MambaETL [here](https://ucsf-ighs.notion.site/MambaETL-Documentation-v1-0-3f0467b435744e34a261049383c5e4ef?pvs=4).
+It currently depends on [v1.0.0](https://github.com/UCSF-IGHS/openmrs-module-mamba-core/releases) of the MambaETL Core.

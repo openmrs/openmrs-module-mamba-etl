@@ -19,9 +19,9 @@
     <url>https://wiki.openmrs.org/x/FQ4z</url>
 
     <scm>
-        <connection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-ohri-mamba.git</connection>
-        <url>https://github.com/UCSF-IGHS/openmrs-module-ohri-mamba</url>
-        <developerConnection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-ohri-mamba.git</developerConnection>
+        <connection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-mamba-etl.git</connection>
+        <url>https://github.com/UCSF-IGHS/openmrs-module-mamba-etl</url>
+        <developerConnection>scm:git:git@github.com:UCSF-IGHS/openmrs-module-mamba-etl.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -438,31 +438,6 @@
                     </executions>
                 </plugin>
 
-                <!--
-                <plugin>
-                    <groupId>org.openmrs.maven.plugins</groupId>
-                    <artifactId>openmrs-sdk-maven-plugin</artifactId>
-                    <version>3.9.0</version>
-                    <executions>
-                        <execution>
-                            <id>build-distro</id>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>build-distro</goal>
-                            </goals>
-                            <configuration>
-                                <dir>${project.build.directory}/docker</dir>
-                                <bundled>true</bundled>
-                                <distro>${project.build.directory}/classes/openmrs-distro.properties</distro>
-                                <batchAnswers>
-                                    <param>n</param>
-                                </batchAnswers>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                -->
-
             </plugins>
 
         </pluginManagement>
@@ -474,7 +449,6 @@
             <id>openmrs-repo</id>
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-            <!-- <url>https://openmrs.jfrog.io/artifactory/public/</url> -->
         </repository>
 
         <repository>
@@ -492,7 +466,6 @@
             <id>openmrs-repo</id>
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-            <!-- <url>https://openmrs.jfrog.io/artifactory/public/</url>-->
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
