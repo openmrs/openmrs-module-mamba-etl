@@ -49,22 +49,22 @@ However for this to work a few steps need to be taken:
    
       -- Check to see the privileges user has, assuming user name is 'openmrs_user' 
    
-      SHOW GRANTS FOR 'openmrs_user'@'localhost';
+      `SHOW GRANTS FOR 'openmrs_user'@'localhost';`
 
    
       -- Grant privileges to create databases 
    
-      GRANT CREATE DATABASE ON *.* TO 'openmrs_user'@'localhost';
+      `GRANT CREATE ON *.* TO 'openmrs_user'@'localhost';`
 
    
       -- Grant privileges to create stored procedures and functions
    
-      GRANT CREATE ROUTINE ON *.* TO 'openmrs_user'@'localhost';
+      `GRANT CREATE ROUTINE ON *.* TO 'openmrs_user'@'localhost';`
 
    
       -- update the priviledges
    
-      FLUSH PRIVILEGES'; 
+      `FLUSH PRIVILEGES;`
    
    This user is needed with the right priviledges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
    -  Create the specified ETL database (`analysis_db` by default)   
