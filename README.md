@@ -62,6 +62,8 @@ However for this to work a few steps need to be taken:
       `GRANT ALTER ROUTINE ON *.* TO 'openmrs_user'@'localhost';`
    
       `GRANT CREATE ROUTINE ON *.* TO 'openmrs_user'@'localhost';`
+   
+      `GRANT SUPER ON *.* TO 'openmrs_user'@'localhost';`
 
    
       -- update the priviledges
@@ -70,11 +72,29 @@ However for this to work a few steps need to be taken:
    
    This user is needed with the right priviledges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
    -  Create the specified ETL database (`analysis_db` by default)   
-   -  Create a number of MambaETL stored procedures and Functions in the `analysis-db`
+   -  Drop and Create a number of MambaETL stored procedures and Functions in the `analysis-db`
    ![routines.png](_markdown%2Froutines.png)
 
 
-1. Add a database user configurations to the OpenMRS runtime properties file.
+   **Note**:
+
+   In MySQL 8, when binary logging is enabled, the ability to create and drop stored procedures and functions requires the CREATE ROUTINE and ALTER ROUTINE privileges, respectively. However, these privileges are not sufficient for non-SUPER users to drop stored procedures and functions due to security concerns related to binary logging.
+
+   If you want to allow non-SUPER users to drop stored procedures and functions while binary logging is enabled, you have a couple of options:
+   
+   Grant SUPER Privilege: Granting the SUPER privilege to the user would allow them to create and drop stored procedures and functions even with binary logging enabled. However, this privilege is very powerful and allows the user to perform administrative tasks beyond just creating and dropping routines. Granting SUPER should be done cautiously due to security implications.
+   
+   `GRANT SUPER ON *.* TO 'openmrs_user'@'localhost';`
+   
+   Replace 'openmrs_user'@'localhost' with the appropriate username and host.
+   Set log_bin_trust_function_creators: This option is less secure but might be acceptable depending on your environment. It allows non-SUPER users to create and drop routines without requiring the SUPER privilege. However, enabling this option may pose security risks.
+   
+   `SET GLOBAL log_bin_trust_function_creators = 1;`
+   
+   Keep in mind that changing global variables like this might require SUPER privileges or appropriate administrative permissions.
+   Choose the option that best fits your security requirements and administrative constraints. If you're concerned about granting the SUPER privilege or enabling log_bin_trust_function_creators, you might want to consult with your database administrator or review your security policies.
+
+3. Add a database user configurations to the OpenMRS runtime properties file.
    
    Adding this connection information is not mandatory as the system will default to using the same user connection information as your distribution (if you have provided none). 
    
@@ -97,10 +117,10 @@ However for this to work a few steps need to be taken:
         mambaetl.analysis.db.password=iopdRmgaphk
    
 
-2. Upload the MambaETL module to your OpenMRS instance
+4. Upload the MambaETL module to your OpenMRS instance
 
 
-3. Go to OpenMRs admin interface and configure as desired the scheduler options for the running of the ETL. 
+5. Go to OpenMRs admin interface and configure as desired the scheduler options for the running of the ETL. 
 
     
     MambaETL can be scheduled to run automatically every 12 hours after deploying the scripts.
@@ -113,7 +133,7 @@ Under Administration go to scheduler and then click on manage scheduler
 Click on Schedule and then modify the timings.
 ![Schedule time.png](_markdown%2FSchedule%20time.png)
 
-4. After the module has been deployed successfuly and the configured scheduler has run, MambaETL related tables and flat tables will be automatically dropped (if exist) and re-created:
+6. After the module has been deployed successfuly and the configured scheduler has run, MambaETL related tables and flat tables will be automatically dropped (if exist) and re-created:
 ![tables.png](_markdown%2Ftables.png)
 
    
