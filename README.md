@@ -72,7 +72,7 @@ However for this to work a few steps need to be taken:
    
    This user is needed with the right priviledges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
    -  Create the specified ETL database (`analysis_db` by default)   
-   -  Drop and Create a number of MambaETL stored procedures and Functions in the `analysis-db`
+   -  Drop and Create a number of MambaETL stored procedures and Functions in your specified `analysis database`
    ![routines.png](_markdown%2Froutines.png)
 
 
@@ -80,12 +80,18 @@ However for this to work a few steps need to be taken:
 
    In MySQL 8, when binary logging is enabled, the ability to create and drop stored procedures and functions requires the CREATE ROUTINE and ALTER ROUTINE privileges, respectively. However, these privileges are not sufficient for non-SUPER users to drop stored procedures and functions due to security concerns related to binary logging.
 
+   Meaning you will run into this Error when the liquibase changeset tries to execute:
+
+   `... liquibase.exception.DatabaseException: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable) [Failed SQL: (1419) CREATE FUNCTION..`
+
    If you want to allow non-SUPER users to drop stored procedures and functions while binary logging is enabled, you have a couple of options:
    
    Grant SUPER Privilege: Granting the SUPER privilege to the user would allow them to create and drop stored procedures and functions even with binary logging enabled. However, this privilege is very powerful and allows the user to perform administrative tasks beyond just creating and dropping routines. Granting SUPER should be done cautiously due to security implications.
    
    `GRANT SUPER ON *.* TO 'openmrs_user'@'localhost';`
    
+   sometimes you might need this other permission just incase the error persists: `GRANT SYSTEM_USER ON *.* TO 'openmrs_user'@'localhost';`
+
    Replace 'openmrs_user'@'localhost' with the appropriate username and host.
    Set log_bin_trust_function_creators: This option is less secure but might be acceptable depending on your environment. It allows non-SUPER users to create and drop routines without requiring the SUPER privilege. However, enabling this option may pose security risks.
    
