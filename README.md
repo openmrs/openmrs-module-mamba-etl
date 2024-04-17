@@ -57,7 +57,9 @@ However for this to work a few steps need to be taken:
       `GRANT CREATE ON *.* TO 'openmrs_user'@'localhost';`
 
    
-      -- Grant privileges to create stored procedures and functions
+      -- Grant privileges to create and delete/alter stored procedures and functions
+
+      `GRANT ALTER ROUTINE ON *.* TO 'openmrs_user'@'localhost';`
    
       `GRANT CREATE ROUTINE ON *.* TO 'openmrs_user'@'localhost';`
 
@@ -72,7 +74,7 @@ However for this to work a few steps need to be taken:
    ![routines.png](_markdown%2Froutines.png)
 
 
-2. Add a database user configurations to the OpenMRS runtime properties file.
+1. Add a database user configurations to the OpenMRS runtime properties file.
    
    Adding this connection information is not mandatory as the system will default to using the same user connection information as your distribution (if you have provided none). 
    
