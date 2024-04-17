@@ -74,9 +74,11 @@ However for this to work a few steps need to be taken:
 
 2. Add a database user configurations to the OpenMRS runtime properties file.
    
-   Create a separate database user with enough priviledges to the analysis_db (ETL) database (Or use the same user as above).
+   Adding this connection information is not mandatory as the system will default to using the same user connection information as your distribution (if you have provided none). 
    
-   The user should be able to create and drop Tables in the analysis_db (ETL) database. 
+   Other-wise Create a separate database user with enough priviledges to the analysis_db (ETL) database.
+   
+   The user should be able to create and drop Tables in the analysis_db (ETL) database.
 
    For-example given the openmrs properties file below:
    
