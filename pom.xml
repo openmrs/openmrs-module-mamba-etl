@@ -291,7 +291,8 @@
                                     <!-- Set the concepts locale here -->
                                     <argument>-l en</argument>
 
-                                    <argument/>
+                                    <!-- Set the number of tables before partitioning -->
+                                    <argument>-p 100</argument>
 
                                     <argument/>
 
