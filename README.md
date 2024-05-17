@@ -28,7 +28,7 @@ This module specifically has a dependency on the MambaETL core library `openmrs-
 * A running instance of the OpenMRS server
 * The OpenMRS database user used by the running OpenMRs server must have elevated rights to be able to create databases (i.e. the analysis (ETL) db), Stored Procedures and Functions.
 * A second database user with full access to the ETL database to drop and create Tables (should be configured in the openmrs-runtime-properties, more on this later)
-* MySQL v5.6 and above running
+* MySQL v5.7.8 and above running
 * Java functionality (JAVA 7 & above)
 * Access to the OpenMRS admin interface to be able to re-configure the ETL task
 
