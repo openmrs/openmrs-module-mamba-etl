@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.ohrimamba;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Arthur D. Mugume, Laureen G. Omare
@@ -21,13 +21,13 @@ import org.openmrs.module.BaseModuleActivator;
  */
 public class OHRIMambaActivator extends BaseModuleActivator {
 	
-	private Log log = LogFactory.getLog(getClass());
+	private static final Logger log = LoggerFactory.getLogger(OHRIMambaActivator.class);
 	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
-		System.out.println("Started MambaETL Reference Module");
+		log.info("Started MambaETL Reference Module");
 	}
 	
 	@Override
@@ -40,11 +40,9 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	 */
 	public void shutdown() {
 		log.info("Shutdown MambaETL Reference Module");
-		System.out.println("Shutdown MambaETL Reference Module");
 	}
 	
 	public void willRefreshContext() {
 		log.info("willRefreshContext MambaETL Reference Module");
-		System.out.println("willRefreshContext MambaETL Reference Module");
 	}
 }

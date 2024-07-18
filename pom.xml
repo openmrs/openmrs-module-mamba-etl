@@ -124,7 +124,7 @@
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>ohrimamba-core-api</artifactId>
+                <artifactId>mamba-core-api</artifactId>
                 <version>${mambaETLCoreVersion}</version>
                 <type>jar</type>
             </dependency>
@@ -153,7 +153,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>org.openmrs.module</groupId>
-                                        <artifactId>ohrimamba-core-api</artifactId>
+                                        <artifactId>mamba-core-api</artifactId>
                                         <outputDirectory>${project.build.directory}/mamba-etl</outputDirectory>
                                         <includes>_core/**</includes>
                                     </artifactItem>
@@ -285,6 +285,15 @@
 
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
+
+                                    <!-- Set the concepts locale here -->
+                                    <argument>-l en</argument>
+
+                                    <!-- Set the number of tables before partitioning -->
+                                    <argument>-p 100</argument>
+
+                                    <!-- Set incremental update mode switch 0 - DON'T DO incremental updates, 1 - DO incremental updates -->
+                                    <argument>-u 1</argument>
 
                                     <!-- add any other arguments below -->
                                     <argument/>
@@ -507,5 +516,26 @@
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>OpenMRS-MambaETL-MakSPH</id>
+            <name>Arthur D. Mugume</name>
+            <organization>MakSPH</organization>
+            <organizationUrl>https://mets.or.ug</organizationUrl>
+        </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UCSF</id>
+            <name>Laureen G. Omare</name>
+            <organization>UCSF</organization>
+            <organizationUrl>http://ucglobalprograms.org/kenya</organizationUrl>
+        </developer>
+        <developer>
+            <id>OpenMRS-MambaETL-UoN</id>
+            <name>Amos Laboso</name>
+            <organization>UoN</organization>
+            <organizationUrl>https://www.uonbi.ac.ke</organizationUrl>
+        </developer>
+    </developers>
 
 </project>
