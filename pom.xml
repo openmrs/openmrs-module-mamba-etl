@@ -294,6 +294,9 @@
                                     <!-- Set the number of tables before partitioning -->
                                     <argument>-p 100</argument>
 
+                                    <!-- Set incremental update mode switch 0 - DON'T DO incremental updates, 1 - DO incremental updates -->
+                                    <argument>-u 0</argument>
+
                                     <argument/>
 
                                     <argument/>
