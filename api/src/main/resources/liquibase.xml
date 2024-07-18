@@ -5,7 +5,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="ohri-mamba-setup0002" author="Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]" runAlways="true">
+    <changeSet id="ohri-mamba-setup0003" author="Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]" runAlways="true">
 
         <comment>
             Installs/deploys all the required Mamba ETL Stored procedures and functions
