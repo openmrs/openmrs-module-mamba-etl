@@ -4,7 +4,7 @@
       "report_name": "MCH Mother HIV Status",
       "report_id": "mother_hiv_status",
       "report_sql": {
-        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "sql_query": "SELECT pm.encounter_id, pm.client_id, DATE_FORMAT(pm.encounter_datetime, '%Y-%m-%d %H:%i:%s') AS encounter_datetime, pm.visit_type, pm.hiv_test_result AS hiv_test_result, pm.hiv_test_performed, pm.partner_hiv_tested, pm.previously_known_positive, DATE_FORMAT(pm.return_visit_date, '%Y-%m-%d') AS return_visit_date FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
         "query_params": [
           {
             "name": "ptracker_id",
@@ -64,9 +64,9 @@
         "sql_query": "SELECT cn.name as mother_status FROM mamba_source_db.obs o INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.concept_name cn on o.value_coded = cn.concept_id WHERE p.uuid = person_uuid AND c.uuid = '1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' AND o.encounter_id = (SELECT e.encounter_id FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = '6dc5308d-27c9-4d49-b16f-2c5e3c759757' AND c.uuid = '1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' AND p.uuid = person_uuid ORDER BY encounter_datetime desc  LIMIT 1) AND cn.voided = 0 AND cn.locale_preferred = 1",
         "query_params": [
           {
-          "name": "person_uuid",
-          "type": "VARCHAR(255)"
-        }
+            "name": "person_uuid",
+            "type": "VARCHAR(255)"
+          }
         ]
       }
     },
@@ -119,4 +119,3 @@
     }
   ]
 }
-
