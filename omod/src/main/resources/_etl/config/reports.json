@@ -4,7 +4,7 @@
       "report_name": "MCH Mother HIV Status",
       "report_id": "mother_hiv_status",
       "report_sql": {
-        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result, pm.hiv_test_performed, pm.visit_type FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+        "sql_query": "SELECT pm.encounter_id, pm.client_id, DATE_FORMAT(pm.encounter_datetime, '%Y-%m-%d %H:%i:%s') AS encounter_datetime, pm.visit_type, pm.hiv_test_result AS hiv_test_result, pm.hiv_test_performed, pm.partner_hiv_tested, pm.previously_known_positive, DATE_FORMAT(pm.return_visit_date, '%Y-%m-%d') AS return_visit_date FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
         "query_params": [
           {
             "name": "ptracker_id",
