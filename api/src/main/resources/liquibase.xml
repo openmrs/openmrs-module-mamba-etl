@@ -5,14 +5,14 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="ohri-mamba-setup0003" author="Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]" runAlways="true">
+    <changeSet id="ohri-mamba-setup0005" author="Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]" runAlways="true">
 
         <comment>
             Installs/deploys all the required Mamba ETL Stored procedures and functions
         </comment>
 
-        <!--        <sqlFile splitStatements="true" stripComments="true" endDelimiter="~"-->
-        <!--                 path="mamba/liquibase_create_stored_procedures.sql"/>-->
+                <sqlFile splitStatements="true" stripComments="true" endDelimiter="~"
+                         path="mamba/liquibase_create_stored_procedures.sql"/>
 
         <!--        <sqlFile path="mamba/mamba_etl_scheduler.sql"/>-->
 
