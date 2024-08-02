@@ -290,14 +290,13 @@
                                     <argument>-l en</argument>
 
                                     <!-- Set the number of tables before partitioning -->
-
-                                    <!-- <argument>-p 50</argument>-->
+                                    <argument>-p 50</argument>
 
                                     <!-- Set incremental update mode switch:
                                              0 - DON'T DO incremental updates,
                                              1 - DO incremental updates
                                      -->
-                                    <!-- <argument>-u 1</argument>-->
+                                    <argument>-u 1</argument>
 
                                     <!-- add any other arguments below -->
                                     <argument/>

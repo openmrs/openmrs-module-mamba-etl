@@ -10,6 +10,8 @@
 package org.openmrs.module.ohrimamba;
 
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.mambacore.api.FlattenDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +25,20 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	
 	private static final Logger log = LoggerFactory.getLogger(OHRIMambaActivator.class);
 	
+	public OHRIMambaActivator() {
+		super();
+	}
+	
 	/**
 	 * @see #started()
 	 */
+	@Override
 	public void started() {
+		System.out.println("OHRIMambaActivator started()");
+		log.info("log OHRIMambaActivator started()");
 		log.info("Started MambaETL Reference Module");
+		
+		Context.getService(FlattenDatabaseService.class).flattenDatabase();
 	}
 	
 	@Override
@@ -44,5 +55,11 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	
 	public void willRefreshContext() {
 		log.info("willRefreshContext MambaETL Reference Module");
+	}
+	
+	@Override
+	public void contextRefreshed() {
+		System.out.println("OHRIMambaActivator contextRefreshed()");
+		log.info("log OHRIMambaActivator contextRefreshed()");
 	}
 }
