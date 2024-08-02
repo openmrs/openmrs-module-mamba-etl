@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.mambaetl;
 
+import org.openmrs.api.context.Context;
+import org.openmrs.module.mambacore.api.FlattenDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openmrs.module.BaseModuleActivator;
@@ -22,7 +24,10 @@ public class MambaETLActivator extends BaseModuleActivator {
 	
 	@Override
 	public void started() {
+		System.out.println("Started MambaETL Reference Module");
 		log.info("Started MambaETL Reference Module");
+		
+		Context.getService(FlattenDatabaseService.class).flattenDatabase();
 	}
 	
 	@Override
