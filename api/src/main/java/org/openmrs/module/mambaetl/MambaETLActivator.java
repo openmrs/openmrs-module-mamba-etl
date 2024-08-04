@@ -10,10 +10,10 @@
 package org.openmrs.module.mambaetl;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.mambacore.api.FlattenDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.openmrs.module.BaseModuleActivator;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -26,8 +26,8 @@ public class MambaETLActivator extends BaseModuleActivator {
 	public void started() {
 		System.out.println("Started MambaETL Reference Module");
 		log.info("Started MambaETL Reference Module");
-		
-		Context.getService(FlattenDatabaseService.class).flattenDatabase();
+		Context.getService(FlattenDatabaseService.class).setupEtl();//
+		super.started();
 	}
 	
 	@Override
@@ -42,5 +42,10 @@ public class MambaETLActivator extends BaseModuleActivator {
 	@Override
 	public void willRefreshContext() {
 		log.info("willRefreshContext MambaETL Reference Module");
+	}
+	
+	@Override
+	public void contextRefreshed() {
+		log.info("log MambaCoreActivator contextRefreshed()");
 	}
 }
