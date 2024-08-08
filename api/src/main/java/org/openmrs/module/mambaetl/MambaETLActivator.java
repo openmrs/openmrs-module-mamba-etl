@@ -19,33 +19,32 @@ import org.slf4j.LoggerFactory;
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class MambaETLActivator extends BaseModuleActivator {
-	
-	private static final Logger log = LoggerFactory.getLogger(MambaETLActivator.class);
-	
-	@Override
-	public void started() {
-		System.out.println("Started MambaETL Reference Module");
-		log.info("Started MambaETL Reference Module");
-		Context.getService(FlattenDatabaseService.class).setupEtl();//
-		super.started();
-	}
-	
-	@Override
-	public void stopped() {
-		log.info("Stopped MambaETL Reference Module");
-	}
-	
-	public void shutdown() {
-		log.info("Shutdown MambaETL Reference Module");
-	}
-	
-	@Override
-	public void willRefreshContext() {
-		log.info("willRefreshContext MambaETL Reference Module");
-	}
-	
-	@Override
-	public void contextRefreshed() {
-		log.info("log MambaCoreActivator contextRefreshed()");
-	}
+
+    private static final Logger log = LoggerFactory.getLogger(MambaETLActivator.class);
+
+    @Override
+    public void started() {
+        log.info("Started MambaETL Reference Module");
+        Context.getService(FlattenDatabaseService.class).setupEtl();
+        super.started();
+    }
+
+    @Override
+    public void stopped() {
+        log.info("Stopped MambaETL Reference Module");
+    }
+
+    public void shutdown() {
+        log.info("Shutdown MambaETL Reference Module");
+    }
+
+    @Override
+    public void willRefreshContext() {
+        log.info("willRefreshContext MambaETL Reference Module");
+    }
+
+    @Override
+    public void contextRefreshed() {
+        log.info("log MambaCoreActivator contextRefreshed()");
+    }
 }
