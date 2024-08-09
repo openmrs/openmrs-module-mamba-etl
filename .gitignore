@@ -299,3 +299,4 @@ personal/
 
 api/src/main/resources/mamba/create_stored_procedures.sql
 api/src/main/resources/mamba/liquibase_create_stored_procedures.sql
+api/src/main/resources/mamba/jdbc_create_stored_procedures.sql

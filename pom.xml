@@ -288,12 +288,6 @@
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
 
-                                    <!-- Set the concepts locale here -->
-                                    <argument>-l en</argument>
-
-                                    <!-- Set the number of tables before partitioning -->
-                                    <argument>-p 100</argument>
-
                                     <argument/>
 
                                     <argument/>

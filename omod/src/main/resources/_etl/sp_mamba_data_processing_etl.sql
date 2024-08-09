@@ -1,9 +1,6 @@
 -- $BEGIN
 -- add base folder SP here --
 
--- Flatten OpenMRS Observational Data
-CALL sp_mamba_data_processing_flatten();
-
--- Add the implementation-specific ETL processes here
+-- CALL the implementation-specific ETL scripts here
 
 -- $END
