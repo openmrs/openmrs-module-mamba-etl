@@ -17,47 +17,47 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Arthur D. Mugume, Laureen G. Omare
- * <p>
- * This class contains the logic that is run every time this module is either started or
- * shutdown
+ *         <p>
+ *         This class contains the logic that is run every time this module is either started or
+ *         shutdown
  */
 public class OHRIMambaActivator extends BaseModuleActivator {
-
-    private static final Logger log = LoggerFactory.getLogger(OHRIMambaActivator.class);
-
-    public OHRIMambaActivator() {
-        super();
-    }
-
-    /**
-     * @see #started()
-     */
-    @Override
-    public void started() {
-        System.out.println("Started MambaETL Reference Module");
-        log.info("Started MambaETL Reference Module");
-
-        Context.getService(FlattenDatabaseService.class).flattenDatabase();
-    }
-
-    @Override
-    public void stopped() {
-        log.info("Stopped MambaETL Reference Module");
-    }
-
-    /**
-     * @see #shutdown()
-     */
-    public void shutdown() {
-        log.info("Shutdown MambaETL Reference Module");
-    }
-
-    public void willRefreshContext() {
-        log.info("willRefreshContext MambaETL Reference Module");
-    }
-
-    @Override
-    public void contextRefreshed() {
-        log.info("log OHRIMambaActivator contextRefreshed()");
-    }
+	
+	private static final Logger log = LoggerFactory.getLogger(OHRIMambaActivator.class);
+	
+	public OHRIMambaActivator() {
+		super();
+	}
+	
+	/**
+	 * @see #started()
+	 */
+	@Override
+	public void started() {
+		System.out.println("Started MambaETL Reference Module");
+		log.info("Started MambaETL Reference Module");
+		
+		Context.getService(FlattenDatabaseService.class).setupEtl();
+	}
+	
+	@Override
+	public void stopped() {
+		log.info("Stopped MambaETL Reference Module");
+	}
+	
+	/**
+	 * @see #shutdown()
+	 */
+	public void shutdown() {
+		log.info("Shutdown MambaETL Reference Module");
+	}
+	
+	public void willRefreshContext() {
+		log.info("willRefreshContext MambaETL Reference Module");
+	}
+	
+	@Override
+	public void contextRefreshed() {
+		log.info("log OHRIMambaActivator contextRefreshed()");
+	}
 }

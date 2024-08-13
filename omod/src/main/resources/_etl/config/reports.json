@@ -116,6 +116,28 @@
         "sql_query": "SELECT DISTINCT COUNT(DISTINCT e.patient_id) AS total_active_tpt FROM mamba_source_db.obs o  INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id LEFT JOIN (SELECT DISTINCT e.patient_id,max(value_datetime) date_enrolled FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id  WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND o.concept_id =  (SELECT concept_id FROM mamba_source_db.concept WHERE uuid = '162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') GROUP BY e.patient_id) ed ON ed.patient_id = e.patient_id LEFT JOIN(SELECT DISTINCT e.patient_id, max(value_datetime) date_disenrolled FROM mamba_source_db.obs o INNER JOIN mamba_source_db.concept c on o.concept_id = c.concept_id INNER JOIN mamba_source_db.person p on o.person_id = p.person_id INNER JOIN mamba_source_db.encounter e on o.encounter_id = e.encounter_id INNER JOIN mamba_source_db.encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND o.concept_id = (SELECT concept_id FROM mamba_source_db.concept WHERE uuid = '163284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') GROUP BY e.patient_id) dd ON dd.patient_id = e.patient_id WHERE et.uuid = 'dc6ce80c-83f8-4ace-a638-21df78542551' AND (dd.date_disenrolled IS NULL OR ed.date_enrolled > dd.date_disenrolled)",
         "query_params": []
       }
+    },
+    {
+      "report_definitions": [
+        {
+          "report_name": "HTS Linelist",
+          "report_id": "hts-linelist",
+          "report_sql": {
+            "sql_query": "SELECT DISTINCT hts.encounter_id,client_id patientid,concat(pn.given_name,' ',pn.family_name) name,p.gender,p.birthdate,encounter_date, date_tested, consent,community_service_point, pop_type, keypop_category, priority_pop, test_setting,facility_service_point, hts_approach, pretest_counselling,type_pretest_counselling, reason_for_test, ever_tested_hiv,duration_since_last_test, couple_result, result_received_couple, test_conducted,initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result,final_test_result, given_result, date_given_result, tiebreaker_kit_name,tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result,unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type,recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE hts.date_tested BETWEEN Date(@start_date) AND Date(@end_date)",
+            "query_params": [
+              {
+                "name": "@start_date",
+                "type": "DATE"
+              },
+              {
+                "name": "@end_date",
+                "type": "DATE"
+              }
+            ]
+          }
+        }
+      ]
     }
+
   ]
 }

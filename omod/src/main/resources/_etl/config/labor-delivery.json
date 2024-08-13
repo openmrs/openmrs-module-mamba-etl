@@ -12,8 +12,6 @@
           "child_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "antenatal_card_present": "1719AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "mothers_health_status": "1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-          "labor_delivery_child_1": "8fe7ad7a-494d-4799-bf72-9f58fbdae221",
-          "labor_delivery_child_2": "8fe7ad7a-494d-4799-bf72-9f58fbdae222",
           "delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_start_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -26,8 +24,6 @@
           "infants_medical_record_number": "164803AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_initiation_status": "6e62bf7e-2107-4d09-b485-6e60cbbb2d08",
           "facility_of_next_appointment": "efc87cd5-2fd8-411c-ba52-b0d858f541e7",
-          "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0",
-          "child_two_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-          "child_two_delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          "anc_hiv_status_first_visit": "c5f74c86-62cd-4d22-9260-4238f1e45fe0"
   }
 }

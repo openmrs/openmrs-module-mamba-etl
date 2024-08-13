@@ -91,8 +91,8 @@ SELECT hts.encounter_id,
        type_pretest_counselling,
        reason_for_test,
        CASE ever_tested_hiv
-           WHEN 'True' THEN 'Yes'
-           WHEN 'False' THEN 'No'
+           WHEN 1 THEN 'Yes'
+           WHEN 0 THEN 'No'
            ELSE ever_tested_hiv
            END                           AS ever_tested_hiv,
        duration_since_last_test,
