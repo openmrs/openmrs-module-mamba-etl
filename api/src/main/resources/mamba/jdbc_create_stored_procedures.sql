@@ -1137,7 +1137,7 @@ BEGIN
 
     IF @column_labels IS NOT NULL THEN
         SET @create_table = CONCAT(
-            'CREATE TABLE `', flat_encounter_table_name, '` (encounter_id INT NOT NULL, visit_id INT NULL, client_id INT NOT NULL, encounter_datetime DATETIME NOT NULL, location_id INT NULL, ', @column_labels, ', INDEX mamba_idx_encounter_id (encounter_id), INDEX mamba_idx_visit_id (visit_id), INDEX mamba_idx_client_id (client_id), INDEX mamba_idx_encounter_datetime (encounter_datetime), INDEX mamba_idx_location_id (location_id));');
+            'CREATE TABLE `', flat_encounter_table_name, '` (`encounter_id` INT NOT NULL, `visit_id` INT NULL, `client_id` INT NOT NULL, `encounter_datetime` DATETIME NOT NULL, `location_id` INT NULL, ', @column_labels, ', INDEX mamba_idx_encounter_id (encounter_id), INDEX mamba_idx_visit_id (visit_id), INDEX mamba_idx_client_id (client_id), INDEX mamba_idx_encounter_datetime (encounter_datetime), INDEX mamba_idx_location_id (location_id));');
     END IF;
 
     IF @column_labels IS NOT NULL THEN
@@ -1214,75 +1214,38 @@ BEGIN
     SET session group_concat_max_len = 20000;
     SET @tbl_name = flat_encounter_table_name;
 
-    -- Precompute the concept metadata table to minimize repeated queries
-    CREATE TEMPORARY TABLE mamba_temp_concept_metadata
-    (
-        id                 INT          NOT NULL,
-        column_label       VARCHAR(255) NOT NULL,
-        obs_value_column   VARCHAR(50),
-        concept_uuid       CHAR(38)     NOT NULL,
-        concept_answer_obs INT,
-
-        INDEX mamba_idx_id (id),
-        INDEX mamba_idx_column_label (column_label),
-        INDEX mamba_idx_concept_uuid (concept_uuid),
-        INDEX mamba_idx_concept_answer_obs (concept_answer_obs)
-    )
-        CHARSET = UTF8MB4;
-
-    INSERT INTO mamba_temp_concept_metadata
-    SELECT DISTINCT id,
-                    column_label,
-                    fn_mamba_get_obs_value_column(concept_datatype) AS obs_value_column,
-                    concept_uuid,
-                    concept_answer_obs
-    FROM mamba_concept_metadata
-    WHERE flat_table_name = @tbl_name;
+    SET @old_sql = (SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = @tbl_name
+                      AND TABLE_SCHEMA = Database());
 
     SELECT GROUP_CONCAT(DISTINCT
                         CONCAT(' MAX(CASE WHEN column_label = ''', column_label, ''' THEN ',
-                               obs_value_column, ' END) ', column_label)
+                               fn_mamba_get_obs_value_column(concept_datatype), ' END) ', column_label)
                         ORDER BY id ASC)
     INTO @column_labels
-    FROM mamba_temp_concept_metadata;
+    FROM mamba_concept_metadata
+    WHERE flat_table_name = @tbl_name;
 
     IF @column_labels IS NOT NULL THEN
-        -- Insert for concept_answer_obs = 1
         SET @insert_stmt = CONCAT(
                 'INSERT INTO `', @tbl_name,
                 '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
                 @column_labels, '
                 FROM mamba_z_encounter_obs o
-                    INNER JOIN mamba_temp_concept_metadata tcm
-                    ON tcm.concept_uuid = o.obs_value_coded_uuid
-                WHERE tcm.concept_answer_obs = 1
-                AND tcm.obs_value_column IS NOT NULL
-                AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
-                ORDER BY o.encounter_id ASC');
-        PREPARE inserttbl FROM @insert_stmt;
-        EXECUTE inserttbl;
-        DEALLOCATE PREPARE inserttbl;
+                    INNER JOIN mamba_concept_metadata cm
+                    ON IF(cm.concept_answer_obs=1, cm.concept_uuid=o.obs_value_coded_uuid, cm.concept_uuid=o.obs_question_uuid)
+                WHERE cm.flat_table_name = ''', @tbl_name, '''
+                AND o.encounter_type_uuid = cm.encounter_type_uuid
+                AND o.row_num = cm.row_num AND o.obs_group_id IS NULL AND o.voided = 0
+                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime;');
+    END IF;
 
-        -- Insert for concept_answer_obs != 1
-        SET @insert_stmt = CONCAT(
-                'INSERT INTO `', @tbl_name,
-                '` SELECT o.encounter_id, MAX(o.visit_id) AS visit_id, o.person_id, o.encounter_datetime, MAX(o.location_id) AS location_id, ',
-                @column_labels, '
-                FROM mamba_z_encounter_obs o
-                    INNER JOIN mamba_temp_concept_metadata tcm
-                    ON tcm.concept_uuid = o.obs_question_uuid
-                WHERE tcm.concept_answer_obs != 1
-                AND tcm.obs_value_column IS NOT NULL
-                AND o.obs_group_id IS NULL AND o.voided = 0
-                GROUP BY o.encounter_id, o.person_id, o.encounter_datetime
-                ORDER BY o.encounter_id ASC');
+    IF @column_labels IS NOT NULL THEN
         PREPARE inserttbl FROM @insert_stmt;
         EXECUTE inserttbl;
         DEALLOCATE PREPARE inserttbl;
     END IF;
-
-    DROP TEMPORARY TABLE IF EXISTS mamba_temp_concept_metadata;
 
 END;
 ~-~-
@@ -2336,7 +2299,6 @@ CREATE TABLE mamba_concept_metadata
     INDEX mamba_idx_concept_uuid (concept_uuid),
     INDEX mamba_idx_encounter_type_uuid (encounter_type_uuid),
     INDEX mamba_idx_row_num (row_num),
-    INDEX mamba_idx_concept_datatype (concept_datatype),
     INDEX mamba_idx_flat_table_name (flat_table_name),
     INDEX mamba_idx_incremental_record (incremental_record)
 )
@@ -2483,9 +2445,9 @@ BEGIN
                              concept_uuid,
                              incremental_record)
                             VALUES (JSON_UNQUOTE(@report_name),
-                                    JSON_UNQUOTE(@table_name),
+                                    CONCAT(' `',JSON_UNQUOTE(@table_name),'` '),
                                     JSON_UNQUOTE(@encounter_type),
-                                    JSON_UNQUOTE(@field_name),
+                                    CONCAT(' `',JSON_UNQUOTE(@field_name),'` '),
                                     JSON_UNQUOTE(@concept_uuid),
                                     is_incremental_record);
 
@@ -2498,9 +2460,9 @@ BEGIN
                              concept_uuid,
                              incremental_record)
                             VALUES (JSON_UNQUOTE(@report_name),
-                                    JSON_UNQUOTE(@flat_table_name),
+                                    CONCAT(' `',JSON_UNQUOTE(@table_name),'` '),
                                     JSON_UNQUOTE(@encounter_type),
-                                    JSON_UNQUOTE(@field_name),
+                                    CONCAT(' `',JSON_UNQUOTE(@field_name),'` '),
                                     JSON_UNQUOTE(@concept_uuid),
                                     is_incremental_record);
                         END IF;
@@ -3570,8 +3532,6 @@ SET @report_data = '{"flat_report_metadata":[{
           "child_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "antenatal_card_present": "1719AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "mothers_health_status": "1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-          "labor_delivery_child_1": "8fe7ad7a-494d-4799-bf72-9f58fbdae221",
-          "labor_delivery_child_2": "8fe7ad7a-494d-4799-bf72-9f58fbdae222",
           "delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_start_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -4229,8 +4189,6 @@ SET @report_data = '{"flat_report_metadata":[{
           "child_gender": "1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "antenatal_card_present": "1719AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "mothers_health_status": "1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-          "labor_delivery_child_1": "8fe7ad7a-494d-4799-bf72-9f58fbdae221",
-          "labor_delivery_child_2": "8fe7ad7a-494d-4799-bf72-9f58fbdae222",
           "delivery_outcome": "125872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "result_of_hiv_test": "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "art_start_date": "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -4517,8 +4475,7 @@ CREATE TABLE mamba_obs_group
     obs_group_concept_name VARCHAR(255) NOT NULL, -- should be the concept name of the obs
 
     INDEX mamba_idx_obs_id (obs_id),
-    INDEX mamba_idx_obs_group_concept_id (obs_group_concept_id),
-    INDEX mamba_idx_obs_group_concept_name (obs_group_concept_name)
+    INDEX mamba_idx_obs_group_concept_id (obs_group_concept_id)
 )
     CHARSET = UTF8MB4;
 
@@ -4561,37 +4518,26 @@ END;
 
 -- $BEGIN
 
-CREATE TEMPORARY TABLE mamba_temp_obs_group_ids
-(
-    obs_group_id INT NOT NULL,
-    row_num      INT NOT NULL,
-
-    INDEX mamba_idx_obs_group_id (obs_group_id),
-    INDEX mamba_idx_visit_id (row_num)
-)
-    CHARSET = UTF8MB4;
-
-INSERT INTO mamba_temp_obs_group_ids
-SELECT obs_group_id,
-       COUNT(*) AS row_num
-FROM mamba_z_encounter_obs o
-WHERE obs_group_id IS NOT NULL
-GROUP BY obs_group_id, person_id, encounter_id;
-
 INSERT INTO mamba_obs_group (obs_group_concept_id,
-                             obs_group_concept_name,
-                             obs_id)
+                                 obs_group_concept_name,
+                                 obs_id)
 SELECT DISTINCT o.obs_question_concept_id,
                 LEFT(c.auto_table_column_name, 12) AS name,
-                o.obs_id
-FROM mamba_temp_obs_group_ids t
-         INNER JOIN mamba_z_encounter_obs o
-                    ON t.obs_group_id = o.obs_group_id
+                obs_id
+FROM mamba_z_encounter_obs o
          INNER JOIN mamba_dim_concept c
                     ON o.obs_question_concept_id = c.concept_id
-WHERE t.row_num > 1;
-
-DROP TEMPORARY TABLE mamba_temp_obs_group_ids;
+WHERE obs_id in
+      (SELECT obs_group_id
+       FROM (SELECT DISTINCT obs_group_id,
+                             (SELECT COUNT(*)
+                              FROM mamba_z_encounter_obs o2
+                              WHERE o2.obs_group_id = o.obs_group_id
+                                AND o2.person_id = o.person_id
+                                AND o2.encounter_id = o.encounter_id) AS row_num
+             FROM mamba_z_encounter_obs o
+             WHERE obs_group_id IS NOT NULL) a
+       WHERE row_num > 1);
 
 -- $END
 END;
@@ -6969,7 +6915,7 @@ UPDATE mamba_dim_concept c
     INNER JOIN mamba_dim_concept_name cn
     ON c.concept_id = cn.concept_id
 SET c.name = IF(c.retired = 1, CONCAT(cn.name, '_', 'RETIRED'), cn.name),
-    c.auto_table_column_name = LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(c.name), ' ', '_'),'__', '_'),60))
+    c.auto_table_column_name = LOWER(LEFT(REPLACE(REPLACE(fn_mamba_remove_special_characters(c.name), ' ', '_'),'__', '_'),58))
 WHERE c.concept_id > 0;
 
 -- $END
@@ -9179,7 +9125,29 @@ SET @report_definition_json = '{
         "sql_query": "SELECT DISTINCT COUNT(DISTINCT e.patient_id) AS total_active_tpt FROM openmrs.obs o  INNER JOIN openmrs.concept c on o.concept_id = c.concept_id INNER JOIN openmrs.person p on o.person_id = p.person_id INNER JOIN openmrs.encounter e on o.encounter_id = e.encounter_id INNER JOIN openmrs.encounter_type et on e.encounter_type = et.encounter_type_id LEFT JOIN (SELECT DISTINCT e.patient_id,max(value_datetime) date_enrolled FROM openmrs.obs o INNER JOIN openmrs.concept c on o.concept_id = c.concept_id INNER JOIN openmrs.person p on o.person_id = p.person_id INNER JOIN openmrs.encounter e on o.encounter_id = e.encounter_id INNER JOIN openmrs.encounter_type et on e.encounter_type = et.encounter_type_id  WHERE et.uuid = ''dc6ce80c-83f8-4ace-a638-21df78542551'' AND o.concept_id =  (SELECT concept_id FROM openmrs.concept WHERE uuid = ''162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'') GROUP BY e.patient_id) ed ON ed.patient_id = e.patient_id LEFT JOIN(SELECT DISTINCT e.patient_id, max(value_datetime) date_disenrolled FROM openmrs.obs o INNER JOIN openmrs.concept c on o.concept_id = c.concept_id INNER JOIN openmrs.person p on o.person_id = p.person_id INNER JOIN openmrs.encounter e on o.encounter_id = e.encounter_id INNER JOIN openmrs.encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = ''dc6ce80c-83f8-4ace-a638-21df78542551'' AND o.concept_id = (SELECT concept_id FROM openmrs.concept WHERE uuid = ''163284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'') GROUP BY e.patient_id) dd ON dd.patient_id = e.patient_id WHERE et.uuid = ''dc6ce80c-83f8-4ace-a638-21df78542551'' AND (dd.date_disenrolled IS NULL OR ed.date_enrolled > dd.date_disenrolled)",
         "query_params": []
       }
+    },
+    {
+      "report_definitions": [
+        {
+          "report_name": "HTS Linelist",
+          "report_id": "hts-linelist",
+          "report_sql": {
+            "sql_query": "SELECT DISTINCT hts.encounter_id,client_id patientid,concat(pn.given_name,'' '',pn.family_name) name,p.gender,p.birthdate,encounter_date, date_tested, consent,community_service_point, pop_type, keypop_category, priority_pop, test_setting,facility_service_point, hts_approach, pretest_counselling,type_pretest_counselling, reason_for_test, ever_tested_hiv,duration_since_last_test, couple_result, result_received_couple, test_conducted,initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result,final_test_result, given_result, date_given_result, tiebreaker_kit_name,tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result,unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type,recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE hts.date_tested BETWEEN Date(@start_date) AND Date(@end_date)",
+            "query_params": [
+              {
+                "name": "@start_date",
+                "type": "DATE"
+              },
+              {
+                "name": "@end_date",
+                "type": "DATE"
+              }
+            ]
+          }
+        }
+      ]
     }
+
   ]
 }';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
@@ -12531,6 +12499,7 @@ CREATE TABLE mamba_z_encounter_obs
     encounter_type_uuid     CHAR(38),
     status                  VARCHAR(16)   NOT NULL,
     previous_version        INT           NULL,
+    row_num                 INT           NULL,
     date_created            DATETIME      NOT NULL,
     date_voided             DATETIME      NULL,
     voided                  TINYINT(1)    NOT NULL,
@@ -12549,6 +12518,7 @@ CREATE TABLE mamba_z_encounter_obs
     INDEX mamba_idx_obs_question_uuid (obs_question_uuid),
     INDEX mamba_idx_status (status),
     INDEX mamba_idx_voided (voided),
+    INDEX mamba_idx_row_num (row_num),
     INDEX mamba_idx_date_voided (date_voided),
     INDEX mamba_idx_order_id (order_id),
     INDEX mamba_idx_previous_version (previous_version),
@@ -12573,91 +12543,139 @@ DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_insert;
 ~-~-
 CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
 BEGIN
-    DECLARE total_records INT;
-    DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
-    DECLARE offset INT DEFAULT 0;
 
-    SELECT COUNT(*)
-    INTO total_records
-    FROM openmrs.obs o
-             INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
-             INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
-                         FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
-    WHERE o.encounter_id IS NOT NULL;
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
 
-    WHILE offset < total_records
-        DO
-            SET @sql = CONCAT('INSERT INTO mamba_z_encounter_obs (obs_id,
-                                       encounter_id,
-                                       visit_id,
-                                       person_id,
-                                       order_id,
-                                       encounter_datetime,
-                                       obs_datetime,
-                                       location_id,
-                                       obs_group_id,
-                                       obs_question_concept_id,
-                                       obs_value_text,
-                                       obs_value_numeric,
-                                       obs_value_coded,
-                                       obs_value_datetime,
-                                       obs_value_complex,
-                                       obs_value_drug,
-                                       obs_question_uuid,
-                                       obs_answer_uuid,
-                                       obs_value_coded_uuid,
-                                       encounter_type_uuid,
-                                       status,
-                                       previous_version,
-                                       date_created,
-                                       date_voided,
-                                       voided,
-                                       voided_by,
-                                       void_reason)
-            SELECT o.obs_id,
-                   o.encounter_id,
-                   e.visit_id,
-                   o.person_id,
-                   o.order_id,
-                   e.encounter_datetime,
-                   o.obs_datetime,
-                   o.location_id,
-                   o.obs_group_id,
-                   o.concept_id     AS obs_question_concept_id,
-                   o.value_text     AS obs_value_text,
-                   o.value_numeric  AS obs_value_numeric,
-                   o.value_coded    AS obs_value_coded,
-                   o.value_datetime AS obs_value_datetime,
-                   o.value_complex  AS obs_value_complex,
-                   o.value_drug     AS obs_value_drug,
-                   md.concept_uuid  AS obs_question_uuid,
-                   NULL             AS obs_answer_uuid,
-                   NULL             AS obs_value_coded_uuid,
-                   e.encounter_type_uuid,
-                   o.status,
-                   o.previous_version,
-                   o.date_created,
-                   o.date_voided,
-                   o.voided,
-                   o.voided_by,
-                   o.void_reason
-            FROM openmrs.obs o
-                     INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
-                     INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
-                                 FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
-            WHERE o.encounter_id IS NOT NULL
-            ORDER BY o.obs_id ASC -- Use a unique column for ordering to avoid the duplicates error because of using offset
-            LIMIT ', batch_size, ' OFFSET ', offset);
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
 
-            PREPARE stmt FROM @sql;
-            EXECUTE stmt;
-            DEALLOCATE PREPARE stmt;
+    CALL sp_mamba_etl_error_log_insert('sp_mamba_z_encounter_obs_insert', @message_text, @mysql_errno, @returned_sqlstate);
 
-            SET offset = offset + batch_size;
-        END WHILE;
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_mamba_z_encounter_obs_insert', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+
+SET @row_number = 0;
+SET @prev_person_id = NULL;
+SET @prev_encounter_id = NULL;
+SET @prev_concept_id = NULL;
+SET @date_created = NULL;
+
+-- Create the temporary table: mamba_temp_obs_row_num
+CREATE TEMPORARY TABLE mamba_temp_obs_row_num
+(
+    obs_id       INT      NOT NULL,
+    row_num      INT      NOT NULL,
+    person_id    INT      NOT NULL,
+    encounter_id INT      NOT NULL,
+    concept_id   INT      NOT NULL,
+    date_created DATETIME NOT NULL,
+
+    INDEX mamba_idx_encounter_id (obs_id),
+    INDEX mamba_idx_visit_id (row_num),
+    INDEX mamba_idx_person_id (person_id),
+    INDEX mamba_idx_encounter_datetime (encounter_id),
+    INDEX mamba_idx_encounter_type_uuid (concept_id),
+    INDEX mamba_idx_obs_question_concept_id (date_created)
+)
+    CHARSET = UTF8MB4;
+
+-- insert into mamba_temp_obs_row_num
+INSERT INTO mamba_temp_obs_row_num
+SELECT obs_id,
+       (@row_number := CASE
+                           WHEN @prev_person_id = person_id
+                               AND @prev_encounter_id = encounter_id
+                               AND @prev_concept_id = concept_id
+                               AND @date_created = date_created
+                               THEN @row_number + 1
+                           ELSE 1
+           END)                           AS row_num,
+       @prev_person_id := person_id       AS person_id,
+       @prev_encounter_id := encounter_id AS encounter_id,
+       @prev_concept_id := concept_id     AS concept_id,
+       @date_created := date_created      AS date_created
+FROM openmrs.obs
+WHERE encounter_id IS NOT NULL
+ORDER BY person_id, encounter_id, concept_id, date_created;
+
+-- Insert into mamba_z_encounter_obs
+INSERT INTO mamba_z_encounter_obs (obs_id,
+                                   encounter_id,
+                                   visit_id,
+                                   person_id,
+                                   order_id,
+                                   encounter_datetime,
+                                   obs_datetime,
+                                   location_id,
+                                   obs_group_id,
+                                   obs_question_concept_id,
+                                   obs_value_text,
+                                   obs_value_numeric,
+                                   obs_value_coded,
+                                   obs_value_datetime,
+                                   obs_value_complex,
+                                   obs_value_drug,
+                                   obs_question_uuid,
+                                   obs_answer_uuid,
+                                   obs_value_coded_uuid,
+                                   encounter_type_uuid,
+                                   status,
+                                   previous_version,
+                                   row_num,
+                                   date_created,
+                                   date_voided,
+                                   voided,
+                                   voided_by,
+                                   void_reason)
+SELECT o.obs_id,
+       o.encounter_id,
+       e.visit_id,
+       o.person_id,
+       o.order_id,
+       e.encounter_datetime,
+       o.obs_datetime,
+       o.location_id,
+       o.obs_group_id,
+       o.concept_id     AS obs_question_concept_id,
+       o.value_text     AS obs_value_text,
+       o.value_numeric  AS obs_value_numeric,
+       o.value_coded    AS obs_value_coded,
+       o.value_datetime AS obs_value_datetime,
+       o.value_complex  AS obs_value_complex,
+       o.value_drug     AS obs_value_drug,
+       NULL             AS obs_question_uuid,
+       NULL             AS obs_answer_uuid,
+       NULL             AS obs_value_coded_uuid,
+       e.encounter_type_uuid,
+       o.status,
+       o.previous_version,
+       t.row_num,
+       o.date_created,
+       o.date_voided,
+       o.voided,
+       o.voided_by,
+       o.void_reason
+FROM openmrs.obs o
+         INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
+         INNER JOIN mamba_temp_obs_row_num t ON o.obs_id = t.obs_id
+WHERE o.encounter_id IS NOT NULL;
+
+DROP TEMPORARY TABLE mamba_temp_obs_row_num;
+-- $END
 END;
 ~-~-
-
 
 
         
@@ -12693,6 +12711,13 @@ BEGIN
 END;
 
 -- $BEGIN
+
+-- update obs question UUIDs
+UPDATE mamba_z_encounter_obs z
+    INNER JOIN mamba_concept_metadata md
+    ON z.obs_question_concept_id = md.concept_id
+SET z.obs_question_uuid = md.concept_uuid
+WHERE z.obs_id > 0;
 
 -- update obs_value_coded (UUIDs & Concept value names)
 UPDATE mamba_z_encounter_obs z
@@ -12798,6 +12823,50 @@ END;
 
 -- $BEGIN
 
+SET @row_number = 0;
+SET @prev_person_id = NULL;
+SET @prev_encounter_id = NULL;
+SET @prev_concept_id = NULL;
+SET @date_created = NULL;
+
+-- Create the temporary table: mamba_temp_obs_row_num
+CREATE TEMPORARY TABLE mamba_temp_obs_row_num
+(
+    obs_id       INT      NOT NULL,
+    row_num      INT      NOT NULL,
+    person_id    INT      NOT NULL,
+    encounter_id INT      NOT NULL,
+    concept_id   INT      NOT NULL,
+    date_created DATETIME NOT NULL,
+
+    INDEX mamba_idx_encounter_id (obs_id),
+    INDEX mamba_idx_visit_id (row_num),
+    INDEX mamba_idx_person_id (person_id),
+    INDEX mamba_idx_encounter_datetime (encounter_id),
+    INDEX mamba_idx_encounter_type_uuid (concept_id),
+    INDEX mamba_idx_obs_question_concept_id (date_created)
+)
+    CHARSET = UTF8MB4;
+
+-- insert into mamba_temp_obs_row_num
+INSERT INTO mamba_temp_obs_row_num
+SELECT obs_id,
+       (@row_number := CASE
+                           WHEN @prev_person_id = person_id
+                               AND @prev_encounter_id = encounter_id
+                               AND @prev_concept_id = concept_id
+                               AND @date_created = date_created
+                               THEN @row_number + 1
+                           ELSE 1
+           END)                           AS row_num,
+       @prev_person_id := person_id       AS person_id,
+       @prev_encounter_id := encounter_id AS encounter_id,
+       @prev_concept_id := concept_id     AS concept_id,
+       @date_created := date_created      AS date_created
+FROM openmrs.obs
+WHERE encounter_id IS NOT NULL
+ORDER BY person_id, encounter_id, concept_id, date_created;
+
 -- Insert into mamba_z_encounter_obs
 INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_id,
@@ -12821,6 +12890,7 @@ INSERT INTO mamba_z_encounter_obs (obs_id,
                                    encounter_type_uuid,
                                    status,
                                    previous_version,
+                                   row_num,
                                    date_created,
                                    date_voided,
                                    voided,
@@ -12843,12 +12913,13 @@ SELECT o.obs_id,
        o.value_datetime AS obs_value_datetime,
        o.value_complex  AS obs_value_complex,
        o.value_drug     AS obs_value_drug,
-       md.concept_uuid  AS obs_question_uuid,
+       NULL             AS obs_question_uuid,
        NULL             AS obs_answer_uuid,
        NULL             AS obs_value_coded_uuid,
        e.encounter_type_uuid,
        o.status,
        o.previous_version,
+       t.row_num,
        o.date_created,
        o.date_voided,
        o.voided,
@@ -12858,9 +12929,10 @@ SELECT o.obs_id,
 FROM openmrs.obs o
          INNER JOIN mamba_etl_incremental_columns_index_new ic ON o.obs_id = ic.incremental_table_pkey
          INNER JOIN mamba_dim_encounter e ON o.encounter_id = e.encounter_id
-         INNER JOIN (SELECT DISTINCT concept_id, concept_uuid
-                     FROM mamba_concept_metadata) md ON o.concept_id = md.concept_id
+         INNER JOIN mamba_temp_obs_row_num t ON o.obs_id = t.obs_id
 WHERE o.encounter_id IS NOT NULL;
+
+DROP TEMPORARY TABLE mamba_temp_obs_row_num;
 -- $END
 END;
 ~-~-
@@ -12932,6 +13004,13 @@ SET z.encounter_id            = o.encounter_id,
     z.void_reason             = o.void_reason,
     z.incremental_record      = 1
 WHERE im.incremental_table_pkey > 1;
+
+-- update obs question UUIDs for only NEW Obs (not voided)
+UPDATE mamba_z_encounter_obs z
+    INNER JOIN mamba_concept_metadata md
+    ON z.obs_question_concept_id = md.concept_id
+SET z.obs_question_uuid = md.concept_uuid
+WHERE z.incremental_record = 1;
 
 -- update obs_value_coded (UUIDs & Concept value names) for only NEW Obs (not voided)
 UPDATE mamba_z_encounter_obs z
@@ -13300,8 +13379,6 @@ END;
 -- $BEGIN
 -- add base folder SP here --
 
--- Flatten the tables first
-CALL sp_mamba_data_processing_drop_and_flatten();
 
 -- Call the ETL process
 CALL sp_mamba_data_processing_derived_hts();
@@ -14309,8 +14386,8 @@ SELECT hts.encounter_id,
        type_pretest_counselling,
        reason_for_test,
        CASE ever_tested_hiv
-           WHEN 'True' THEN 'Yes'
-           WHEN 'False' THEN 'No'
+           WHEN 1 THEN 'Yes'
+           WHEN 0 THEN 'No'
            ELSE ever_tested_hiv
            END                           AS ever_tested_hiv,
        duration_since_last_test,
@@ -14955,7 +15032,7 @@ INSERT INTO mamba_fact_pmtct_exposedinfants
                            OR ld.hiv_test_performed = 'Previously known positive'
                            OR ld.anc_hiv_status_first_visit like '%Positive%'))
             OR ip.client_id in (SELECT person_b FROM mamba_dim_relationship a
-                INNER JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
+                INNER JOIN mamba_flat_encounter_mother_postnatal mp
                     ON a.person_a = mp.client_id
                 where (mp.result_of_hiv_test like '%Positive%'
                            OR mp.hiv_test_performed = 'Previously known positive')))
@@ -15204,7 +15281,7 @@ WHERE visit_type like 'New %'
                                      DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
     OR anc.client_id NOT in (SELECT anc.client_id
                              FROM mamba_flat_encounter_pmtct_anc anc
-                                      LEFT JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
+                                      LEFT JOIN mamba_flat_encounter_mother_postnatal mp
                                                 ON mp.client_id = anc.client_id
                              WHERE mp.encounter_datetime >
                                    DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
@@ -15912,6 +15989,59 @@ WHERE TABLE_NAME = 'mamba_dim_total_active_tpt';
 UPDATE mamba_dim_report_definition
 SET result_column_names = @column_names
 WHERE report_id='total_active_tpt';
+
+END;
+~-~-
+
+
+
+
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_null_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_null_query;
+
+
+~-~-
+CREATE PROCEDURE sp_mamba_null_query()
+BEGIN
+
+null;
+
+END;
+~-~-
+
+
+
+
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_null_columns_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_null_columns_query;
+
+
+~-~-
+CREATE PROCEDURE sp_mamba_null_columns_query()
+BEGIN
+
+-- Create Table to store report column names with no rows
+DROP TABLE IF EXISTS mamba_dim_null;
+CREATE TABLE mamba_dim_null AS
+null
+LIMIT 0;
+
+-- Select report column names from Table
+SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
+INTO @column_names
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'mamba_dim_null';
+
+-- Update Table with report column names
+UPDATE mamba_dim_report_definition
+SET result_column_names = @column_names
+WHERE report_id='null';
 
 END;
 ~-~-
