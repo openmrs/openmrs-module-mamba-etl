@@ -61,7 +61,7 @@ WHERE visit_type like 'New %'
                                      DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
     OR anc.client_id NOT in (SELECT anc.client_id
                              FROM mamba_flat_encounter_pmtct_anc anc
-                                      LEFT JOIN mamba_flat_encounter_mother_postnatal mp
+                                      LEFT JOIN mamba_flat_encounter_pmtct_mother_postnatal mp
                                                 ON mp.client_id = anc.client_id
                              WHERE mp.encounter_datetime >
                                    DATE_ADD(date_of_last_menstrual_period, INTERVAL 40 WEEK))
