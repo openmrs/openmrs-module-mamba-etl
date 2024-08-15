@@ -124,12 +124,12 @@
         "sql_query": "SELECT DISTINCT hts.encounter_id, client_id patientid, concat(pn.given_name,' ',pn.family_name) name, p.gender, p.birthdate, encounter_date, date_tested, consent, community_service_point, pop_type, keypop_category, priority_pop, test_setting, facility_service_point, hts_approach, pretest_counselling, type_pretest_counselling, reason_for_test, ever_tested_hiv, duration_since_last_test, couple_result, result_received_couple, test_conducted, initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result, final_test_result, given_result, date_given_result, tiebreaker_kit_name, tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result, unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type, recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE date_tested BETWEEN :start_date AND :end_date",
         "query_params": [
           {
-            "param_name": "start_date",
-            "param_type": "date"
+            "name": "start_date",
+            "type": "DATE"
           },
           {
-            "param_name": "end_date",
-            "param_type": "date"
+            "name": "end_date",
+            "type": "DATE"
           }
         ]
       }
