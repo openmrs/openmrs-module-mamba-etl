@@ -925,6 +925,7 @@ BEGIN
 
     DECLARE etl_ever_scheduled TINYINT(1);
     DECLARE incremental_mode TINYINT(1);
+    DECLARE incremental_mode_cascaded TINYINT(1);
 
     SELECT COUNT(1)
     INTO etl_ever_scheduled
@@ -935,12 +936,14 @@ BEGIN
     FROM _mamba_etl_user_settings;
 
     IF etl_ever_scheduled <= 1 OR incremental_mode = 0 THEN
+        SET incremental_mode_cascaded = 0;
         CALL sp_mamba_data_processing_drop_and_flatten();
     ELSE
+        SET incremental_mode_cascaded = 1;
         CALL sp_mamba_data_processing_increment_and_flatten();
     END IF;
 
-    CALL sp_mamba_data_processing_etl();
+    CALL sp_mamba_data_processing_etl(incremental_mode_cascaded);
 
 END;
 ~-~-
@@ -4904,6 +4907,7 @@ CREATE TABLE _mamba_etl_user_settings
     incremental_mode_switch          TINYINT(1)   NOT NULL COMMENT 'If MambaETL should/not run in Incremental Mode',
     automatic_flattening_mode_switch TINYINT(1)   NOT NULL COMMENT 'If MambaETL should/not automatically flatten ALL encounter types',
     etl_interval_seconds             INT          NOT NULL COMMENT 'ETL Runs every 60 seconds',
+    incremental_mode_switch_cascaded TINYINT(1)   NOT NULL DEFAULT 0 COMMENT 'This is a computed Incremental Mode (1 or 0) for the ETL that is cascaded down to the implementer scripts',
     last_etl_schedule_insert_id      INT          NOT NULL DEFAULT 1 COMMENT 'Insert ID of the last ETL that ran'
 
 ) CHARSET = UTF8MB4;
@@ -9265,11 +9269,19 @@ SET @report_definition_json = '{
       "report_name": "HTS Linelist",
       "report_id": "hts_linelist",
       "report_sql": {
-        "sql_query": "SELECT DISTINCT hts.encounter_id,client_id patientid,concat(pn.given_name,'' '',pn.family_name) name,p.gender,p.birthdate,encounter_date, date_tested, consent,community_service_point, pop_type, keypop_category, priority_pop, test_setting,facility_service_point, hts_approach, pretest_counselling,type_pretest_counselling, reason_for_test, ever_tested_hiv,duration_since_last_test, couple_result, result_received_couple, test_conducted,initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result,final_test_result, given_result, date_given_result, tiebreaker_kit_name,tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result,unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type,recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id",
-        "query_params": []
+        "sql_query": "SELECT DISTINCT hts.encounter_id, client_id patientid, concat(pn.given_name,'' '',pn.family_name) name, p.gender, p.birthdate, encounter_date, date_tested, consent, community_service_point, pop_type, keypop_category, priority_pop, test_setting, facility_service_point, hts_approach, pretest_counselling, type_pretest_counselling, reason_for_test, ever_tested_hiv, duration_since_last_test, couple_result, result_received_couple, test_conducted, initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result, final_test_result, given_result, date_given_result, tiebreaker_kit_name, tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result, unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type, recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE date_tested BETWEEN :start_date AND :end_date",
+        "query_params": [
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ]
       }
     }
-
   ]
 }';
 CALL sp_mamba_extract_report_definition_metadata(@report_definition_json, 'mamba_dim_report_definition');
@@ -13372,44 +13384,25 @@ END;
 -- ----------------------  sp_mamba_data_processing_etl  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
+
 DROP PROCEDURE IF EXISTS sp_mamba_data_processing_etl;
 
-
 ~-~-
-CREATE PROCEDURE sp_mamba_data_processing_etl()
+CREATE PROCEDURE sp_mamba_data_processing_etl(IN etl_incremental_mode INT)
+
 BEGIN
+    -- add base folder SP here if any --
 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-BEGIN
-    GET DIAGNOSTICS CONDITION 1
-
-    @message_text = MESSAGE_TEXT,
-    @mysql_errno = MYSQL_ERRNO,
-    @returned_sqlstate = RETURNED_SQLSTATE;
-
-    CALL sp_mamba_etl_error_log_insert('sp_mamba_data_processing_etl', @message_text, @mysql_errno, @returned_sqlstate);
-
-    UPDATE _mamba_etl_schedule
-    SET end_time                   = NOW(),
-        completion_status          = 'ERROR',
-        transaction_status         = 'COMPLETED',
-        success_or_error_message   = CONCAT('sp_mamba_data_processing_etl', ', ', @mysql_errno, ', ', @message_text)
-        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
-
-    RESIGNAL;
-END;
-
--- $BEGIN
--- add base folder SP here --
-
--- Call the ETL process
-CALL sp_mamba_data_processing_derived_hts();
-CALL sp_mamba_data_processing_derived_pmtct();
+    -- Needed for now till incremental is full implemented. We will just drop all tables and recreate them
+    -- CALL sp_mamba_drop_all_billing_tables();
+    -- Call the ETL process
+    CALL sp_mamba_data_processing_derived_hts();
+    CALL sp_mamba_data_processing_derived_pmtct();
 -- CALL sp_mamba_data_processing_derived_covid();
 
--- $END
 END;
 ~-~-
+
 
 
         
@@ -16026,10 +16019,10 @@ DROP PROCEDURE IF EXISTS sp_mamba_hts_linelist_query;
 
 
 ~-~-
-CREATE PROCEDURE sp_mamba_hts_linelist_query()
+CREATE PROCEDURE sp_mamba_hts_linelist_query(IN start_date DATE, IN end_date DATE)
 BEGIN
 
-SELECT DISTINCT hts.encounter_id,client_id patientid,concat(pn.given_name,' ',pn.family_name) name,p.gender,p.birthdate,encounter_date, date_tested, consent,community_service_point, pop_type, keypop_category, priority_pop, test_setting,facility_service_point, hts_approach, pretest_counselling,type_pretest_counselling, reason_for_test, ever_tested_hiv,duration_since_last_test, couple_result, result_received_couple, test_conducted,initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result,final_test_result, given_result, date_given_result, tiebreaker_kit_name,tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result,unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type,recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id;
+SELECT DISTINCT hts.encounter_id, client_id patientid, concat(pn.given_name,' ',pn.family_name) name, p.gender, p.birthdate, encounter_date, date_tested, consent, community_service_point, pop_type, keypop_category, priority_pop, test_setting, facility_service_point, hts_approach, pretest_counselling, type_pretest_counselling, reason_for_test, ever_tested_hiv, duration_since_last_test, couple_result, result_received_couple, test_conducted, initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result, final_test_result, given_result, date_given_result, tiebreaker_kit_name, tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result, unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type, recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE date_tested BETWEEN :start_date AND :end_date;
 
 END;
 ~-~-
@@ -16045,13 +16038,13 @@ DROP PROCEDURE IF EXISTS sp_mamba_hts_linelist_columns_query;
 
 
 ~-~-
-CREATE PROCEDURE sp_mamba_hts_linelist_columns_query()
+CREATE PROCEDURE sp_mamba_hts_linelist_columns_query(IN start_date DATE, IN end_date DATE)
 BEGIN
 
 -- Create Table to store report column names with no rows
 DROP TABLE IF EXISTS mamba_dim_hts_linelist;
 CREATE TABLE mamba_dim_hts_linelist AS
-SELECT DISTINCT hts.encounter_id,client_id patientid,concat(pn.given_name,' ',pn.family_name) name,p.gender,p.birthdate,encounter_date, date_tested, consent,community_service_point, pop_type, keypop_category, priority_pop, test_setting,facility_service_point, hts_approach, pretest_counselling,type_pretest_counselling, reason_for_test, ever_tested_hiv,duration_since_last_test, couple_result, result_received_couple, test_conducted,initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result,final_test_result, given_result, date_given_result, tiebreaker_kit_name,tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result,unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type,recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id
+SELECT DISTINCT hts.encounter_id, client_id patientid, concat(pn.given_name,' ',pn.family_name) name, p.gender, p.birthdate, encounter_date, date_tested, consent, community_service_point, pop_type, keypop_category, priority_pop, test_setting, facility_service_point, hts_approach, pretest_counselling, type_pretest_counselling, reason_for_test, ever_tested_hiv, duration_since_last_test, couple_result, result_received_couple, test_conducted, initial_kit_name, initial_test_result, confirmatory_kit_name, last_test_result, final_test_result, given_result, date_given_result, tiebreaker_kit_name, tiebreaker_test_result, sti_last_6mo, sexually_active, syphilis_test_result, unprotected_sex_last_12mo, recency_consent, recency_test_done, recency_test_type, recency_vl_result, recency_rtri_result FROM mamba_fact_encounter_hts hts INNER JOIN mamba_dim_person p ON p.person_id = hts.client_id INNER JOIN mamba_dim_person_name pn ON p.person_id = pn.person_id WHERE date_tested BETWEEN :start_date AND :end_date
 LIMIT 0;
 
 -- Select report column names from Table
