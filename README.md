@@ -114,30 +114,34 @@ However for this to work a few steps need to be taken:
 
    Add the following database user configurations to that file
 
-        mambaetl.analysis.db.driver=com.mysql.cj.jdbc.Driver
+        # MambaETL related properties
 
-        mambaetl.analysis.db.url=jdbc\:mysql\://localhost\:3306/analysis_db?useSSL\=false&autoReconnect\=true
+         mambaetl.analysis.db.username=root
+         
+         mambaetl.analysis.db.password=iopdRmgaphk
+         
+         mambaetl.analysis.db.openmrs_database=kibagabaga
+         
+         mambaetl.analysis.db.etl_database=analysis_kibagabaga
+         
+         #preferred concepts locale
+         mambaetl.analysis.locale=en
 
-        mambaetl.analysis.db.username=mamba
-
-        mambaetl.analysis.db.password=iopdRmgaphk
+         #MySQL fails when Columns become too large, we can partition tables nad have other columns in other subsequent tables
+         mambaetl.analysis.columns=40
+         
+         #Whether the ETL should delete and recreate all ETL tables or only add/modify what has changed
+         mambaetl.analysis.incremental_mode=1
+         
+         #MambaETL will automatically flatten all encounters in the OpenMRS database if set to 1
+         mambaetl.analysis.automated_flattening=0
+         
+         #The ETL interval in seconds. ETL will run every number of seconds specified here -> 30 Seconds
+         mambaetl.analysis.etl_interval=1800
    
 
 4. Upload the MambaETL module to your OpenMRS instance
 
-
-5. Go to OpenMRs admin interface and configure as desired the scheduler options for the running of the ETL. 
-
-    
-    MambaETL can be scheduled to run automatically every 12 hours after deploying the scripts.
-Schedulable Class name: 
-`org.openmrs.module.mambacore.task.FlattenTableTask`
-![Scheduler.png](_markdown%2FScheduler.png)
-But you can adjust the timing for executing MambaETL in the openmrs scheduler if need be as shown below
-Under Administration go to scheduler and then click on manage scheduler
-![Modify Scheduler.png](_markdown%2FModify%20Scheduler.png)
-Click on Schedule and then modify the timings.
-![Schedule time.png](_markdown%2FSchedule%20time.png)
 
 6. After the module has been deployed successfuly and the configured scheduler has run, MambaETL related tables and flat tables will be automatically dropped (if exist) and re-created:
 ![tables.png](_markdown%2Ftables.png)
