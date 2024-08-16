@@ -132,6 +132,14 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
 
@@ -286,18 +294,6 @@
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
 
-                                    <!-- Set the concepts locale here -->
-                                    <argument>-l en</argument>
-
-                                    <!-- Set the number of tables before partitioning -->
-                                    <argument>-p 50</argument>
-
-                                    <!-- Set incremental update mode switch:
-                                             0 - DON'T DO incremental updates,
-                                             1 - DO incremental updates
-                                     -->
-                                    <argument>-u 1</argument>
-
                                     <!-- add any other arguments below -->
                                     <argument/>
 
@@ -427,6 +423,7 @@
                         </execution>
                     </executions>
                 </plugin>
+
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
