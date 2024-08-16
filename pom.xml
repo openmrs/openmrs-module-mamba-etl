@@ -134,6 +134,14 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
 
@@ -269,10 +277,10 @@
                                     <argument>compile.sh</argument>
 
                                     <!-- The source database (OpenMRS database) -->
-                                    <argument>-d openmrs</argument>
+                                    <argument>-d kibogoradh</argument>
 
                                     <!-- The target or analysis Database where the ETL data is stored -->
-                                    <argument>-a analysis_db</argument>
+                                    <argument>-a analysis_kibogoradh</argument>
 
                                     <!-- File with a list of all files with stored procedures -->
                                     <!-- Remove this argument after automating core to auto-read this -->
