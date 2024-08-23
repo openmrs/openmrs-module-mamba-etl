@@ -10,6 +10,8 @@ derived/covid/sp_mamba_data_processing_derived_covid.sql
 derived/hts/sp_mamba_data_processing_derived_hts.sql
 derived/pmtct/sp_mamba_data_processing_derived_pmtct.sql
 
+derived/sp_mamba_drop_all_derived_tables.sql
+
 #############################################################################
 ##### A single SP that CALLs all SPs inside the derived & base folders ######
 #############################################################################
