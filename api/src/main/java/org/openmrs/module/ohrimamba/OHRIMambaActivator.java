@@ -36,7 +36,6 @@ public class OHRIMambaActivator extends BaseModuleActivator {
 	public void started() {
 		System.out.println("Started MambaETL Reference Module");
 		log.info("Started MambaETL Reference Module");
-		
 		Context.getService(FlattenDatabaseService.class).setupEtl();
 	}
 	
