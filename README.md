@@ -36,15 +36,15 @@ This module specifically has a dependency on the MambaETL core library `openmrs-
 
 MambaETL table flattening comes bundled with MambaETL out of the box.
 
-However for this to work a few steps need to be taken:
+However, for this to work a few steps need to be taken:
 
-1. Check the OpenMRS database user priviledges and confirm that the user has the privilidges to create new databases, stored procedures and Functions in this database. 
+1. Check the OpenMRS database user privileges and confirm that the user has the privileges to create new databases, stored procedures and Functions in this database. 
    
    **Note**:
-   If you created your OpenMRs instance using the default `Simple` option in the wizard, MambaETL will not be able to work since the wizard creates a database user with less privilidges than is required for MambaETL.
+   If you created your OpenMRs instance using the default `Simple` option in the wizard, MambaETL will not be able to work since the wizard creates a database user with fewer privileges than is required for MambaETL.
    However, you can solve this by elevating the user rights to be able to create databases, stored procedures and functions. 
    
-   To elevate database user priviledges, run the commands to grant them.
+   To elevate database user privileges, run the commands to grant them.
 
    
       -- Check to see the privileges user has, assuming user name is 'openmrs_user' 
@@ -70,7 +70,7 @@ However for this to work a few steps need to be taken:
    
       `FLUSH PRIVILEGES;`
    
-   This user is needed with the right priviledges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
+   This user is needed with the right privileges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
    -  Create the specified ETL database (`analysis_db` by default)   
    -  Drop and Create a number of MambaETL stored procedures and Functions in your specified `analysis database`
    ![routines.png](_markdown%2Froutines.png)
@@ -104,7 +104,7 @@ However for this to work a few steps need to be taken:
    
    Adding this connection information is not mandatory as the system will default to using the same user connection information as your distribution (if you have provided none). 
    
-   Other-wise Create a separate database user with enough priviledges to the analysis_db (ETL) database.
+   Other-wise Create a separate database user with enough privileges to the analysis_db (ETL) database.
    
    The user should be able to create and drop Tables in the analysis_db (ETL) database.
 
@@ -121,33 +121,47 @@ However for this to work a few steps need to be taken:
         mambaetl.analysis.db.username=mamba
 
         mambaetl.analysis.db.password=iopdRmgaphk
-   
+
+        mambaetl.analysis.db.openmrs_database=openmrs
+
+        mambaetl.analysis.db.etl_database=analysis_db
+        
+        #preferred concepts locale
+        mambaetl.analysis.locale=en
+        
+        #MySQL fails when Columns become too large, we can partition tables nad have other columns in other subsequent tables
+        mambaetl.analysis.columns=65
+        
+        #Whether the ETL should delete and recreate all ETL tables or only add/modify what has changed
+        mambaetl.analysis.incremental_mode=1
+        
+        #MambaETL will automatically transpose all encounters in the OpenMRS database if set to 1
+        mambaetl.analysis.automated_flattening=1
+        
+        #The ETL interval in seconds. ETL will run every number of seconds specified here
+        mambaetl.analysis.etl_interval=180
+
+Incremental Mode (`_mambaetl.analysis.incremental_mode_`):
+
+    0: The ETL process will drop and recreate all ETL tables every time it runs. Essentially, a fresh start for each run.
+    1: The ETL will run in incremental mode, meaning it will only update (add/modify) data that has changed since the last run, avoiding the need to recreate all tables.
+
+Automated Flattening (`_mambaetl.analysis.automated_flattening_`):
+
+    1: This setting will flatten encounter data only for encounters where the corresponding JSON files are provided, whether the files are generated automatically or manually.
+    0: No encounters will be flattened.
+
+Scheduler Interval (`_mambaetl.analysis.etl_interval_`):
+
+    Specifies the interval, in seconds, at which the ETL should run. For example, setting _mambaetl.analysis.etl_interval=180_ means the ETL will run every 3 minutes.
 
 4. Upload the MambaETL module to your OpenMRS instance
 
 
-5. Go to OpenMRs admin interface and configure as desired the scheduler options for the running of the ETL. 
+5. After the module has been deployed successfully, If any MambaETL-related tables and flat tables already exist in the database, they will be automatically dropped as part of the deployment process.
+   After dropping the existing tables, the ETL-related tables will be re-created, ensuring the system starts with fresh, predefined table structures.
+ ![analysis tables.png](_markdown%2Fanalysis%20tables.png)
 
-    
-    MambaETL can be scheduled to run automatically every 12 hours after deploying the scripts.
-Schedulable Class name: 
-`org.openmrs.module.mambacore.task.FlattenTableTask`
-![Scheduler.png](_markdown%2FScheduler.png)
-But you can adjust the timing for executing MambaETL in the openmrs scheduler if need be as shown below
-Under Administration go to scheduler and then click on manage scheduler
-![Modify Scheduler.png](_markdown%2FModify%20Scheduler.png)
-Click on Schedule and then modify the timings.
-![Schedule time.png](_markdown%2FSchedule%20time.png)
-
-6. After the module has been deployed successfuly and the configured scheduler has run, MambaETL related tables and flat tables will be automatically dropped (if exist) and re-created:
-![tables.png](_markdown%2Ftables.png)
-
-   
-## **Known issues/Limitations**
-1. Scheduler sometimes may not be automatically created. You may need to go to where task schedulers page and create one appropriately. 
-
-
-2. Tables with columns bigger than 160 may fail to insert due to a MYSQL size constraint
 
 ## **Frequently Asked Questions (FAQs)**
 .....
@@ -178,16 +192,20 @@ The 2 files automatically created under the `mamba` folder are:
 
 - `liquibase_create_stored_procedures.sql`
 
+- `jdbc_create_stored_procedures.sql`
+
 The `create_stored_procedures.sql` is an SQL compliant file. It contains all the ETL scripts that have been compiled into one 'big' script ready for deployment.  
 This file can be run against your ETL target database as-is, mostly for development and test purposes when you need to quickly and manually run your ETL scripts and test them out.  
 
 The `liquibase_create_stored_procedures.sql` is referenced in the `liquibase.xml` changeset. It has similar contents as the first file but is compliant to liquibase.  
 The file is automatically run by Liquibase when deploying your module. It also contains all the ETL scripts that have been compiled into one 'big' SQL script file.
 
+The `jdbc_create_stored_procedures.sql` is a MySQL compliant file. It contains all the ETL scripts that have been compiled into one 'big' script ready for deployment.
+
 <span style='color: red;'>Step 3:</span>  
 
 Ensure your `api` submodule has the structure as shown in the image below. We will go through the relevant files/folders one by one.  
-![api-submodule.png](_markdown%2Fapi-submodule.png)
+![api-submodule1.png](_markdown%2Fapi-submodule1.png)
 
 
 <span style='color: red;'>Step 4:</span>
@@ -239,8 +257,10 @@ Copy the example `_etl` folder from the [MambaETL reference/template](https://gi
 Under the `_etl` folder are other sub-folders and files, you may need to edit them according to your needs. 
 ![json-config.png](_markdown%2Fjson-config.png)
 
-Under the config folder, place your json configuration files for the flattened tables. These config are not mandatory.
-If not provided MambaETL with automatically generate these config files, one for each Encounter type.  
+Under the config folder, place your json configuration files for the flattened tables. These configs are not mandatory.
+If not provided MambaETL with automatically generate these config files, one for each Encounter type. They are saved in a table (mamba_flat_table_config) in analysis database.
+![table config json.png](_markdown%2Ftable%20config%20json.png)
+![automatic json configs.png](_markdown%2Fautomatic%20json%20configs.png)
 
 See image below for an example json configuration file contents:
 ![json-config-file.png](_markdown%2Fjson-config-file.png)
