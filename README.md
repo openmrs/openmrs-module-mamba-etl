@@ -114,6 +114,7 @@ However, for this to work a few steps need to be taken:
 
    Add the following database user configurations to that file
 
+
         mambaetl.analysis.db.driver=com.mysql.cj.jdbc.Driver
 
         mambaetl.analysis.db.url=jdbc\:mysql\://localhost\:3306/analysis_db?useSSL\=false&autoReconnect\=true
@@ -140,6 +141,7 @@ However, for this to work a few steps need to be taken:
         
         #The ETL interval in seconds. ETL will run every number of seconds specified here
         mambaetl.analysis.etl_interval=180
+
 
 Incremental Mode (`_mambaetl.analysis.incremental_mode_`):
 

@@ -32,6 +32,9 @@ public class MambaETLActivator extends BaseModuleActivator {
 	@Override
 	public void stopped() {
 		log.info("Stopped MambaETL Reference Module");
+
+		Context.getService(FlattenDatabaseService.class).shutdownEtlThread();
+		super.stopped();
 	}
 	
 	public void shutdown() {
