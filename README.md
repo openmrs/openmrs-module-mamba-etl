@@ -268,11 +268,11 @@ Under your MambaETL project created/cloned in `Step 1` above, go to the `api` su
 
 Locate the omod file from MambaETL project in the target folder
 
-    ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
+   ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
     
 Then copy the file and add/paste it to the modules subfolder in openmrs server folder 
 
-    ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
+   ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
 
 This Module ensures the MambaETL `Stored Procedures` and `Functions` are deployed on your target ETL database.  
 The changeset deletes and re-creates all given Stored procedures and functions everytime it is run ensuring any new changes/modifications to the ETL are deployed.
