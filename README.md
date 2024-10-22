@@ -160,7 +160,7 @@ However, for this to work a few steps need to be taken:
             Specifies the interval, in seconds, at which the ETL should run. For example, setting _mambaetl.analysis.etl_interval=180_ means the ETL will run every 3 minutes.
 
 3. Upload/Deploy the MambaETL module to your OpenMRS instance
-   Locate the omod(openmrs module) file from mambaetl project in the target folder 
+   Locate the omod(mamba-etl-1.0.1-SNAPSHOT.omod) file from mambaetl project in the target folder 
 
    ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
     
@@ -196,11 +196,11 @@ However, for this to work a few steps need to be taken:
 
    <span style='color: red'>step 4: Locate the .omod file</span>
    
-   In the target directory, you will find the ohrimamba-1.0.1-SNAPSHOT.omod file. You can list the files in this directory using
+   In the target directory, you will find the mamba-etl-1.0.1-SNAPSHOT.omod file. You can list the files in this directory using
 
             `ls`
    
-   You should see the .omod file (ohrimamba-1.0.1-SNAPSHOT.omod) listed, along with other files such as .jar files and test outputs.
+   You should see the .omod file (mamba-etl-1.0.1-SNAPSHOT.omod) listed, along with other files such as .jar files and test outputs.
 
    <span style='color: red'>step 5: Deploy the .omod file</span>
    
