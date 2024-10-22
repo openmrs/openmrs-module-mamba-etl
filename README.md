@@ -160,45 +160,50 @@ However, for this to work a few steps need to be taken:
             Specifies the interval, in seconds, at which the ETL should run. For example, setting _mambaetl.analysis.etl_interval=180_ means the ETL will run every 3 minutes.
 
 3. Upload/Deploy the MambaETL module to your OpenMRS instance
-    Locate the omod(openmrs module) file from mambaetl project in the target folder 
+   Locate the omod(openmrs module) file from mambaetl project in the target folder 
 
-    ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
+   ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
     
-    Then copy the file and add/paste it to the modules subfolder in openmrs server folder 
+   Then copy the file and add/paste it to the modules subfolder in openmrs server folder 
 
-    ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
+   ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
     
-    You can also use the command prompt
+   You can also use the command prompt
 
-    <span style='color: red'>step 1: Navigate to the Project Directory:</span> 
+   <span style='color: red'>step 1: Navigate to the Project Directory:</span> 
 
-    Open a terminal and navigate to the root of your project, for example: -
+   Open a terminal and navigate to the root of your project, for example: -
 
             `cd ~/openmrs-module-mamba-etl`
 
-    <span style='color: red'>step 2: Build the project using Maven:</span>
-    Ensure that you have Maven installed on your system. To generate the .omod file, run the following Maven command:
+   <span style='color: red'>step 2: Build the project using Maven:</span>
+   
+   Ensure that you have Maven installed on your system. To generate the .omod file, run the following Maven command:
 
             `mvn clean install`
    
-    This will:
+   This will:
 
-    Clean the previous build outputs.
-    Compile the code.
-    Package the module into a .omod file.
+   Clean the previous build outputs.
+   Compile the code.
+   Package the module into a .omod file.
 
    <span style='color: red'>step 3: Navigate to the OMOD directory</span>
+   
    After the build is complete, navigate to the omod module’s target directory, where the .omod file is located
 
             `cd omod/target`
 
    <span style='color: red'>step 4: Locate the .omod file</span>
+   
    In the target directory, you will find the ohrimamba-1.0.1-SNAPSHOT.omod file. You can list the files in this directory using
 
             `ls`
+   
    You should see the .omod file (ohrimamba-1.0.1-SNAPSHOT.omod) listed, along with other files such as .jar files and test outputs.
 
    <span style='color: red'>step 5: Deploy the .omod file</span>
+   
    Now that you've located the .omod file, it’s ready for deployment into the OpenMRS system by uploading it through the OpenMRS admin interface or placing it in the OpenMRS modules folder.
 
 
