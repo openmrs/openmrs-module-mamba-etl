@@ -205,6 +205,7 @@ However, for this to work a few steps need to be taken:
    <span style='color: red'>step 5: Deploy the .omod file</span>
    
    Now that you've located the .omod file, it’s ready for deployment into the OpenMRS system by uploading it through the OpenMRS admin interface or placing it in the OpenMRS modules folder.
+   Then restart your openmrs server.
 
 
 4. After the module has been deployed successfully, If any MambaETL-related tables and flat tables already exist in the database, they will be automatically dropped as part of the deployment process.
