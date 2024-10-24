@@ -23,7 +23,7 @@ This module specifically has a dependency on the MambaETL core library `openmrs-
 
 ## **A Quick start-up setup guide**
 
-<span style='color: red;'>Pre-Requisites</span>
+<span style='color: red'>Pre-Requisites</span>
 
 * A running instance of the OpenMRS server
 * The OpenMRS database user used by the running OpenMRs server must have elevated rights to be able to create databases (i.e. the analysis (ETL) db), Stored Procedures and Functions.
@@ -32,7 +32,7 @@ This module specifically has a dependency on the MambaETL core library `openmrs-
 * Java functionality (JAVA 7 & above)
 * Access to the OpenMRS admin interface to be able to re-configure the ETL task
 
-<span style='color: red;'>How to setup and run the module</span>
+<span style='color: red'>How to setup and deploy the ETL module</span>
 
 MambaETL table flattening comes bundled with MambaETL out of the box.
 
@@ -66,11 +66,11 @@ However, for this to work a few steps need to be taken:
       `GRANT SUPER ON *.* TO 'openmrs_user'@'localhost';`
 
    
-      -- update the priviledges
+      -- update the privileges
    
       `FLUSH PRIVILEGES;`
    
-   This user is needed with the right privileges because once the MambaETL module has been deployed, at starts up, there is a liquibase changeset that needs to run and do two things:
+   This user is needed with the right privileges because once the MambaETL module has been deployed, at starts up, the ETL module needs to run and do two things:
    -  Create the specified ETL database (`analysis_db` by default)   
    -  Drop and Create a number of MambaETL stored procedures and Functions in your specified `analysis database`
    ![routines.png](_markdown%2Froutines.png)
@@ -80,9 +80,9 @@ However, for this to work a few steps need to be taken:
 
    In MySQL 8, when binary logging is enabled, the ability to create and drop stored procedures and functions requires the CREATE ROUTINE and ALTER ROUTINE privileges, respectively. However, these privileges are not sufficient for non-SUPER users to drop stored procedures and functions due to security concerns related to binary logging.
 
-   Meaning you will run into this Error when the liquibase changeset tries to execute:
+   Meaning you will run into this Error when the ETL module tries to execute:
 
-   `... liquibase.exception.DatabaseException: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable) [Failed SQL: (1419) CREATE FUNCTION..`
+   `... exception.DatabaseException: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable) [Failed SQL: (1419) CREATE FUNCTION..`
 
    If you want to allow non-SUPER users to drop stored procedures and functions while binary logging is enabled, you have a couple of options:
    
@@ -100,8 +100,10 @@ However, for this to work a few steps need to be taken:
    Keep in mind that changing global variables like this might require SUPER privileges or appropriate administrative permissions.
    Choose the option that best fits your security requirements and administrative constraints. If you're concerned about granting the SUPER privilege or enabling log_bin_trust_function_creators, you might want to consult with your database administrator or review your security policies.
 
-3. Add a database user configurations to the OpenMRS runtime properties file.
-   
+2. Add a database user configurations to the OpenMRS runtime properties file.
+
+   ![openmrs-runtime-properties.png](_markdown%2Fopenmrs-runtime-properties.png)
+
    Adding this connection information is not mandatory as the system will default to using the same user connection information as your distribution (if you have provided none). 
    
    Other-wise Create a separate database user with enough privileges to the analysis_db (ETL) database.
@@ -143,25 +145,72 @@ However, for this to work a few steps need to be taken:
         mambaetl.analysis.etl_interval=180
 
 
-Incremental Mode (`_mambaetl.analysis.incremental_mode_`):
+        Incremental Mode (`_mambaetl.analysis.incremental_mode_`):
+        
+            0: The ETL process will drop and recreate all ETL tables every time it runs. Essentially, a fresh start for each run.
+            1: The ETL will run in incremental mode, meaning it will only update (add/modify) data that has changed since the last run, avoiding the need to recreate all tables.
+        
+        Automated Flattening (`_mambaetl.analysis.automated_flattening_`):
+        
+            1: This setting will flatten encounter data only for encounters where the corresponding JSON files are provided, whether the files are generated automatically or manually.
+            0: No encounters will be flattened.
+        
+        Scheduler Interval (`_mambaetl.analysis.etl_interval_`):
+        
+            Specifies the interval, in seconds, at which the ETL should run. For example, setting _mambaetl.analysis.etl_interval=180_ means the ETL will run every 3 minutes.
 
-    0: The ETL process will drop and recreate all ETL tables every time it runs. Essentially, a fresh start for each run.
-    1: The ETL will run in incremental mode, meaning it will only update (add/modify) data that has changed since the last run, avoiding the need to recreate all tables.
+3. Upload/Deploy the MambaETL module to your OpenMRS instance
+   Locate the omod(mamba-etl-1.0.1-SNAPSHOT.omod) file from mambaetl project in the target folder 
 
-Automated Flattening (`_mambaetl.analysis.automated_flattening_`):
+   ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
+    
+   Then copy the file and add/paste it to the modules subfolder in openmrs server folder 
 
-    1: This setting will flatten encounter data only for encounters where the corresponding JSON files are provided, whether the files are generated automatically or manually.
-    0: No encounters will be flattened.
+   ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
+    
+   You can also use the command prompt
 
-Scheduler Interval (`_mambaetl.analysis.etl_interval_`):
+   <span style='color: red'>step 1: Navigate to the Project Directory:</span> 
 
-    Specifies the interval, in seconds, at which the ETL should run. For example, setting _mambaetl.analysis.etl_interval=180_ means the ETL will run every 3 minutes.
+   Open a terminal and navigate to the root of your project, for example: -
 
-4. Upload the MambaETL module to your OpenMRS instance
+            `cd ~/openmrs-module-mamba-etl`
+
+   <span style='color: red'>step 2: Build the project using Maven:</span>
+   
+   Ensure that you have Maven installed on your system. To generate the .omod file, run the following Maven command:
+
+            `mvn clean install`
+   
+   This will:
+
+   Clean the previous build outputs.
+   Compile the code.
+   Package the module into a .omod file.
+
+   <span style='color: red'>step 3: Navigate to the OMOD directory</span>
+   
+   After the build is complete, navigate to the omod module’s target directory, where the .omod file is located
+
+            `cd omod/target`
+
+   <span style='color: red'>step 4: Locate the .omod file</span>
+   
+   In the target directory, you will find the mamba-etl-1.0.1-SNAPSHOT.omod file. You can list the files in this directory using
+
+            `ls`
+   
+   You should see the .omod file (mamba-etl-1.0.1-SNAPSHOT.omod) listed, along with other files such as .jar files and test outputs.
+
+   <span style='color: red'>step 5: Deploy the .omod file</span>
+   
+   Now that you've located the .omod file, it’s ready for deployment into the OpenMRS system by uploading it through the OpenMRS admin interface or placing it in the OpenMRS modules folder.
+   Then restart your openmrs server.
 
 
-5. After the module has been deployed successfully, If any MambaETL-related tables and flat tables already exist in the database, they will be automatically dropped as part of the deployment process.
+4. After the module has been deployed successfully, If any MambaETL-related tables and flat tables already exist in the database, they will be automatically dropped as part of the deployment process.
    After dropping the existing tables, the ETL-related tables will be re-created, ensuring the system starts with fresh, predefined table structures.
+
  ![analysis tables.png](_markdown%2Fanalysis%20tables.png)
 
 
@@ -171,12 +220,12 @@ Scheduler Interval (`_mambaetl.analysis.etl_interval_`):
 ## **MambaETL: A technical deep dive**
 
 
-<span style='color: red;'>Step 1:</span>
+<span style='color: red'>Step 1:</span>
 
 Before proceeding, please refer to the **A Quick start-up setup guide** section and make sure your MambaETL module has been correctly setup and is running. 
 
 
-<span style='color: red;'>Step 2:</span>
+<span style='color: red'>Step 2:</span>
 
 Checkout the project from [git](https://github.com/UCSF-IGHS/openmrs-module-mamba-etl)
 
@@ -192,25 +241,20 @@ The 2 files automatically created under the `mamba` folder are:
 
 - `create_stored_procedures.sql`
 
-- `liquibase_create_stored_procedures.sql`
-
 - `jdbc_create_stored_procedures.sql`
 
 The `create_stored_procedures.sql` is an SQL compliant file. It contains all the ETL scripts that have been compiled into one 'big' script ready for deployment.  
-This file can be run against your ETL target database as-is, mostly for development and test purposes when you need to quickly and manually run your ETL scripts and test them out.  
-
-The `liquibase_create_stored_procedures.sql` is referenced in the `liquibase.xml` changeset. It has similar contents as the first file but is compliant to liquibase.  
-The file is automatically run by Liquibase when deploying your module. It also contains all the ETL scripts that have been compiled into one 'big' SQL script file.
+This file can be run against your ETL target database as-is, mostly for development and test purposes when you need to quickly and manually run your ETL scripts and test them out.
 
 The `jdbc_create_stored_procedures.sql` is a MySQL compliant file. It contains all the ETL scripts that have been compiled into one 'big' script ready for deployment.
 
-<span style='color: red;'>Step 3:</span>  
+<span style='color: red'>Step 3:</span>  
 
 Ensure your `api` submodule has the structure as shown in the image below. We will go through the relevant files/folders one by one.  
 ![api-submodule1.png](_markdown%2Fapi-submodule1.png)
 
 
-<span style='color: red;'>Step 4:</span>
+<span style='color: red'>Step 4:</span>
 
 `../api/pom.xml`  
 
@@ -221,37 +265,21 @@ Under your MambaETL project created/cloned in `Step 1` above, go to the `api` su
         <artifactId>mamba-core-api</artifactId>
     </dependency>
 
-<span style='color: red;'>Step 5:</span>
+<span style='color: red'>Step 5:</span>
 
-`../api/../resources/liquibase.xml`
+Locate the omod file from MambaETL project in the target folder
 
-Add a MambaETL liquibase changeset to your liquibase file
+   ![location-of-omod.png](_markdown%2Flocation-of-omod.png)
+    
+Then copy the file and add/paste it to the modules subfolder in openmrs server folder 
 
-    <?xml version="1.0" encoding="UTF-8"?>
-    
-    <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                       xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    
-        <changeSet id="mamba-etl-0001" author="Arthur D. Mugume [MakSPH], Laureen G. Omare [UCSF]" runAlways="true">
-    
-            <comment>
-                Installs/deploys all the required MambaETL Stored procedures and functions
-            </comment>
-    
-            <sqlFile splitStatements="true" stripComments="true" endDelimiter="~"
-                     path="mamba/liquibase_create_stored_procedures.sql"/>
-    
-        </changeSet>
-    
-    </databaseChangeLog>
+   ![add mamba omod.png](_markdown%2Fadd%20mamba%20omod.png)
 
-This Liquibase Changeset ensures the MambaETL `Stored Procedures` and `Functions` are deployed on your target ETL database.  
+This Module ensures the MambaETL `Stored Procedures` and `Functions` are deployed on your target ETL database.  
 The changeset deletes and re-creates all given Stored procedures and functions everytime it is run ensuring any new changes/modifications to the ETL are deployed.
 
 
-<span style='color: red;'>Step 6:</span>  
+<span style='color: red'>Step 6:</span>  
 
 Copy the example `_etl` folder from the [MambaETL reference/template](https://github.com/UCSF-IGHS/openmrs-module-mamba-etl) module under `omod/src/main/resources` to your ETL project `resources` folder under the `omod` submodule of your project.  
 ![etl-folder.png](_markdown%2Fetl-folder.png)
@@ -273,7 +301,7 @@ In the database you will have the following tables, And the highlighted one is t
 For Extra analysis on the data, one can opt to create dimension and fact tables for easy analysis per encounter/service type for the client data as shown below in the Dimension folder.
 ![derived-facts-dims.png](_markdown%2Fderived-facts-dims.png)
 
-<span style='color: red;'>Step 7:</span>
+<span style='color: red'>Step 7:</span>
 
 `../pom.xml`
 
@@ -300,48 +328,48 @@ It is an HTTP Rest webservice interface and can be accessed via the base URL:
 for example:
 `http://ohri-demo.globalhealthapp.net/openmrs/ws/rest/v1/mamba/report?report_id=total_deliveries`
 
-To configure this to work, you need to add your reporting queries or entries to the <span style='color: red;'>reports.json</span> file found under
+To configure this to work, you need to add your reporting queries or entries to the <span style='color: red'>reports.json</span> file found under
 the `etl module / omod (submodule) resources / etl / config (folder) / reports.json`.
 
 An example entry can look like this:
 
-`{
-  "report_definitions": [
-    {
-      "report_name": "MCH Mother HIV Status",
-      "report_id": "mother_hiv_status",
-      "report_sql": {
-        "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
-        "query_params": [
-          {
-            "name": "ptracker_id",
-            "type": "VARCHAR(255)"
-          },
-          {
-            "name": "person_uuid",
-            "type": "VARCHAR(255)"
-          }
-        ]
-      }
-    },
-    {
-      "report_name": "MCH Total Deliveries",
-      "report_id": "total_deliveries",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = '6dc5308d-27c9-4d49-b16f-2c5e3c759757' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
-        "query_params": []
-      }
-    },
-    {
-      "report_name": "MCH HIV-Exposed Infants",
-      "report_id": "total_hiv_exposed_infants",
-      "report_sql": {
-        "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW()",
-        "query_params": []
-      }
-    }
-   ]
-}`
+        `{
+          "report_definitions": [
+            {
+              "report_name": "MCH Mother HIV Status",
+              "report_id": "mother_hiv_status",
+              "report_sql": {
+                "sql_query": "SELECT pm.hiv_test_result AS hiv_test_result FROM mamba_flat_encounter_pmtct_anc pm INNER JOIN mamba_dim_person p ON pm.client_id = p.person_id WHERE p.uuid = person_uuid AND pm.ptracker_id = ptracker_id",
+                "query_params": [
+                  {
+                    "name": "ptracker_id",
+                    "type": "VARCHAR(255)"
+                  },
+                  {
+                    "name": "person_uuid",
+                    "type": "VARCHAR(255)"
+                  }
+                ]
+              }
+            },
+            {
+              "report_name": "MCH Total Deliveries",
+              "report_id": "total_deliveries",
+              "report_sql": {
+                "sql_query": "SELECT COUNT(*) AS total_deliveries FROM mamba_dim_encounter e inner join mamba_dim_encounter_type et on e.encounter_type = et.encounter_type_id WHERE et.uuid = '6dc5308d-27c9-4d49-b16f-2c5e3c759757' AND DATE(e.encounter_datetime) > CONCAT(YEAR(CURDATE()), '-01-01 00:00:00')",
+                "query_params": []
+              }
+            },
+            {
+              "report_name": "MCH HIV-Exposed Infants",
+              "report_id": "total_hiv_exposed_infants",
+              "report_sql": {
+                "sql_query": "SELECT COUNT(DISTINCT ei.infant_client_id) AS total_hiv_exposed_infants FROM mamba_fact_pmtct_exposedinfants ei INNER JOIN mamba_dim_person p ON ei.infant_client_id = p.person_id WHERE ei.encounter_datetime BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW() AND birthdate BETWEEN DATE_FORMAT(NOW(), '%Y-01-01') AND NOW()",
+                "query_params": []
+              }
+            }
+           ]
+        }`
 
 **Note that** the `report_id` value in the report.json configuration file is the same value passed to the URL parameter (report_id) in order to fetch the report corresponding to this id.
 
